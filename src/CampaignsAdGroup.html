@@ -601,6 +601,16 @@
                       </button>
                     </th>
                     <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">
+                      <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="campaign">
+                        <span>Campaign</span>
+                      </button>
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">
+                      <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="classification">
+                        <span>Classification</span>
+                      </button>
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">
                       <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="dsp">
                         <span>DSP</span>
                       </button>
@@ -611,19 +621,18 @@
                       </button>
                     </th>
                     <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">
-                      <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="classification">
-                        <span>Classification</span>
+                      <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="impressions">
+                        <span>Impressions</span>
                       </button>
                     </th>
-                    <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider">
-                      <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="campaign">
-                        <span>Campaign</span>
+                    <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">
+                      <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="runDates">
+                        <span>Run Dates</span>
                       </button>
                     </th>
-<th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">
-  <span class="px-6 py-2 block">Actions</span>
-</th>
-                    
+                    <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">
+                      <span class="px-6 py-2 block">Actions</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody id="campaignTableBody" class="divide-y">
@@ -763,6 +772,85 @@
                 >
                   <option value="">Select campaign</option>
                 </select>
+              </div>
+
+              <!-- DSP and Ad Server (Two Column) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- DSP -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <span class="flex items-center">
+                      <svg class="w-4 h-4 mr-1 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                      </svg>
+                      DSP
+                    </span>
+                  </label>
+                  <div class="platform-select-container" id="dspDropdownContainer_step1">
+                    <input type="hidden" id="dspDropdown_step1" name="dsp_step1" value="" />
+                    <button type="button" class="platform-select-trigger !py-1.5" id="dspDropdownTrigger_step1" aria-haspopup="listbox" aria-expanded="false">
+                      <span class="platform-select-value text-gray-500">-- Select DSP --</span>
+                      <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                      </svg>
+                    </button>
+                    <div class="platform-select-menu" id="dspDropdownMenu_step1" role="listbox">
+                      <div class="platform-select-option" data-value="" role="option">
+                        <span>-- Select DSP --</span>
+                      </div>
+                      <div class="platform-select-option" data-value="trade-desk" data-connected="true" role="option">
+                        <span>The Trade Desk</span>
+                        <svg class="w-5 h-5 chain-link-icon connected" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                        </svg>
+                      </div>
+                      <div class="platform-select-option" data-value="dv360" data-connected="false" role="option">
+                        <span>DV360</span>
+                        <svg class="w-5 h-5 chain-link-icon disconnected" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1M6 18L18 6"/>
+                        </svg>
+                      </div>
+                      <div class="platform-select-option" data-value="simplifi" data-connected="false" role="option">
+                        <span>Simpli.fi</span>
+                        <svg class="w-5 h-5 chain-link-icon disconnected" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1M6 18L18 6"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ad Server -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <span class="flex items-center">
+                      <svg class="w-4 h-4 mr-1 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                      </svg>
+                      Ad Server
+                    </span>
+                  </label>
+                  <div class="platform-select-container" id="adServerDropdownContainer_step1">
+                    <input type="hidden" id="adServerDropdown_step1" name="adserver_step1" value="" />
+                    <button type="button" class="platform-select-trigger !py-1.5" id="adServerDropdownTrigger_step1" aria-haspopup="listbox" aria-expanded="false">
+                      <span class="platform-select-value text-gray-500">-- Select Ad Server --</span>
+                      <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                      </svg>
+                    </button>
+                    <div class="platform-select-menu" id="adServerDropdownMenu_step1" role="listbox">
+                      <div class="platform-select-option" data-value="" role="option">
+                        <span>-- Select Ad Server --</span>
+                      </div>
+                      <div class="platform-select-option" data-value="google-campaign-manager" data-connected="true" role="option">
+                        <span>Google Campaign Manager</span>
+                        <svg class="w-5 h-5 chain-link-icon connected" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- Ad Group Name -->
@@ -2505,6 +2593,40 @@ window.addEventListener('DOMContentLoaded', () => {
   loadAdGroupsForCampaign(campaignId);
 });
 
+// Helper function to format run dates as MM/DD/YYYY – MM/DD/YYYY
+function formatRunDates(startDate, endDate) {
+  if (!startDate && !endDate) return '';
+
+  function toMMDDYYYY(dateStr) {
+    if (!dateStr) return '';
+    // Handle both "YYYY-MM-DD" and "MM/DD/YYYY" input formats
+    let d;
+    if (dateStr.includes('-')) {
+      // YYYY-MM-DD format (from date inputs)
+      const parts = dateStr.split('-');
+      d = new Date(parts[0], parts[1] - 1, parts[2]);
+    } else if (dateStr.includes('/')) {
+      // Already MM/DD/YYYY — return as-is
+      return dateStr;
+    } else {
+      d = new Date(dateStr);
+    }
+    if (isNaN(d.getTime())) return dateStr; // fallback to raw string
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    return `${mm}/${dd}/${yyyy}`;
+  }
+
+  const start = toMMDDYYYY(startDate);
+  const end = toMMDDYYYY(endDate);
+
+  if (start && end) return `${start} – ${end}`;
+  if (start) return start;
+  if (end) return end;
+  return '';
+}
+
 // Function to load ad groups associated with the current campaign
 function loadAdGroupsForCampaign(campaignId) {
   const adGroupsTableBody = document.getElementById('campaignTableBody');
@@ -2526,7 +2648,7 @@ function loadAdGroupsForCampaign(campaignId) {
       // Show empty state
       const emptyRow = document.createElement('tr');
       emptyRow.innerHTML = `
-        <td colspan="8" class="px-6 py-4 text-center text-gray-500">
+        <td colspan="10" class="px-6 py-4 text-center text-gray-500">
           No ad groups for this campaign
         </td>
       `;
@@ -2546,10 +2668,12 @@ function loadAdGroupsForCampaign(campaignId) {
               ${ag.name || ''}
             </a>
           </td>
+          <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${ag.campaign || ''}</td>
+          <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${ag.classification || ag.multiviewClassification || ''}</td>
           <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${(ag.connectors && ag.connectors.dsp) || ''}</td>
           <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${(ag.connectors && ag.connectors.adServer) || ''}</td>
-          <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${ag.classification || ag.multiviewClassification || ''}</td>
-          <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${ag.campaign || ''}</td>
+          <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${ag.impressions ? Number(ag.impressions).toLocaleString() : ''}</td>
+          <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${formatRunDates(ag.startDate, ag.endDate)}</td>
           <td class="px-6 py-1 whitespace-nowrap text-sm text-center border-r border-gray-200">
             <button class="text-red-600 hover:underline" onclick="deleteAdGroup('${ag.id}')">Delete</button>
           </td>
@@ -2561,7 +2685,7 @@ function loadAdGroupsForCampaign(campaignId) {
     console.error('Error loading ad groups for campaign:', error);
     adGroupsTableBody.innerHTML = `
       <tr>
-        <td colspan="8" class="px-6 py-4 text-center text-gray-500">
+        <td colspan="10" class="px-6 py-4 text-center text-gray-500">
           Error loading ad groups
         </td>
       </tr>

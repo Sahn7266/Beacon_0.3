@@ -232,38 +232,21 @@
       <!-- Main -->
       <main class="flex-1 overflow-y-auto p-6">
         <div class="bg-white rounded-lg shadow-sm">
-          <div class="p-4 border-b border-gray-200">
-            <div class="flex items-start justify-between gap-4 mb-3">
-              <!-- Left Column: Advertiser Name & Account # -->
-              <div>
-                <h1 id="advertiserHeader" class="md:text-2xl font-semibold text-gray-900">Loading…</h1>
-                <h3 class="text-sm font-semibold text-gray-600">Account #: <span data-bind="adv.account" class="text-sm text-gray-500">—</span></h3>
-              </div>
-              <!-- Right Column: Ad Group IDs -->
-              <div class="text-right">
-                <div class="flex justify-end gap-2">
-                  <!-- <span class="text-sm font-semibold text-gray-600">Delivery ID:</span>
-                  <a id="adGroupDeliveryId" href="https://www.thetradedesk.com/" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline w-40 text-left">—</a> -->
-                </div>
-                <div class="flex justify-end gap-2">
-                  <!-- <span class="text-sm font-semibold text-gray-600">Reporting ID:</span>
-                  <a id="adGroupReportingId" href="https://campaignmanager.google.com/" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline w-40 text-left">—</a> -->
-                </div>
-                <div class="flex justify-end gap-2">
-                  <span class="text-sm font-semibold text-gray-600">ID:</span>
-                  <span id="adGroupIdDisplay" class="text-sm text-gray-500 w-40 text-left">—</span>
-                </div>
-              </div>
+          <!-- Blue Banner Header with Ad Group Name and ID -->
+          <div class="rounded-t-lg p-4" style="background-color: #004E8B;">
+            <div class="flex items-center justify-between">
+              <h1 id="adGroupHeaderName" class="text-2xl font-bold text-white">Loading…</h1>
+              <span id="adGroupHeaderId" class="text-sm text-white font-medium">ID: —</span>
             </div>
-
-            <hr class="border-gray-300 mp-4 p-2">
+          </div>
+          <div class="p-4">
 
             <!-- Two-column ad group details layout -->
             <section>
               <div class="flex items-center justify-between mb-6">
                 <div>
-                  <h1 class="text-2xl font-semibold text-gray-900 mx-2">AD GROUP OVERVIEW</h1>
-                  <p id="adGroupDetailsSubtitle" class="text-sm text-gray-500 mx-2 mt-1"></p>
+                  <h2 class="text-lg font-semibold text-gray-900 mx-2">AD GROUP OVERVIEW</h2>
+                  <!-- <p id="adGroupDetailsSubtitle" class="text-sm text-gray-500 mx-2 mt-1"></p> -->
                 </div>
                 <div class="flex items-center gap-2">
                   <button id="editGeneralBtn" class="text-sm px-3 py-1 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 flex items-center gap-2">
@@ -277,198 +260,155 @@
                 </div>
               </div>
 
-              <!-- Two Column Layout -->
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <!-- Beacon Fields - Horizontal Grid Layout -->
+              <div class="space-y-6">
                 
-                <!-- Common Data Column -->
-                <div class="overflow-x-auto border border-default rounded-md self-start">
-                  <table class="w-full tbl tbl-row-hover table-fixed adgroup-details-table">
-                    <colgroup>
-                      <col class="w-1/3">
-                      <col class="w-2/3">
-                    </colgroup>
-                    <thead class="tbl-head">
-                      <tr>
-                        <th colspan="2" class="px-6 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
-                          BEACON FIELDS
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y border-default">
-                      
-                      <!-- ID -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          ID
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayAdGroupId" class="text-gray-800 break-words">N/A</span>
-                        </td>
-                      </tr>
+                <!-- Basic Settings Section -->
+                <div>
+                  <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3 px-2">Basic Settings</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- ID -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">ID</label>
+                      <span id="displayAdGroupId" class="block text-sm text-gray-900">N/A</span>
+                    </div>
 
-                      <!-- Name -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          Ad Group Name
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayAdGroupName" class="text-gray-800 break-words">N/A</span>
-                          <input id="inputAdGroupName" type="text" class="hidden adgroup-details-input" title="Ad Group Name input" aria-label="Enter ad group name" />
-                        </td>
-                      </tr>
+                    <!-- Ad Group Name -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Ad Group Name</label>
+                      <span id="displayAdGroupName" class="block text-sm text-gray-900">N/A</span>
+                      <input id="inputAdGroupName" type="text" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    </div>
 
-                      <!-- Campaign -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          Campaign
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayCampaign" class="text-gray-800 break-words">N/A</span>
-                          <select id="inputCampaign" class="hidden adgroup-details-input" title="Campaign selection" aria-label="Select campaign">
-                            <option value="">Select campaign</option>
-                          </select>
-                        </td>
-                      </tr>
+                    <!-- Campaign -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Campaign</label>
+                      <span id="displayCampaign" class="block text-sm text-gray-900">N/A</span>
+                      <select id="inputCampaign" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Select campaign</option>
+                      </select>
+                    </div>
 
-                      <!-- Multiview Classification -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          MV Classification
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayMultiviewClassification" class="text-gray-800 break-words">N/A</span>
-                          <select id="inputMultiviewClassification" class="hidden adgroup-details-input" title="Multiview Classification selection" aria-label="Select multiview classification">
-                            <option value="">-- Select --</option>
-                            <option value="Programmatic Display">Programmatic Display</option>
-                            <option value="Programmatic Video">Programmatic Video</option>
-                            <option value="Programmatic Audio">Programmatic Audio</option>
-                            <option value="Connected TV">Connected TV</option>
-                            <option value="Paid Social">Paid Social</option>
-                            <option value="Paid Search">Paid Search</option>
-                            <option value="Event Targeting">Event Targeting</option>
-                            <option value="Native Video">Native Video</option>
-                            <option value="DOOH">DOOH</option>
-                            <option value="PLD Display">PLD Display</option>
-                            <option value="PLD Video">PLD Video</option>
-                          </select>
-                        </td>
-                      </tr>
+                    <!-- MV Classification -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">MV Classification</label>
+                      <span id="displayMultiviewClassification" class="block text-sm text-gray-900">N/A</span>
+                      <select id="inputMultiviewClassification" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">-- Select --</option>
+                        <option value="Programmatic Display">Programmatic Display</option>
+                        <option value="Programmatic Video">Programmatic Video</option>
+                        <option value="Programmatic Audio">Programmatic Audio</option>
+                        <option value="Connected TV">Connected TV</option>
+                        <option value="Paid Social">Paid Social</option>
+                        <option value="Paid Search">Paid Search</option>
+                        <option value="Event Targeting">Event Targeting</option>
+                        <option value="Native Video">Native Video</option>
+                        <option value="DOOH">DOOH</option>
+                        <option value="PLD Display">PLD Display</option>
+                        <option value="PLD Video">PLD Video</option>
+                      </select>
+                    </div>
 
-                      <!-- Multiview Tactic -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          Tactic
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayMultiviewTactic" class="text-gray-800 break-words">N/A</span>
-                          <select id="inputMultiviewTactic" class="hidden adgroup-details-input" title="Multiview Tactic selection" aria-label="Select multiview tactic">
-                            <option value="">-- Select --</option>
-                            <option value="Persona">Persona</option>
-                            <option value="Retargeting">Retargeting</option>
-                            <option value="Data Onboarding">Data Onboarding</option>
-                            <option value="Company Targeting">Company Targeting</option>
-                            <option value="IP Targeting">IP Targeting</option>
-                            <option value="Addressable">Addressable</option>
-                            <option value="Location Targeting">Location Targeting</option>
-                            <option value="Frequency Fencing">Frequency Fencing</option>
-                            <option value="Contextual">Contextual</option>
-                            <option value="Advanced ABM">Advanced ABM</option>
-                            <option value="Sector">Sector</option>
-                          </select>
-                        </td>
-                      </tr>
+                    <!-- Tactic -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Tactic</label>
+                      <span id="displayMultiviewTactic" class="block text-sm text-gray-900">N/A</span>
+                      <select id="inputMultiviewTactic" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">-- Select --</option>
+                        <option value="Persona">Persona</option>
+                        <option value="Retargeting">Retargeting</option>
+                        <option value="Data Onboarding">Data Onboarding</option>
+                        <option value="Company Targeting">Company Targeting</option>
+                        <option value="IP Targeting">IP Targeting</option>
+                        <option value="Addressable">Addressable</option>
+                        <option value="Location Targeting">Location Targeting</option>
+                        <option value="Frequency Fencing">Frequency Fencing</option>
+                        <option value="Contextual">Contextual</option>
+                        <option value="Advanced ABM">Advanced ABM</option>
+                        <option value="Sector">Sector</option>
+                      </select>
+                    </div>
 
-                      <!-- Content Category -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          Content Category
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayContentCategory" class="text-gray-800 break-words">N/A</span>
-                          <input id="inputContentCategory" type="text" class="hidden adgroup-details-input" title="Content Category input" aria-label="Enter content category" />
-                        </td>
-                      </tr>
+                    <!-- Content Category -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Content Category</label>
+                      <span id="displayContentCategory" class="block text-sm text-gray-900">N/A</span>
+                      <input id="inputContentCategory" type="text" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    </div>
 
-                      <!-- Audience -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          Audience
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayBeaconAudience" class="text-gray-800 break-words">N/A</span>
-                          <input id="inputBeaconAudience" type="text" class="hidden adgroup-details-input" title="Beacon Audience input" aria-label="Enter beacon audience" />
-                        </td>
-                      </tr>
+                    <!-- Audience -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Audience</label>
+                      <span id="displayBeaconAudience" class="block text-sm text-gray-900">N/A</span>
+                      <input id="inputBeaconAudience" type="text" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    </div>
 
-                      <!-- Geo Target -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          Geo Target
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayGeoTarget" class="text-gray-800 break-words">N/A</span>
-                          <input id="inputGeoTarget" type="text" class="hidden adgroup-details-input" title="Geo Target input" aria-label="Enter geo target" />
-                        </td>
-                      </tr>
+                    <!-- Geo Target -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Geo Target</label>
+                      <span id="displayGeoTarget" class="block text-sm text-gray-900">N/A</span>
+                      <input id="inputGeoTarget" type="text" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    </div>
 
-                      <!-- Start Date -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          Start Date
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayBeaconStartDate" class="text-gray-800 break-words">N/A</span>
-                          <input id="inputBeaconStartDate" type="date" class="hidden adgroup-details-input" title="Start Date input" aria-label="Enter start date" />
-                        </td>
-                      </tr>
-
-                      <!-- End Date -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          End Date
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayBeaconEndDate" class="text-gray-800 break-words">N/A</span>
-                          <input id="inputBeaconEndDate" type="date" class="hidden adgroup-details-input" title="End Date input" aria-label="Enter end date" />
-                        </td>
-                      </tr>
-
-                      <!-- Impressions -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          Impressions
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayBeaconImpressions" class="text-gray-800 break-words">N/A</span>
-                          <input id="inputBeaconImpressions" type="text" class="hidden adgroup-details-input" title="Impressions input" aria-label="Enter impressions" />
-                        </td>
-                      </tr>
-
-                      <!-- Landing Page -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          Landing Page
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayBeaconLandingPage" class="text-gray-800 break-words">N/A</span>
-                          <input id="inputBeaconLandingPage" type="text" class="hidden adgroup-details-input" title="Landing Page input" aria-label="Enter landing page" />
-                        </td>
-                      </tr>
-
-                      <!-- UTM Code -->
-                      <tr class="border-b border-default">
-                        <td class="px-3 py-1 text-sm font-medium border-r border-default">
-                          UTM Code
-                        </td>
-                        <td class="px-6 py-1 text-sm">
-                          <span id="displayBeaconUtmCode" class="text-gray-800 break-words">N/A</span>
-                          <input id="inputBeaconUtmCode" type="text" class="hidden adgroup-details-input" title="UTM Code input" aria-label="Enter UTM code" />
-                        </td>
-                      </tr>
-
-                    </tbody>
-                  </table>
+                  </div>
                 </div>
+
+                <!-- Schedule Section -->
+                <div>
+                  <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3 px-2">Schedule</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- Start Date -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Start Date</label>
+                      <span id="displayBeaconStartDate" class="block text-sm text-gray-900">N/A</span>
+                      <input id="inputBeaconStartDate" type="date" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    </div>
+
+                    <!-- End Date -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">End Date</label>
+                      <span id="displayBeaconEndDate" class="block text-sm text-gray-900">N/A</span>
+                      <input id="inputBeaconEndDate" type="date" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Budget & Tracking Section -->
+                <div>
+                  <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3 px-2">Budget & Tracking</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- Impressions -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Impressions</label>
+                      <span id="displayBeaconImpressions" class="block text-sm text-gray-900">N/A</span>
+                      <input id="inputBeaconImpressions" type="text" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    </div>
+
+                    <!-- Landing Page -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Landing Page</label>
+                      <span id="displayBeaconLandingPage" class="block text-sm text-gray-900">N/A</span>
+                      <input id="inputBeaconLandingPage" type="text" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    </div>
+
+                    <!-- UTM Code -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">UTM Code</label>
+                      <span id="displayBeaconUtmCode" class="block text-sm text-gray-900">N/A</span>
+                      <input id="inputBeaconUtmCode" type="text" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- DSP and Ad Server Tables (keep below) -->
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
 
                 <!-- Right Column - DSP and Ad Server Fields -->
                 <div class="space-y-6">
@@ -796,6 +736,7 @@
 
               </div>
             </section>
+          </div>
 
                       <script>
                         (function() {
@@ -1230,8 +1171,6 @@
           }
           
           bindAll('adv.name', adv.name, 'No advertiser found');
-          const advHeader = document.getElementById('advertiserHeader');
-if (advHeader) advHeader.textContent = adv.name || 'No advertiser found';
 
           bindAll('adv.id', adv.id, '');
           bindAll('adv.account', adv.account, 'N/A');
@@ -1888,6 +1827,12 @@ document.addEventListener('DOMContentLoaded', function () {
   if (adGroupIdEl) adGroupIdEl.textContent = adGroup.id || '—';
   if (deliveryIdEl) deliveryIdEl.textContent = adGroup.deliveryId || '—';
   if (reportingIdEl) reportingIdEl.textContent = adGroup.reportingId || '—';
+
+  // Update blue banner header with Ad Group name and ID
+  const adGroupHeaderName = document.getElementById('adGroupHeaderName');
+  const adGroupHeaderId = document.getElementById('adGroupHeaderId');
+  if (adGroupHeaderName) adGroupHeaderName.textContent = adGroup.name || 'Ad Group';
+  if (adGroupHeaderId) adGroupHeaderId.textContent = `ID: ${adGroup.id || '—'}`;
 
   // Update the page subtitle with ad group name
   const subtitleElement = document.getElementById('adGroupDetailsSubtitle');

@@ -665,6 +665,85 @@
 
               <div class="space-y-3">
                 
+                <!-- DSP and Ad Server (Two Column) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <!-- DSP -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      <span class="flex items-center">
+                        <svg class="w-4 h-4 mr-1 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                        </svg>
+                        DSP
+                      </span>
+                    </label>
+                    <div class="platform-select-container" id="advertiserDspDropdownContainer">
+                      <input type="hidden" id="advertiserDspDropdown" name="dsp" value="" />
+                      <button type="button" class="platform-select-trigger !py-1.5" id="advertiserDspDropdownTrigger" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="platform-select-value text-gray-500">-- Select DSP --</span>
+                        <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                      </button>
+                      <div class="platform-select-menu" id="advertiserDspDropdownMenu" role="listbox">
+                        <div class="platform-select-option" data-value="" role="option">
+                          <span>-- Select DSP --</span>
+                        </div>
+                        <div class="platform-select-option" data-value="trade-desk" data-connected="true" role="option">
+                          <span>The Trade Desk</span>
+                          <svg class="w-5 h-5 chain-link-icon connected" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                          </svg>
+                        </div>
+                        <div class="platform-select-option" data-value="dv360" data-connected="false" role="option">
+                          <span>DV360</span>
+                          <svg class="w-5 h-5 chain-link-icon disconnected" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1M6 18L18 6"/>
+                          </svg>
+                        </div>
+                        <div class="platform-select-option" data-value="simplifi" data-connected="false" role="option">
+                          <span>Simpli.fi</span>
+                          <svg class="w-5 h-5 chain-link-icon disconnected" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1M6 18L18 6"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Ad Server -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      <span class="flex items-center">
+                        <svg class="w-4 h-4 mr-1 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                        </svg>
+                        Ad Server
+                      </span>
+                    </label>
+                    <div class="platform-select-container" id="advertiserAdServerDropdownContainer">
+                      <input type="hidden" id="advertiserAdServerDropdown" name="adserver" value="" />
+                      <button type="button" class="platform-select-trigger !py-1.5" id="advertiserAdServerDropdownTrigger" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="platform-select-value text-gray-500">-- Select Ad Server --</span>
+                        <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                      </button>
+                      <div class="platform-select-menu" id="advertiserAdServerDropdownMenu" role="listbox">
+                        <div class="platform-select-option" data-value="" role="option">
+                          <span>-- Select Ad Server --</span>
+                        </div>
+                        <div class="platform-select-option" data-value="google-campaign-manager" data-connected="true" role="option">
+                          <span>Google Campaign Manager</span>
+                          <svg class="w-5 h-5 chain-link-icon connected" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- ID Field -->
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">Advertiser ID</label>

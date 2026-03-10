@@ -307,36 +307,19 @@
       <!-- Main -->
       <main class="flex-1 overflow-y-auto p-6">
         <div class="bg-white rounded-lg shadow-sm">
-          <div class="p-4 border-b border-gray-200">
-            <div class="flex items-start justify-between gap-4 mb-3">
-              <!-- Left Column: Advertiser Name & Account # -->
-              <div>
-                <h1 data-bind="adv.name" class="md:text-2xl font-semibold text-gray-900">Loading…</h1>
-                <h3 class="text-sm font-semibold text-gray-600">Account #: <span data-bind="adv.account" class="text-sm text-gray-500">—</span></h3>
-              </div>
-              <!-- Right Column: IDs -->
-              <div class="text-right">
-                <div class="flex justify-end gap-2">
-                  <!-- <span class="text-sm font-semibold text-gray-600">Delivery ID:</span> -->
-                  <!-- <a id="deliveryIdLink" href="https://www.thetradedesk.com/" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline w-28 text-left" data-bind="adv.deliveryId">—</a> -->
-                </div>
-                <div class="flex justify-end gap-2">
-                  <!-- <span class="text-sm font-semibold text-gray-600">Reporting ID:</span> -->
-                  <!-- <a id="reportingIdLink" href="https://campaignmanager.google.com/" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline w-28 text-left" data-bind="adv.reportingId">—</a> -->
-                </div>
-                <div class="flex justify-end gap-2">
-                  <span class="text-sm font-semibold text-gray-600">ID:</span>
-                  <span data-bind="adv.id" class="text-sm text-gray-500 w-28 text-left">—</span>
-                </div>
-              </div>
+          <!-- Blue Banner Header with Advertiser Name and ID -->
+          <div class="rounded-t-lg p-4" style="background-color: #004E8B;">
+            <div class="flex items-center justify-between">
+              <h1 data-bind="adv.name" class="text-2xl font-bold text-white">Loading…</h1>
+              <span data-bind="adv.id" class="text-sm text-white font-medium">ID: —</span>
             </div>
-
-            <hr class="border-gray-300 mp-4 p-2">
+          </div>
+          <div class="p-4">
 
             <!-- Advertiser Details Section -->
             <section>
               <div class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-semibold text-gray-900 mx-2">ADVERTISER OVERVIEW</h1>
+                <h2 class="text-lg font-semibold text-gray-900 mx-2">ADVERTISER OVERVIEW</h2>
                 <div class="flex items-center gap-2">
               <!-- Ellipsis Dropdown Menu -->
               <div class="ellipsis-dropdown">
@@ -366,110 +349,111 @@
               <button id="cancelGeneralBtn" class="hidden text-sm px-3 py-1 bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">Cancel</button>
             </div>
               </div>
-            </section>
 
-            <!-- Two-column layout -->
-            <div class="grid grid-cols-2 gap-6">
-              
-              <!-- LEFT COLUMN -->
-              <div class="space-y-6">
+              <!-- Beacon Fields - Horizontal Grid Layout -->
+              <div class="space-y-6 mb-6">
                 
-                <!-- Beacon Fields -->
-                <section class="space-y-2">
-                  <div class="overflow-x-auto border border-default rounded-md">
-                    <table class="w-full tbl tbl-row-hover table-fixed adgroup-details-table">
-                      <colgroup>
-                        <col class="w-1/3">
-                        <col class="w-2/3">
-                      </colgroup>
-                      <thead class="tbl-head">
-                        <tr>
-                          <th colspan="2" class="px-6 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
-                            BEACON FIELDS
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody class="divide-y border-default">
-                        <tr class="border-b border-default">
-                          <td class="px-3 py-1 text-sm font-medium border-r border-default">ID</td>
-                          <td class="px-6 py-1 text-sm">
-                            <span id="displayAdvertiserId" data-bind="adv.id" class="text-gray-800 break-words">—</span>
-                          </td>
-                        </tr>
-                        <tr class="border-b border-default">
-                          <td class="px-3 py-1 text-sm font-medium border-r border-default">Account Number</td>
-                          <td class="px-6 py-1 text-sm">
-                            <span id="accountDisplay" data-bind="adv.account" class="hidden text-gray-800 break-words">—</span>
-                            <button id="accountLookupBtn" class="text-sm text-blue-600 hover:text-blue-800 underline">Select Account</button>
-                          </td>
-                        </tr>
-                        <tr class="border-b border-default">
-                          <td class="px-3 py-1 text-sm font-medium border-r border-default">Account Name</td>
-                          <td class="px-6 py-1 text-sm">
-                            <span id="displayAdvertiserName" data-bind="adv.name" class="text-gray-800 break-words">—</span>
-                            <input id="inputAdvertiserName" type="text" data-bind="adv.name" class="hidden adgroup-details-input" aria-label="Advertiser Name" title="Advertiser Name">
-                          </td>
-                        </tr>
-                        <tr class="border-b border-default">
-                          <td class="px-3 py-1 text-sm font-medium border-r border-default">State</td>
-                          <td class="px-6 py-1 text-sm">
-                            <span id="displayState" data-bind="adv.state" class="text-gray-800 break-words">—</span>
-                            <select id="inputState" data-bind="adv.state" class="hidden adgroup-details-input" aria-label="Advertiser State" title="Advertiser State">
-                              <option value="Active">Active</option>
-                              <option value="Inactive">Inactive</option>
-                            </select>
-                          </td>
-                        </tr>
-                        <tr class="border-b border-default">
-                          <td class="px-3 py-1 text-sm font-medium border-r border-default">Total Invoice Budget</td>
-                          <td class="px-6 py-1 text-sm">
-                            <span id="displayTotalInvoiceBudget" data-bind="adv.totalInvoiceBudget" class="text-gray-800 break-words">—</span>
-                            <input id="inputTotalInvoiceBudget" type="text" data-bind="adv.totalInvoiceBudget" class="hidden adgroup-details-input" aria-label="Total Invoice Budget" title="Total Invoice Budget">
-                          </td>
-                        </tr>
-                        <tr class="border-b border-default">
-                          <td class="px-3 py-1 text-sm font-medium border-r border-default">Total Budget</td>
-                          <td class="px-6 py-1 text-sm">
-                            <span id="displayTotalBudget" data-bind="adv.totalBudget" class="text-gray-800 break-words">—</span>
-                            <input id="inputTotalBudget" type="text" data-bind="adv.totalBudget" class="hidden adgroup-details-input" aria-label="Total Budget" title="Total Budget">
-                          </td>
-                        </tr>
-                        <tr class="border-b border-default">
-                          <td class="px-3 py-1 text-sm font-medium border-r border-default">Budget Remaining</td>
-                          <td class="px-6 py-1 text-sm">
-                            <span id="displayBudgetRemaining" data-bind="adv.budgetRemaining" class="text-gray-800 break-words">—</span>
-                            <input id="inputBudgetRemaining" type="text" data-bind="adv.budgetRemaining" class="hidden adgroup-details-input" aria-label="Budget Remaining" title="Budget Remaining">
-                          </td>
-                        </tr>
-                        <tr class="border-b border-default">
-                          <td class="px-3 py-1 text-sm font-medium border-r border-default">Total Invoice Impressions</td>
-                          <td class="px-6 py-1 text-sm">
-                            <span id="displayTotalInvoiceImpressions" data-bind="adv.totalInvoiceImpressions" class="text-gray-800 break-words">—</span>
-                            <input id="inputTotalInvoiceImpressions" type="text" data-bind="adv.totalInvoiceImpressions" class="hidden adgroup-details-input" aria-label="Total Invoice Impressions" title="Total Invoice Impressions">
-                          </td>
-                        </tr>
-                        <tr class="border-b border-default">
-                          <td class="px-3 py-1 text-sm font-medium border-r border-default">Total Impressions</td>
-                          <td class="px-6 py-1 text-sm">
-                            <span id="displayTotalImpressions" data-bind="adv.totalImpressions" class="text-gray-800 break-words">—</span>
-                            <input id="inputTotalImpressions" type="text" data-bind="adv.totalImpressions" class="hidden adgroup-details-input" aria-label="Total Impressions" title="Total Impressions">
-                          </td>
-                        </tr>
-                        <tr class="border-b border-default">
-                          <td class="px-3 py-1 text-sm font-medium border-r border-default">Impressions Remaining</td>
-                          <td class="px-6 py-1 text-sm">
-                            <span id="displayImpressionsRemaining" data-bind="adv.impressionsRemaining" class="text-gray-800 break-words">—</span>
-                            <input id="inputImpressionsRemaining" type="text" data-bind="adv.impressionsRemaining" class="hidden adgroup-details-input" aria-label="Impressions Remaining" title="Impressions Remaining">
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                <!-- Basic Information Section -->
+                <div>
+                  <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3 px-2">Basic Information</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- ID -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">ID</label>
+                      <span id="displayAdvertiserId" data-bind="adv.id" class="block text-sm text-gray-900">—</span>
+                    </div>
+
+                    <!-- Account Number -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Account Number</label>
+                      <span id="accountDisplay" data-bind="adv.account" class="hidden block text-sm text-gray-900">—</span>
+                      <button id="accountLookupBtn" class="text-sm text-blue-600 hover:text-blue-800 underline">Select Account</button>
+                    </div>
+
+                    <!-- Account Name -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Account Name</label>
+                      <span id="displayAdvertiserName" data-bind="adv.name" class="block text-sm text-gray-900">—</span>
+                      <input id="inputAdvertiserName" type="text" data-bind="adv.name" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" aria-label="Advertiser Name" title="Advertiser Name">
+                    </div>
+
+                    <!-- State -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">State</label>
+                      <span id="displayState" data-bind="adv.state" class="block text-sm text-gray-900">—</span>
+                      <select id="inputState" data-bind="adv.state" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" aria-label="Advertiser State" title="Advertiser State">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                      </select>
+                    </div>
+
                   </div>
-                </section>
+                </div>
+
+                <!-- Budget Section -->
+                <div>
+                  <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3 px-2">Budget</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- Total Invoice Budget -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Total Invoice Budget</label>
+                      <span id="displayTotalInvoiceBudget" data-bind="adv.totalInvoiceBudget" class="block text-sm text-gray-900">—</span>
+                      <input id="inputTotalInvoiceBudget" type="text" data-bind="adv.totalInvoiceBudget" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" aria-label="Total Invoice Budget" title="Total Invoice Budget">
+                    </div>
+
+                    <!-- Total Budget -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Total Budget</label>
+                      <span id="displayTotalBudget" data-bind="adv.totalBudget" class="block text-sm text-gray-900">—</span>
+                      <input id="inputTotalBudget" type="text" data-bind="adv.totalBudget" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" aria-label="Total Budget" title="Total Budget">
+                    </div>
+
+                    <!-- Budget Remaining -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Budget Remaining</label>
+                      <span id="displayBudgetRemaining" data-bind="adv.budgetRemaining" class="block text-sm text-gray-900">—</span>
+                      <input id="inputBudgetRemaining" type="text" data-bind="adv.budgetRemaining" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" aria-label="Budget Remaining" title="Budget Remaining">
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Impressions Section -->
+                <div>
+                  <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3 px-2">Impressions</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- Total Invoice Impressions -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Total Invoice Impressions</label>
+                      <span id="displayTotalInvoiceImpressions" data-bind="adv.totalInvoiceImpressions" class="block text-sm text-gray-900">—</span>
+                      <input id="inputTotalInvoiceImpressions" type="text" data-bind="adv.totalInvoiceImpressions" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" aria-label="Total Invoice Impressions" title="Total Invoice Impressions">
+                    </div>
+
+                    <!-- Total Impressions -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Total Impressions</label>
+                      <span id="displayTotalImpressions" data-bind="adv.totalImpressions" class="block text-sm text-gray-900">—</span>
+                      <input id="inputTotalImpressions" type="text" data-bind="adv.totalImpressions" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" aria-label="Total Impressions" title="Total Impressions">
+                    </div>
+
+                    <!-- Impressions Remaining -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Impressions Remaining</label>
+                      <span id="displayImpressionsRemaining" data-bind="adv.impressionsRemaining" class="block text-sm text-gray-900">—</span>
+                      <input id="inputImpressionsRemaining" type="text" data-bind="adv.impressionsRemaining" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" aria-label="Impressions Remaining" title="Impressions Remaining">
+                    </div>
+
+                  </div>
+                </div>
 
               </div>
 
-              <!-- RIGHT COLUMN -->
+              <!-- Team Table Section -->
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
               <div class="space-y-6">
                 <!-- Team Table -->
                 <section class="space-y-2">
@@ -537,7 +521,7 @@
                 </section>
               </div>
             </div>
-
+            </section>
           </div>
 
           <!-- Campaigns and Ad Groups tables removed per CO Change Spec (sections 1b/1c) -->
