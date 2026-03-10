@@ -632,21 +632,8 @@
                   2
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-600 step-title">Platform Connectors</p>
-                  <p class="text-xs text-gray-500 step-subtitle">Select DSPs & Ad Servers</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Step 3 -->
-            <div class="wizard-step" data-step="3">
-              <div class="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all">
-                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-semibold step-number">
-                  3
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-600 step-title">Platform Configuration</p>
-                  <p class="text-xs text-gray-500 step-subtitle">Configure Platform Fields</p>
+                  <p class="text-sm font-medium text-gray-600 step-title">Review & Create</p>
+                  <p class="text-xs text-gray-500 step-subtitle">Confirm and submit</p>
                 </div>
               </div>
             </div>
@@ -666,47 +653,46 @@
         </div>
 
         <!-- Right Content Area -->
-        <div class="flex-1 p-6 overflow-y-auto">
+        <div class="flex-1 p-4 overflow-y-auto">
           <form id="createAdvertiserForm">
             
             <!-- STEP 1: Advertiser Details (Beacon Fields) -->
             <div class="wizard-content active" data-content="1">
-              <div class="mb-6">
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Advertiser Details</h3>
-                <p class="text-sm text-gray-600">Complete Beacon fields in Step 1, then review and create in Step 2.</p>
+              <div class="mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">Advertiser Details</h3>
+                <p class="text-xs text-gray-600">Complete Beacon fields in Step 1, then review and create in Step 2.</p>
               </div>
 
-              <div class="space-y-5">
+              <div class="space-y-3">
                 
                 <!-- ID Field -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Advertiser ID</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Advertiser ID</label>
                   <input 
                     type="text" 
                     id="advertiserId" 
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
                     placeholder="System-generated ID"
                     readonly
                   />
-                  <p class="mt-1 text-xs text-gray-500">Auto-generated unique identifier</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                       Account Number <span class="text-red-500" id="accountRequiredAsterisk">*</span>
                     </label>
                     <div class="flex items-center space-x-2">
                       <input 
                         type="text" 
                         id="accountNumber" 
-                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        class="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Enter account number"
                       />
                       <button 
                         type="button"
                         id="lookupBtn" 
-                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        class="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                         title="Lookup account"
                       >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -714,23 +700,23 @@
                         </svg>
                       </button>
                     </div>
-                    <p id="accountDupError" class="mt-2 text-sm text-red-600 hidden" role="alert">
+                    <p id="accountDupError" class="mt-1 text-sm text-red-600 hidden" role="alert">
                       An advertiser with this Account # already exists.
                     </p>
                   </div>
 
                   <div>
-                    <label for="advertiserName" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="advertiserName" class="block text-sm font-medium text-gray-700 mb-1">
                       Account Name <span class="text-red-500">*</span>
                     </label>
                     <input 
                       type="text" 
                       id="advertiserName" 
-                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
+                      class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
                       placeholder="Enter advertiser name"
                       disabled
                     />
-                    <p id="nameDupError" class="mt-2 text-sm text-red-600 hidden" role="alert">
+                    <p id="nameDupError" class="mt-1 text-sm text-red-600 hidden" role="alert">
                       An advertiser with this Name already exists.
                     </p>
                     <div id="crmAccountDisplay" class="hidden mt-1 text-xs text-gray-500">
@@ -749,7 +735,7 @@
                     </label>
                   </div>
 
-                  <div>
+                  <!-- <div>
                     <label for="totalInvoiceImpressions" class="block text-sm font-medium text-gray-700 mb-2">Total Invoice Impressions</label>
                     <input type="text" id="totalInvoiceImpressions" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="1600000" />
                   </div>
@@ -764,17 +750,17 @@
                   <div>
                     <label for="totalBudget" class="block text-sm font-medium text-gray-700 mb-2">Total Budget</label>
                     <input type="text" id="totalBudget" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="N/A" />
-                  </div>
+                  </div> -->
                 </div>
 
               </div>
             </div>
 
-            <!-- STEP 2: Platform Connectors -->
+            <!-- STEP 2: Review & Create -->
             <div class="wizard-content" data-content="2" style="min-height: 420px;">
               <div class="mb-6">
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Platform Connectors</h3>
-                <p class="text-sm text-gray-600">Select which DSPs and Ad Servers to connect</p>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Review & Create</h3>
+                <p class="text-sm text-gray-600">Review your advertiser details and create</p>
               </div>
 
               <div class="space-y-4">
@@ -1111,7 +1097,7 @@
         </button>
 
         <div class="text-sm text-gray-600">
-          Step <span id="wizardCurrentStep">1</span> of 3
+          Step <span id="wizardCurrentStep">1</span> of 2
         </div>
 
         <div class="space-x-3">
@@ -1126,7 +1112,7 @@
           <button 
             type="button" 
             id="wizardNextBtn"
-            class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+            class="hidden px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Next
             <svg class="inline-block w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2609,7 +2595,7 @@ app.init();
         // === WIZARD NAVIGATION ===
         const wizard = {
           currentStep: 1,
-          totalSteps: 3,
+          totalSteps: 2,
           isInitialized: false,
 
 init: function() {
@@ -2890,11 +2876,21 @@ nextStep: function() {
             if (prevBtn) prevBtn.disabled = this.currentStep === 1;
             
             if (this.currentStep === this.totalSteps) {
-              if (nextBtn) nextBtn.style.display = 'none';
-              if (createBtn) createBtn.classList.remove('hidden');
+              if (nextBtn) {
+                nextBtn.classList.add('hidden');
+                nextBtn.style.display = '';
+              }
+              if (createBtn) {
+                createBtn.classList.remove('hidden');
+              }
             } else {
-              if (nextBtn) nextBtn.style.display = 'inline-flex';
-              if (createBtn) createBtn.classList.add('hidden');
+              if (nextBtn) {
+                nextBtn.classList.remove('hidden');
+                nextBtn.style.display = '';
+              }
+              if (createBtn) {
+                createBtn.classList.add('hidden');
+              }
             }
 
             if (currentStepSpan) currentStepSpan.textContent = this.currentStep;
@@ -2906,7 +2902,7 @@ nextStep: function() {
             if (progressBar) progressBar.style.width = `${progress}%`;
             if (progressText) progressText.textContent = `${Math.round(progress)}%`;
 
-            if (this.currentStep === 3) {
+            if (this.currentStep === 2) {
               this.updatePlatformConfigVisibility();
             }
           }

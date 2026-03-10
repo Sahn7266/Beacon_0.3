@@ -696,215 +696,220 @@
       </div>
 
       <!-- Right Content Area -->
-      <div class="flex-1 p-6 overflow-y-auto">
+      <div class="flex-1 p-4 overflow-y-auto">
         <form id="createAdGroupForm">
           
           <!-- STEP 1: Ad Group Details (Beacon Fields) -->
           <div class="wizard-content active" data-content="1">
-            <div class="mb-6">
-              <h3 class="text-xl font-semibold text-gray-900 mb-2">Ad Group Details</h3>
-              <p class="text-sm text-gray-600">Complete Beacon fields in Step 1, then review and create in Step 2.</p>
+            <div class="mb-4 flex items-start justify-between gap-4">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">Ad Group Details</h3>
+                <p class="text-xs text-gray-600">Complete Beacon fields in Step 1, then review and create in Step 2.</p>
+              </div>
+              <div class="min-w-0 text-right">
+                <p class="text-sm font-medium text-gray-700">
+                  Ad Group ID: <span id="beaconAdGroupIdDisplay" class="text-sm font-normal text-gray-500">AG-XXXXXX</span>
+                </p>
+              </div>
             </div>
 
-            <div class="space-y-5">
+            <div class="space-y-3">
               
-              <!-- ID Field -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Ad Group ID</label>
-                <input 
-                  type="text" 
-                  id="beaconAdGroupId" 
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
-                  placeholder="System-generated ID"
-                  readonly
-                />
-                <p class="mt-1 text-xs text-gray-500">Auto-generated unique identifier</p>
-              </div>
-
-              <!-- Name -->
-              <div>
-                <label for="beaconAdGroupName" class="block text-sm font-medium text-gray-700 mb-2">
-                  Ad Group Name <span class="text-red-500">*</span>
-                </label>
-                <input 
-                  type="text" 
-                  id="beaconAdGroupName" 
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter ad group name"
-                  required
-                />
-                <p class="mt-1 text-xs text-gray-500">Ad group name</p>
-              </div>
+              <!-- Hidden ID Field for form data -->
+              <input 
+                type="hidden" 
+                id="beaconAdGroupId"
+              />
 
               <!-- Campaign -->
               <div>
-                <label for="beaconCampaign" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="beaconCampaign" class="block text-sm font-medium text-gray-700 mb-1">
                   Campaign <span class="text-red-500">*</span>
                 </label>
                 <select 
                   id="beaconCampaign" 
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select campaign</option>
                   <option value="__create_campaign__">+ Create Campaign</option>
                 </select>
-                <p class="mt-1 text-xs text-gray-500">Campaign to tie this ad group to</p>
               </div>
 
-              <!-- Template -->
+              <!-- Ad Group Name -->
               <div>
-                <label for="beaconTemplate" class="block text-sm font-medium text-gray-700 mb-2">
-                  Template <span class="text-red-500">*</span>
+                <label for="beaconAdGroupName" class="block text-sm font-medium text-gray-700 mb-1">
+                  Ad Group Name <span class="text-red-500">*</span>
                 </label>
-                <select
-                  id="beaconTemplate"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                >
-                  <option value="">-- Select Template --</option>
-                  <option value="Programmatic Display">Programmatic Display</option>
-                  <option value="Programmatic Video">Programmatic Video</option>
-                  <option value="Programmatic Audio">Programmatic Audio</option>
-                  <option value="Connected TV">Connected TV</option>
-                  <option value="Paid Social">Paid Social</option>
-                  <option value="Paid Search">Paid Search</option>
-                  <option value="Event Targeting">Event Targeting</option>
-                  <option value="Native Video">Native Video</option>
-                  <option value="DOOH">DOOH</option>
-                  <option value="PLD Display">PLD Display</option>
-                  <option value="PLD Video">PLD Video</option>
-                </select>
-              </div>
-
-              <!-- Tactic -->
-              <div>
-                <label for="beaconMultiviewTactic" class="block text-sm font-medium text-gray-700 mb-2">
-                  Tactic <span class="text-red-500">*</span>
-                </label>
-                <select 
-                  id="beaconMultiviewTactic" 
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                >
-                  <option value="">-- Select --</option>
-                  <option value="Persona">Persona</option>
-                  <option value="Retargeting">Retargeting</option>
-                  <option value="Data Onboarding">Data Onboarding</option>
-                  <option value="Company Targeting">Company Targeting</option>
-                  <option value="IP Targeting">IP Targeting</option>
-                  <option value="Addressable">Addressable</option>
-                  <option value="Location Targeting">Location Targeting</option>
-                  <option value="Frequency Fencing">Frequency Fencing</option>
-                  <option value="Contextual">Contextual</option>
-                  <option value="Advanced ABM">Advanced ABM</option>
-                  <option value="Sector">Sector</option>
-                </select>
-              </div>
-
-              <!-- Content Category -->
-              <div>
-                <label for="beaconContentCategory" class="block text-sm font-medium text-gray-700 mb-2">
-                  Content Category
-                </label>
-                <input
-                  type="text"
-                  id="beaconContentCategory"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Auto-filled from Tactic"
-                  readonly
-                />
-              </div>
-
-              <!-- MV Classification -->
-              <div>
-                <label for="beaconMultiviewClassification" class="block text-sm font-medium text-gray-700 mb-2">
-                  MV Classification <span class="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="beaconMultiviewClassification"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Auto-filled from Template"
+                <input 
+                  type="text" 
+                  id="beaconAdGroupName" 
+                  class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter ad group name"
                   required
                 />
               </div>
 
-              <!-- Audience -->
-              <div>
-                <label for="beaconAudience" class="block text-sm font-medium text-gray-700 mb-2">Audience</label>
-                <input
-                  type="text"
-                  id="beaconAudience"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="1 and 2, e-mails, Website Visitors"
-                />
-              </div>
-
-              <!-- Geo Target -->
-              <div>
-                <label for="beaconGeoTarget" class="block text-sm font-medium text-gray-700 mb-2">Geo Target</label>
-                <input
-                  type="text"
-                  id="beaconGeoTarget"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="U.S."
-                />
-              </div>
-
-              <!-- Flight Dates -->
-              <div class="grid grid-cols-2 gap-4">
+              <!-- Template and MV Classification (Two Column) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <label for="beaconStartDate" class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                  <label for="beaconTemplate" class="block text-sm font-medium text-gray-700 mb-1">
+                    Template <span class="text-red-500">*</span>
+                  </label>
+                  <select
+                    id="beaconTemplate"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">-- Select Template --</option>
+                    <option value="Programmatic Display">Programmatic Display</option>
+                    <option value="Programmatic Video">Programmatic Video</option>
+                    <option value="Programmatic Audio">Programmatic Audio</option>
+                    <option value="Connected TV">Connected TV</option>
+                    <option value="Paid Social">Paid Social</option>
+                    <option value="Paid Search">Paid Search</option>
+                    <option value="Event Targeting">Event Targeting</option>
+                    <option value="Native Video">Native Video</option>
+                    <option value="DOOH">DOOH</option>
+                    <option value="PLD Display">PLD Display</option>
+                    <option value="PLD Video">PLD Video</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="beaconMultiviewClassification" class="block text-sm font-medium text-gray-700 mb-1">
+                    MV Classification <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="beaconMultiviewClassification"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Auto-filled from Template"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- Tactic and Content Category (Two Column) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label for="beaconMultiviewTactic" class="block text-sm font-medium text-gray-700 mb-1">
+                    Tactic <span class="text-red-500">*</span>
+                  </label>
+                  <select 
+                    id="beaconMultiviewTactic" 
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">-- Select --</option>
+                    <option value="Persona">Persona</option>
+                    <option value="Retargeting">Retargeting</option>
+                    <option value="Data Onboarding">Data Onboarding</option>
+                    <option value="Company Targeting">Company Targeting</option>
+                    <option value="IP Targeting">IP Targeting</option>
+                    <option value="Addressable">Addressable</option>
+                    <option value="Location Targeting">Location Targeting</option>
+                    <option value="Frequency Fencing">Frequency Fencing</option>
+                    <option value="Contextual">Contextual</option>
+                    <option value="Advanced ABM">Advanced ABM</option>
+                    <option value="Sector">Sector</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="beaconContentCategory" class="block text-sm font-medium text-gray-700 mb-1">
+                    Content Category
+                  </label>
+                  <input
+                    type="text"
+                    id="beaconContentCategory"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Auto-filled from Tactic"
+                    readonly
+                  />
+                </div>
+              </div>
+
+              <!-- Audience and Geo Target (Two Column) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label for="beaconAudience" class="block text-sm font-medium text-gray-700 mb-1">Audience</label>
+                  <input
+                    type="text"
+                    id="beaconAudience"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="1 and 2, e-mails, Website Visitors"
+                  />
+                </div>
+
+                <div>
+                  <label for="beaconGeoTarget" class="block text-sm font-medium text-gray-700 mb-1">Geo Target</label>
+                  <input
+                    type="text"
+                    id="beaconGeoTarget"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="U.S."
+                  />
+                </div>
+              </div>
+
+              <!-- Start Date and End Date (Two Column) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label for="beaconStartDate" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
                   <input
                     type="date"
                     id="beaconStartDate"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label for="beaconEndDate" class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                  <label for="beaconEndDate" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
                   <input
                     type="date"
                     id="beaconEndDate"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
 
+              <!-- Impressions -->
               <div>
-                <label for="beaconImpressions" class="block text-sm font-medium text-gray-700 mb-2">Impressions</label>
+                <label for="beaconImpressions" class="block text-sm font-medium text-gray-700 mb-1">Impressions</label>
                 <input
                   type="number"
                   min="0"
                   step="1"
                   id="beaconImpressions"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="0"
                 />
               </div>
 
-              <div>
-                <label for="beaconLandingPage" class="block text-sm font-medium text-gray-700 mb-2">Landing Page</label>
-                <input
-                  type="url"
-                  id="beaconLandingPage"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="https://landingpage.com"
-                />
+              <!-- Landing Page and UTM Code (Two Column) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label for="beaconLandingPage" class="block text-sm font-medium text-gray-700 mb-1">Landing Page</label>
+                  <input
+                    type="url"
+                    id="beaconLandingPage"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="https://landingpage.com"
+                  />
+                </div>
+
+                <div>
+                  <label for="beaconUtmCode" class="block text-sm font-medium text-gray-700 mb-1">UTM Code</label>
+                  <input
+                    type="url"
+                    id="beaconUtmCode"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="https://landingpage.com/?utm_source=..."
+                  />
+                </div>
               </div>
 
-              <div>
-                <label for="beaconUtmCode" class="block text-sm font-medium text-gray-700 mb-2">UTM Code</label>
-                <input
-                  type="url"
-                  id="beaconUtmCode"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="https://landingpage.com/?utm_source=..."
-                />
-              </div>
-
-              <div class="border-t border-gray-200 pt-4">
+              <div class="border-t border-gray-200 pt-3">
                 <p class="text-xs text-gray-500">Phase 1 captures Beacon fields only. Platform connection fields are added in a later phase.</p>
               </div>
 
@@ -2607,8 +2612,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Generate and display Ad Group ID
     const adGroupIdField = document.getElementById('beaconAdGroupId');
+    const adGroupIdDisplay = document.getElementById('beaconAdGroupIdDisplay');
+    const generatedId = 'AG-' + Math.random().toString(36).substr(2, 6).toUpperCase();
     if (adGroupIdField) {
-      adGroupIdField.value = 'AG-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+      adGroupIdField.value = generatedId;
+    }
+    if (adGroupIdDisplay) {
+      adGroupIdDisplay.textContent = generatedId;
     }
 
     // Defaults for CAD beacon fields

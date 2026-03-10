@@ -752,23 +752,24 @@
       </div>
 
       <!-- Right Content Area -->
-      <div class="flex-1 p-6 overflow-y-auto">
+      <div class="flex-1 p-4 overflow-y-auto">
         <form id="createCampaignForm">
           
           <!-- STEP 1: Campaign Details (Beacon Fields) -->
           <div class="wizard-content active" data-content="1">
-            <div class="mb-6 flex items-start justify-between gap-6">
+            <div class="mb-4 flex items-start justify-between gap-4">
               <div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Campaign Details</h3>
-                <p class="text-sm text-gray-600">Complete Beacon fields in Step 1, then review and create in Step 2.</p>
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">Campaign Details</h3>
+                <p class="text-xs text-gray-600">Complete Beacon fields in Step 1, then review and create in Step 2.</p>
               </div>
               <div class="min-w-0 text-right">
-                <p class="text-sm font-medium text-gray-700">Campaign ID</p>
-                <p id="beaconCampaignIdDisplay" class="mt-1 text-3xl font-medium tracking-tight text-gray-500">CAM-XXXXXX</p>
+                <p class="text-sm font-medium text-gray-700">
+                  Campaign ID: <span id="beaconCampaignIdDisplay" class="text-sm font-normal text-gray-500">CAM-XXXXXX</span>
+                </p>
               </div>
             </div>
 
-            <div class="space-y-5">
+            <div class="space-y-3">
               
               <!-- ID Field -->
               <div class="hidden">
@@ -782,14 +783,14 @@
                 />
               </div>
 
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label for="beaconCampaignDspSelected" class="block text-sm font-medium text-gray-700 mb-2">
+                  <label for="beaconCampaignDspSelected" class="block text-sm font-medium text-gray-700 mb-1">
                     DSP Selected <span class="text-red-500">*</span>
                   </label>
                   <select
                     id="beaconCampaignDspSelected"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   >
                     <option value="">-- Select DSP --</option>
@@ -799,12 +800,12 @@
                   </select>
                 </div>
                 <div>
-                  <label for="beaconCampaignAdServerSelected" class="block text-sm font-medium text-gray-700 mb-2">
+                  <label for="beaconCampaignAdServerSelected" class="block text-sm font-medium text-gray-700 mb-1">
                     Ad Server Selected <span class="text-red-500">*</span>
                   </label>
                   <select
                     id="beaconCampaignAdServerSelected"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   >
                     <option value="">-- Select Ad Server --</option>
@@ -815,26 +816,25 @@
 
               <!-- Campaign Name -->
               <div>
-                <label for="beaconCampaignName" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="beaconCampaignName" class="block text-sm font-medium text-gray-700 mb-1">
                   Campaign Name <span class="text-red-500">*</span>
                 </label>
                 <input 
                   type="text" 
                   id="beaconCampaignName" 
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter campaign name"
                   required
                 />
-                <p class="mt-1 text-xs text-gray-500">Common identifier across all platforms</p>
               </div>
 
               <div>
-                <label for="beaconTemplate" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="beaconTemplate" class="block text-sm font-medium text-gray-700 mb-1">
                   Template <span class="text-red-500">*</span>
                 </label>
                 <select
                   id="beaconTemplate"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">-- Select Template --</option>
@@ -853,7 +853,7 @@
               </div>
 
               <div>
-                <label for="beaconDspImpressions" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="beaconDspImpressions" class="block text-sm font-medium text-gray-700 mb-1">
                   DSP Impressions <span class="text-red-500">*</span>
                 </label>
                 <input
@@ -861,41 +861,39 @@
                   min="0"
                   step="1"
                   id="beaconDspImpressions"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="1600000"
                   required
                 />
               </div>
 
               <!-- Flight Dates -->
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label for="beaconStartDate" class="block text-sm font-medium text-gray-700 mb-2">
+                  <label for="beaconStartDate" class="block text-sm font-medium text-gray-700 mb-1">
                     Start Date <span class="text-red-500">*</span>
                   </label>
                   <input 
                     type="date" 
                     id="beaconStartDate" 
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
-                  <p class="mt-1 text-xs text-gray-500">Campaign start date</p>
                 </div>
                 <div>
-                  <label for="beaconEndDate" class="block text-sm font-medium text-gray-700 mb-2">
+                  <label for="beaconEndDate" class="block text-sm font-medium text-gray-700 mb-1">
                     End Date <span class="text-red-500">*</span>
                   </label>
                   <input 
                     type="date" 
                     id="beaconEndDate" 
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
-                  <p class="mt-1 text-xs text-gray-500">Campaign end date</p>
                 </div>
               </div>
 
-              <div class="border-t border-gray-200 pt-4">
+              <div class="border-t border-gray-200 pt-3">
                 <p class="text-xs text-gray-500">Phase 1 captures Beacon fields and connection targets. Platform configuration fields are added in a later phase.</p>
               </div>
 
