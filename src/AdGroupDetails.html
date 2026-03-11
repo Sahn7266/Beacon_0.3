@@ -405,6 +405,28 @@
                   </div>
                 </div>
 
+                <!-- Platform Section -->
+                <div>
+                  <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3 px-2">Platform</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- DSP Selected -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">DSP Selected</label>
+                      <span id="displayDspSelected" class="block text-sm text-gray-900">N/A</span>
+                      <input id="inputDspSelected" type="text" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    </div>
+
+                    <!-- Ad Server Selected -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Ad Server Selected</label>
+                      <span id="displayAdServerSelected" class="block text-sm text-gray-900">N/A</span>
+                      <input id="inputAdServerSelected" type="text" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                    </div>
+
+                  </div>
+                </div>
+
               </div>
 
               <!-- DSP and Ad Server Tables (keep below) -->
@@ -754,6 +776,9 @@
   { span: 'displayBeaconImpressions', input: 'inputBeaconImpressions' },
   { span: 'displayBeaconLandingPage', input: 'inputBeaconLandingPage' },
   { span: 'displayBeaconUtmCode', input: 'inputBeaconUtmCode' },
+  // Platform Fields
+  { span: 'displayDspSelected', input: 'inputDspSelected' },
+  { span: 'displayAdServerSelected', input: 'inputAdServerSelected' },
   // DSP Fields (these are linked to actual ad group data)
   { span: 'displayDspName', input: 'adGroupNameInput' },
   { span: 'displayFunnelLocation', input: 'funnelLocationInput' },
@@ -794,6 +819,9 @@
   'inputBeaconImpressions',
   'inputBeaconLandingPage',
   'inputBeaconUtmCode',
+  // Platform Fields
+  'inputDspSelected',
+  'inputAdServerSelected',
   // DSP Fields
   'adGroupNameInput',
   'funnelLocationInput',
@@ -1946,6 +1974,18 @@ document.addEventListener('DOMContentLoaded', function () {
       element.value = value || '';
     }
   }
+  
+  // Map platform values to display names
+  function getPlatformDisplayName(value) {
+    if (!value) return 'N/A';
+    const platformMap = {
+      'trade-desk': 'The Trade Desk',
+      'dv360': 'DV360',
+      'simplifi': 'Simpli.fi',
+      'google-campaign-manager': 'Google Campaign Manager'
+    };
+    return platformMap[value] || value;
+  }
 
   // Bind to data-bind attributes for backwards compatibility
   fields.forEach(field => {
@@ -1968,6 +2008,12 @@ document.addEventListener('DOMContentLoaded', function () {
   safeSet('displayBeaconImpressions', adGroup.impressions);
   safeSet('displayBeaconLandingPage', adGroup.landingPage);
   safeSet('displayBeaconUtmCode', adGroup.utmCode);
+  
+  // Platform Fields section
+  const dspValue = adGroup.dspSelected || adGroup.dsp;
+  const adServerValue = adGroup.adServerSelected || adGroup.adServer;
+  safeSet('displayDspSelected', getPlatformDisplayName(dspValue));
+  safeSet('displayAdServerSelected', getPlatformDisplayName(adServerValue));
   
   // DSP Fields section
   safeSet('displayDspName', adGroup.dspName);
@@ -2050,6 +2096,10 @@ document.addEventListener('DOMContentLoaded', function () {
   safeInput('inputBeaconImpressions', adGroup.impressions);
   safeInput('inputBeaconLandingPage', adGroup.landingPage);
   safeInput('inputBeaconUtmCode', adGroup.utmCode);
+  
+  // Platform Field inputs
+  safeInput('inputDspSelected', adGroup.dspSelected || adGroup.dsp);
+  safeInput('inputAdServerSelected', adGroup.adServerSelected || adGroup.adServer);
   
   // DSP Field inputs
   safeInput('adGroupNameInput', adGroup.dspName);

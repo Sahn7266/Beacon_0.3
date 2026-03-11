@@ -3014,6 +3014,9 @@ const adServerFieldsSection = document.getElementById('adServerFieldsSection');
 function initPlatformDropdowns() {
   initCustomDropdown('dspDropdownContainer', 'dspDropdownTrigger', 'dspDropdownMenu', 'dspDropdown', 'dspSyncCheckbox');
   initCustomDropdown('adServerDropdownContainer', 'adServerDropdownTrigger', 'adServerDropdownMenu', 'adServerDropdown', 'adServerSyncCheckbox');
+  // Initialize Step 1 dropdowns
+  initCustomDropdown('dspDropdownContainer_step1', 'dspDropdownTrigger_step1', 'dspDropdownMenu_step1', 'dspDropdown_step1', null);
+  initCustomDropdown('adServerDropdownContainer_step1', 'adServerDropdownTrigger_step1', 'adServerDropdownMenu_step1', 'adServerDropdown_step1', null);
 }
 
 function initCustomDropdown(containerId, triggerId, menuId, hiddenInputId, syncCheckboxId) {
@@ -3614,11 +3617,53 @@ function handleAdGroupCreation() {
       connectorStatus[adServerDropdownValue] = adServerSyncChecked ? 'Connected' : 'Disconnected';
     }
     
+    // Get campaign info and calculate incremental ad group number
+    let campaignNumber = null;
+    let adGroupCount = 0;
+    
+    // Get campaign data to extract campaign number
+    const campaignData = localStorage.getItem('campaign_tree_groups');
+    if (campaignData && campaignId) {
+      const data = JSON.parse(campaignData);
+      
+      // Find the campaign in top-level or groups
+      let foundCampaign = null;
+      if (data.campaigns) {
+        foundCampaign = data.campaigns.find(c => c.id === campaignId);
+      }
+      if (!foundCampaign && data.groups) {
+        for (const group of data.groups) {
+          if (group.campaigns) {
+            foundCampaign = group.campaigns.find(c => c.id === campaignId);
+            if (foundCampaign) break;
+          }
+        }
+      }
+      
+      // Extract campaign number from campaign name (e.g., "Brand Awareness 1.0" -> 1)
+      if (foundCampaign && foundCampaign.beaconCampaignName) {
+        const match = foundCampaign.beaconCampaignName.match(/\s(\d+)\.0$/);
+        if (match) {
+          campaignNumber = parseInt(match[1]);
+        }
+      }
+    }
+    
+    // Count existing ad groups for this campaign
+    const existingAdGroups = JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]');
+    adGroupCount = existingAdGroups.filter(ag => ag.campaignId === campaignId || ag.campaign === campaignId).length;
+    
+    // Create incremented ad group name
+    const baseAdGroupName = document.getElementById('beaconAdGroupName')?.value?.trim() || '';
+    const incrementedAdGroupName = (baseAdGroupName && campaignNumber !== null) 
+      ? `${baseAdGroupName} ${campaignNumber}.${adGroupCount + 1}` 
+      : baseAdGroupName;
+    
     const adGroup = {
       id: adGroupId,
       advertiserId: advertiserId,
       // Beacon Fields
-      name: document.getElementById('beaconAdGroupName')?.value?.trim() || '',
+      name: incrementedAdGroupName,
       campaign: campaignId, // Use the current campaign ID
       campaignId: campaignId,
       template: document.getElementById('beaconTemplate')?.value || '',
@@ -3632,6 +3677,12 @@ function handleAdGroupCreation() {
       impressions: document.getElementById('beaconImpressions')?.value || '',
       landingPage: document.getElementById('beaconLandingPage')?.value?.trim() || '',
       utmCode: document.getElementById('beaconUtmCode')?.value?.trim() || '',
+      
+      // Platform Fields (from Step 1)
+      dspSelected: document.getElementById('dspDropdown_step1')?.value || '',
+      adServerSelected: document.getElementById('adServerDropdown_step1')?.value || '',
+      dsp: document.getElementById('dspDropdown_step1')?.value || '',
+      adServer: document.getElementById('adServerDropdown_step1')?.value || '',
       
       // DSP Fields (detailed fields)
       dspName: document.getElementById('adGroupName')?.value?.trim() || '',

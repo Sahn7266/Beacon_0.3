@@ -338,6 +338,33 @@
                   </div>
                 </div>
                 
+                <!-- Section: Platform -->
+                <div>
+                  <h4 class="text-sm font-semibold text-gray-800 mb-3">Platform</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-4">
+                    <!-- Field: DSP Selected -->
+                    <div>
+                      <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">DSP Selected</p>
+                      <span id="displayDspSelected" class="text-sm text-gray-800 break-words">N/A</span>
+                      <select id="beaconCampaignDspSelected" class="hidden campaign-details-input" aria-label="DSP Selected" title="DSP Selected">
+                        <option value="">-- Select DSP --</option>
+                        <option value="The Trade Desk">The Trade Desk</option>
+                        <option value="DV360">DV360</option>
+                        <option value="Simpli.fi">Simpli.fi</option>
+                      </select>
+                    </div>
+                    <!-- Field: Ad Server Selected -->
+                    <div>
+                      <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Ad Server Selected</p>
+                      <span id="displayAdServerSelected" class="text-sm text-gray-800 break-words">N/A</span>
+                      <select id="beaconCampaignAdServerSelected" class="hidden campaign-details-input" aria-label="Ad Server Selected" title="Ad Server Selected">
+                        <option value="">-- Select Ad Server --</option>
+                        <option value="Google Campaign Manager">Google Campaign Manager</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                
               </div>
 
               <!-- Two Column Layout for DSP/Ad Server Fields -->
@@ -609,6 +636,8 @@
   { span: 'displayBeaconDspImpressions', input: 'beaconDspImpressions' },
   { span: 'displayBeaconStartDate', input: 'beaconStartDate' },
   { span: 'displayBeaconEndDate', input: 'beaconEndDate' },
+  { span: 'displayDspSelected', input: 'beaconCampaignDspSelected' },
+  { span: 'displayAdServerSelected', input: 'beaconCampaignAdServerSelected' },
   // DSP Fields (these are linked to actual campaign data)
   { span: 'displayCampaignSeed', input: 'campaignSeed' },
   { span: 'displayCampaignOrganization', input: 'campaignOrganization' },
@@ -637,6 +666,8 @@
   'beaconDspImpressions',
   'beaconStartDate',
   'beaconEndDate',
+  'beaconCampaignDspSelected',
+  'beaconCampaignAdServerSelected',
   // DSP Fields
   'campaignSeed',
   'campaignOrganization',
@@ -838,6 +869,8 @@
                                 if (now.beaconDspImpressions !== undefined) topLevelCampaign.beaconDspImpressions = now.beaconDspImpressions;
                                 if (now.beaconTemplate !== undefined) topLevelCampaign.template = now.beaconTemplate;
                                 if (now.beaconDspImpressions !== undefined) topLevelCampaign.dspImpressions = now.beaconDspImpressions;
+                                if (now.beaconCampaignDspSelected !== undefined) topLevelCampaign.beaconCampaignDspSelected = now.beaconCampaignDspSelected;
+                                if (now.beaconCampaignAdServerSelected !== undefined) topLevelCampaign.beaconCampaignAdServerSelected = now.beaconCampaignAdServerSelected;
                                 // Ad Server Fields - New 4 Field Structure
                                 if (now.adServerCampaignName !== undefined) topLevelCampaign.adServerCampaignName = now.adServerCampaignName;
                                 if (now.adServerSchedule !== undefined) topLevelCampaign.adServerSchedule = now.adServerSchedule;
@@ -872,6 +905,8 @@
                                     if (now.beaconDspImpressions !== undefined) campaign.beaconDspImpressions = now.beaconDspImpressions;
                                     if (now.beaconTemplate !== undefined) campaign.template = now.beaconTemplate;
                                     if (now.beaconDspImpressions !== undefined) campaign.dspImpressions = now.beaconDspImpressions;
+                                    if (now.beaconCampaignDspSelected !== undefined) campaign.beaconCampaignDspSelected = now.beaconCampaignDspSelected;
+                                    if (now.beaconCampaignAdServerSelected !== undefined) campaign.beaconCampaignAdServerSelected = now.beaconCampaignAdServerSelected;
                                     // Ad Server Fields - New 4 Field Structure
                                     if (now.adServerCampaignName !== undefined) campaign.adServerCampaignName = now.adServerCampaignName;
                                     if (now.adServerSchedule !== undefined) campaign.adServerSchedule = now.adServerSchedule;
@@ -1683,6 +1718,8 @@ window.addEventListener('DOMContentLoaded', () => {
   safeSet('displayBeaconDspImpressions', campaign.beaconDspImpressions || campaign.dspImpressions);
   safeSet('displayBeaconStartDate', campaign.beaconStartDate, 'date');
   safeSet('displayBeaconEndDate', campaign.beaconEndDate, 'date');
+  safeSet('displayDspSelected', campaign.beaconCampaignDspSelected);
+  safeSet('displayAdServerSelected', campaign.beaconCampaignAdServerSelected);
   
   // Update header with campaign name and ID
   safeSet('campaignHeaderName', campaign.beaconCampaignName || campaign.name);
@@ -1713,6 +1750,8 @@ window.addEventListener('DOMContentLoaded', () => {
   safeInput('beaconDspImpressions', campaign.beaconDspImpressions || campaign.dspImpressions);
   safeInput('beaconStartDate', campaign.beaconStartDate);
   safeInput('beaconEndDate', campaign.beaconEndDate);
+  safeInput('beaconCampaignDspSelected', campaign.beaconCampaignDspSelected);
+  safeInput('beaconCampaignAdServerSelected', campaign.beaconCampaignAdServerSelected);
   // DSP Fields
   safeInput('campaignSeed', campaign.seed);
   safeInput('campaignOrganization', campaign.organization);

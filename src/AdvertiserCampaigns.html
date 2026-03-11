@@ -3134,10 +3134,28 @@ function handleCampaignCreation(redirectToAdGroups) {
   const advData = JSON.parse(localStorage.getItem('adv_selected_data') || localStorage.getItem('selectedAdvertiser') || '{}');
   const advertiserId = advData.id || null;
   
+  // Get campaign count for auto-incrementing name
+  const rawData = localStorage.getItem('campaign_tree_groups');
+  let existingData = rawData ? JSON.parse(rawData) : { campaigns: [], groups: [] };
+  if (!existingData.campaigns) existingData.campaigns = [];
+  if (!existingData.groups) existingData.groups = [];
+  
+  // Count all campaigns (top-level + campaigns in groups)
+  let totalCampaignCount = existingData.campaigns.length;
+  existingData.groups.forEach(group => {
+    if (group.campaigns && Array.isArray(group.campaigns)) {
+      totalCampaignCount += group.campaigns.length;
+    }
+  });
+  
+  // Get base campaign name and append incremental number
+  const baseCampaignName = document.getElementById('beaconCampaignName')?.value || '';
+  const incrementedCampaignName = baseCampaignName ? `${baseCampaignName} ${(totalCampaignCount + 1)}.0` : '';
+  
   const campaign = {
     id: 'CAM-' + Date.now(),
     advertiserId: advertiserId, // Track which advertiser this campaign belongs to
-    name: document.getElementById('campaignName')?.value || document.getElementById('beaconCampaignName')?.value || '',
+    name: document.getElementById('campaignName')?.value || incrementedCampaignName || '',
     seed: document.getElementById('campaignSeed')?.value || '',
     organization: document.getElementById('campaignOrganization')?.value || '',
     pacing: document.getElementById('campaignPacing')?.value || '',
@@ -3154,7 +3172,7 @@ function handleCampaignCreation(redirectToAdGroups) {
     adGroups: 0, // Initialize with 0 - will be updated dynamically by live count
     // Beacon Fields mapped to Common Data
     beaconCampaignId: document.getElementById('beaconCampaignId')?.value || '',
-    beaconCampaignName: document.getElementById('beaconCampaignName')?.value || '',
+    beaconCampaignName: incrementedCampaignName,
     beaconTemplate: document.getElementById('beaconTemplate')?.value || '',
     beaconCampaignDspSelected: beaconDspSelectedLabel,
     beaconCampaignAdServerSelected: beaconAdServerSelectedLabel,

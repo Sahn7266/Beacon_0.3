@@ -2318,14 +2318,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function initPlatformDropdowns() {
     initCustomDropdown('dsp');
     initCustomDropdown('adServer');
+    // Initialize Step 1 dropdowns
+    initCustomDropdown('dsp', '_step1');
+    initCustomDropdown('adServer', '_step1');
   }
 
-  function initCustomDropdown(type) {
-    const containerId = type === 'dsp' ? 'dspDropdownContainer' : 'adServerDropdownContainer';
-    const triggerId = type === 'dsp' ? 'dspDropdownTrigger' : 'adServerDropdownTrigger';
-    const menuId = type === 'dsp' ? 'dspDropdownMenu' : 'adServerDropdownMenu';
-    const hiddenInputId = type === 'dsp' ? 'dspDropdown' : 'adServerDropdown';
-    const syncCheckboxId = type === 'dsp' ? 'dspSyncCheckbox' : 'adServerSyncCheckbox';
+  function initCustomDropdown(type, suffix = '') {
+    const containerId = type === 'dsp' ? 'dspDropdownContainer' + suffix : 'adServerDropdownContainer' + suffix;
+    const triggerId = type === 'dsp' ? 'dspDropdownTrigger' + suffix : 'adServerDropdownTrigger' + suffix;
+    const menuId = type === 'dsp' ? 'dspDropdownMenu' + suffix : 'adServerDropdownMenu' + suffix;
+    const hiddenInputId = type === 'dsp' ? 'dspDropdown' + suffix : 'adServerDropdown' + suffix;
+    const syncCheckboxId = type === 'dsp' ? 'dspSyncCheckbox' + suffix : 'adServerSyncCheckbox' + suffix;
 
     const container = document.getElementById(containerId);
     const trigger = document.getElementById(triggerId);
@@ -2863,11 +2866,54 @@ document.addEventListener('DOMContentLoaded', () => {
       const advData = JSON.parse(localStorage.getItem('adv_selected_data') || '{}');
       const advertiserId = advData.id || null;
       
+      // Get campaign info and calculate incremental ad group number
+      const campaignIdForIncrement = document.getElementById('beaconCampaign')?.value || '';
+      let campaignNumber = null;
+      let adGroupCount = 0;
+      
+      // Get campaign data to extract campaign number and count ad groups
+      const campaignData = localStorage.getItem('campaign_tree_groups');
+      if (campaignData && campaignIdForIncrement) {
+        const data = JSON.parse(campaignData);
+        
+        // Find the campaign in top-level or groups
+        let foundCampaign = null;
+        if (data.campaigns) {
+          foundCampaign = data.campaigns.find(c => c.id === campaignIdForIncrement);
+        }
+        if (!foundCampaign && data.groups) {
+          for (const group of data.groups) {
+            if (group.campaigns) {
+              foundCampaign = group.campaigns.find(c => c.id === campaignIdForIncrement);
+              if (foundCampaign) break;
+            }
+          }
+        }
+        
+        // Extract campaign number from campaign name (e.g., "Brand Awareness 1.0" -> 1)
+        if (foundCampaign && foundCampaign.beaconCampaignName) {
+          const match = foundCampaign.beaconCampaignName.match(/\s(\d+)\.0$/);
+          if (match) {
+            campaignNumber = parseInt(match[1]);
+          }
+        }
+      }
+      
+      // Count existing ad groups for this campaign
+      const existingAdGroups = JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]');
+      adGroupCount = existingAdGroups.filter(ag => ag.campaignId === campaignIdForIncrement || ag.campaign === campaignIdForIncrement).length;
+      
+      // Create incremented ad group name
+      const baseAdGroupName = document.getElementById('beaconAdGroupName')?.value?.trim() || '';
+      const incrementedAdGroupName = (baseAdGroupName && campaignNumber !== null) 
+        ? `${baseAdGroupName} ${campaignNumber}.${adGroupCount + 1}` 
+        : baseAdGroupName;
+      
       const adGroup = {
         id: adGroupId,
         advertiserId: advertiserId, // Track which advertiser this ad group belongs to
         // Beacon Fields
-        name: document.getElementById('beaconAdGroupName')?.value?.trim() || '',
+        name: incrementedAdGroupName,
         campaign: document.getElementById('beaconCampaign')?.value || '',
         campaignId: document.getElementById('beaconCampaign')?.value || '',
         template: document.getElementById('beaconTemplate')?.value || '',
@@ -2881,6 +2927,12 @@ document.addEventListener('DOMContentLoaded', () => {
         impressions: document.getElementById('beaconImpressions')?.value || '',
         landingPage: document.getElementById('beaconLandingPage')?.value?.trim() || '',
         utmCode: document.getElementById('beaconUtmCode')?.value?.trim() || '',
+        
+        // Platform Fields (from Step 1)
+        dspSelected: document.getElementById('dspDropdown_step1')?.value || '',
+        adServerSelected: document.getElementById('adServerDropdown_step1')?.value || '',
+        dsp: document.getElementById('dspDropdown_step1')?.value || '',
+        adServer: document.getElementById('adServerDropdown_step1')?.value || '',
         
         // DSP Fields (now contain the detailed fields)
         dspName: document.getElementById('adGroupName')?.value?.trim() || '',

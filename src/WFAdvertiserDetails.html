@@ -350,8 +350,78 @@
             </div>
               </div>
 
+              
+
               <!-- Beacon Fields - Horizontal Grid Layout -->
               <div class="space-y-6 mb-6">
+
+                 <!-- Team Section -->
+              <div>
+                <div class="flex items-center justify-between mb-3 px-2">
+                  <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Team</h3>
+                  <div class="relative">
+                    <button id="teamStateChip" class="flex items-center h-7 px-3 rounded-md text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition" data-filter="state" aria-haspopup="menu" aria-expanded="false">
+                      <span id="teamStateChipLabel">Active</span>
+                      <svg class="w-3.5 h-3.5 text-gray-500 ml-1.5" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06 0L10 10.92l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.27a.75.75 0 010-1.06z"/></svg>
+                    </button>
+                    <div id="teamStateMenu" class="hidden absolute right-0 mt-2 min-w-32 bg-white border border-gray-200 rounded-md shadow-lg z-20" role="menu" tabindex="-1">
+                      <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="All" role="menuitem">All</button>
+                      <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="Active" role="menuitem">Active</button>
+                      <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="Inactive" role="menuitem">Inactive</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                  <table class="w-full">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                      <tr>
+                        <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Name</th>
+                        <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Role</th>
+                        <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">State</th>
+                      </tr>
+                    </thead>
+                    <tbody id="teamTableBody" class="bg-white divide-y divide-gray-200">
+                      <tr data-state="active" class="hover:bg-gray-50 transition">
+                        <td class="px-4 py-2.5 text-sm text-gray-900">Matt Hunter</td>
+                        <td class="px-4 py-2.5 text-sm text-gray-700">Account Manager</td>
+                        <td class="px-4 py-2.5 text-sm">
+                          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Active</span>
+                        </td>
+                      </tr>
+                      <tr data-state="active" class="hover:bg-gray-50 transition">
+                        <td class="px-4 py-2.5 text-sm text-gray-900">David DeHerrera</td>
+                        <td class="px-4 py-2.5 text-sm text-gray-700">Campaign Specialist</td>
+                        <td class="px-4 py-2.5 text-sm">
+                          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Active</span>
+                        </td>
+                      </tr>
+                      <tr data-state="inactive" class="hover:bg-gray-50 transition">
+                        <td class="px-4 py-2.5 text-sm text-gray-900">Hailey Golden</td>
+                        <td class="px-4 py-2.5 text-sm text-gray-700">Campaign Manager</td>
+                        <td class="px-4 py-2.5 text-sm">
+                          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">Inactive</span>
+                        </td>
+                      </tr>
+                      <tr data-state="active" class="hover:bg-gray-50 transition">
+                        <td class="px-4 py-2.5 text-sm text-gray-900">Sam Ahn</td>
+                        <td class="px-4 py-2.5 text-sm text-gray-700">Sales Representative</td>
+                        <td class="px-4 py-2.5 text-sm">
+                          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Active</span>
+                        </td>
+                      </tr>
+                      <tr data-state="inactive" class="hover:bg-gray-50 transition">
+                        <td class="px-4 py-2.5 text-sm text-gray-900">Trevor White</td>
+                        <td class="px-4 py-2.5 text-sm text-gray-700">Partnership Sales</td>
+                        <td class="px-4 py-2.5 text-sm">
+                          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">Inactive</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
                 
                 <!-- Basic Information Section -->
                 <div>
@@ -449,78 +519,39 @@
                   </div>
                 </div>
 
-              </div>
+                <!-- Platform Section -->
+                <div>
+                  <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3 px-2">Platform</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- DSP -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">DSP</label>
+                      <span id="displayDsp" data-bind="adv.dsp" class="block text-sm text-gray-900">—</span>
+                      <select id="inputDsp" data-bind="adv.dsp" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" aria-label="DSP" title="DSP">
+                        <option value="">-- Select DSP --</option>
+                        <option value="trade-desk">The Trade Desk</option>
+                        <option value="dv360">DV360</option>
+                        <option value="simplifi">Simpli.fi</option>
+                      </select>
+                    </div>
 
-              <!-- Team Table Section -->
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Ad Server -->
+                    <div class="px-2">
+                      <label class="block text-xs font-medium text-gray-600 mb-1">Ad Server</label>
+                      <span id="displayAdServer" data-bind="adv.adServer" class="block text-sm text-gray-900">—</span>
+                      <select id="inputAdServer" data-bind="adv.adServer" class="hidden w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" aria-label="Ad Server" title="Ad Server">
+                        <option value="">-- Select Ad Server --</option>
+                        <option value="google-campaign-manager">Google Campaign Manager</option>
+                      </select>
+                    </div>
 
-              <div class="space-y-6">
-                <!-- Team Table -->
-                <section class="space-y-2">
-                  <div class="overflow-x-auto border border-default rounded-md">
-                    <table class="w-full tbl tbl-row-hover table-fixed">
-                      <colgroup>
-                        <col style="width:44%">
-                        <col style="width:36%">
-                        <col style="width:20%">
-                      </colgroup>
-                      <thead class="tbl-head">
-                        <tr>
-                          <th colspan="3" class="px-6 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
-                            <div class="flex items-center justify-between">
-                              <span>TEAM</span>
-                              <div class="relative">
-                                <button id="teamStateChip" class="flex items-center h-8 px-3 rounded-md text-sm text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 transition" data-filter="state" aria-haspopup="menu" aria-expanded="false">
-                                  <span id="teamStateChipLabel">Active</span>
-                                  <svg class="w-4 h-4 text-gray-500 ml-2" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06 0L10 10.92l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.27a.75.75 0 010-1.06z"/></svg>
-                                </button>
-                                <div id="teamStateMenu" class="hidden absolute right-0 mt-2 min-w-40 bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-56 overflow-auto" role="menu" tabindex="-1">
-                                  <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="All" role="menuitem">All</button>
-                                  <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="Active" role="menuitem">Active</button>
-                                  <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="Inactive" role="menuitem">Inactive</button>
-                                </div>
-                              </div>
-                            </div>
-                          </th>
-                        </tr>
-                        <tr class="bg-gray-50">
-                          <th class="px-3 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">Name</th>
-                          <th class="px-3 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">Role</th>
-                          <th class="px-3 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">State</th>
-                        </tr>
-                      </thead>
-                      <tbody id="teamTableBody" class="bg-white divide-y divide-gray-200">
-                        <tr class="border-b border-default" data-state="active">
-                          <td class="px-3 py-1 text-sm border-r border-default">Matt Hunter</td>
-                          <td class="px-3 py-1 text-sm text-gray-700 border-r border-default">Account Manager</td>
-                          <td class="px-3 py-1 text-sm"><span class="px-2 py-1 text-xs">Active</span></td>
-                        </tr>
-                        <tr class="border-b border-default" data-state="active">
-                          <td class="px-3 py-1 text-sm border-r border-default">David DeHerrera</td>
-                          <td class="px-3 py-1 text-sm text-gray-700 border-r border-default">Campaign Specialist</td>
-                          <td class="px-3 py-1 text-sm"><span class="px-2 py-1 text-xs">Active</span></td>
-                        </tr>
-                        <tr class="border-b border-default" data-state="inactive">
-                          <td class="px-3 py-1 text-sm border-r border-default">Hailey Golden</td>
-                          <td class="px-3 py-1 text-sm text-gray-700 border-r border-default">Campaign Manager</td>
-                          <td class="px-3 py-1 text-sm"><span class="px-2 py-1 text-xs">Inactive</span></td>
-                        </tr>
-                        <tr class="border-b border-default" data-state="active">
-                          <td class="px-3 py-1 text-sm border-r border-default">Sam Ahn</td>
-                          <td class="px-3 py-1 text-sm text-gray-700 border-r border-default">Sales Representative</td>
-                          <td class="px-3 py-1 text-sm"><span class="px-2 py-1 text-xs">Active</span></td>
-                        </tr>
-                        <tr class="border-b border-default" data-state="inactive">
-                          <td class="px-3 py-1 text-sm border-r border-default">Trevor White</td>
-                          <td class="px-3 py-1 text-sm text-gray-700 border-r border-default">Partnership Sales</td>
-                          <td class="px-3 py-1 text-sm"><span class="px-2 py-1 text-xs">Inactive</span></td>
-                        </tr>
-                      </tbody>
-                    </table>
                   </div>
-                </section>
+                </div>
+
               </div>
-            </div>
+
+             
             </section>
           </div>
 
