@@ -2726,6 +2726,11 @@ init: function() {
           // Initialize custom dropdowns for platform selection
           initPlatformDropdowns: function() {
             const self = this;
+            // Advertiser creation modal dropdowns
+            this.initCustomDropdown('advertiserDspDropdownContainer', 'advertiserDspDropdownTrigger', 'advertiserDspDropdownMenu', 'advertiserDspDropdown', null);
+            this.initCustomDropdown('advertiserAdServerDropdownContainer', 'advertiserAdServerDropdownTrigger', 'advertiserAdServerDropdownMenu', 'advertiserAdServerDropdown', null);
+            
+            // Other modal dropdowns (if present)
             this.initCustomDropdown('dspDropdownContainer', 'dspDropdownTrigger', 'dspDropdownMenu', 'dspDropdown', 'dspSyncCheckbox');
             this.initCustomDropdown('adServerDropdownContainer', 'adServerDropdownTrigger', 'adServerDropdownMenu', 'adServerDropdown', 'adServerSyncCheckbox');
             
