@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beacon - CAD Mockup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, Arial, sans-serif; }
+    .summary-input {
+      border: 1px solid transparent;
+      background: transparent;
+      transition: all 0.15s;
+    }
+    .summary-input:hover { background: #f9fafb; }
+    .summary-input:focus {
+      border-color: #93c5fd;
+      background: white;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(59,130,246,0.15);
+      border-radius: 4px;
+    }
+    .auto-field {
+      background: #f3f4f6;
+      border: 1px dashed #d1d5db;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+  <div class="flex h-screen flex-col">
+
+    <!-- ═══════════ HEADER ═══════════ -->
+    <header class="border-b border-gray-200 shadow-sm" style="background-color: #004E8B;">
+      <div class="flex items-center justify-between px-4 py-2">
+        <div class="flex items-center gap-3">
+          <img src="./assets/BeaconLogo.png" alt="Beacon Logo" class="h-9 w-auto" />
+        </div>
+        <nav class="flex items-center gap-3 ml-auto">
+          <a href="./index.html" class="text-base text-white hover:text-blue-200" style="font-size: 1.5rem; padding-right: 15px;">Advertisers</a>
+          <span class="text-white select-none">|</span>
+          <!-- Bell -->
+          <button class="p-2 rounded-md text-white relative" title="Notifications">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+            </svg>
+            <span class="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+          </button>
+          <!-- Waffle Menu -->
+          <div class="relative">
+            <button class="p-0 rounded-md text-white" id="menuButton" title="Menu">
+              <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4h3v3H4V4zM8.5 4h3v3h-3V4zM13 4h3v3h-3V4zM4 8.5h3v3H4v-3zM8.5 8.5h3v3h-3V8.5zM13 8.5h3v3h-3V8.5zM4 13h3v3H4v-3zM8.5 13h3v3h-3V13zM13 13h3v3h-3V13z"></path>
+              </svg>
+            </button>
+            <div id="menuDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+              <a href="./index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Advertisers</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+              <a href="./CAD-mockup.html" class="block px-4 py-2 text-sm text-blue-700 bg-blue-50 font-medium hover:bg-blue-100">CAD Tool</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Out</a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ═══════════ BODY ═══════════ -->
+    <div class="flex flex-1 overflow-hidden">
+
+      <!-- LEFT SIDEBAR -->
+      <nav class="bg-white w-64 p-4 border-r border-gray-200 overflow-y-auto">
+        <div class="flex items-center gap-3 pb-4 border-b border-gray-200">
+          <div class="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">MF</div>
+          <h2 class="text-base font-semibold text-gray-800">MIC Food</h2>
+        </div>
+        <ul class="space-y-1 mt-4">
+          <li><a href="#" class="flex items-center px-2 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">Details</a></li>
+          <li><a href="#" class="flex items-center px-2 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">Sales Orders</a></li>
+          <li><a href="#" class="flex items-center px-2 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">Connections</a></li>
+          <li><a href="#" class="flex items-center px-2 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">Campaigns</a></li>
+          <li><a href="#" class="flex items-center px-2 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">Ad Groups</a></li>
+          <li><a href="#" class="flex items-center px-2 py-2 text-sm text-blue-700 bg-blue-50 font-medium rounded-md">CAD</a></li>
+        </ul>
+      </nav>
+
+      <!-- MAIN CONTENT -->
+      <main class="flex-1 overflow-y-auto p-6 pr-10">
+        <div class="bg-white rounded-lg shadow-sm">
+
+          <!-- ═══════════ ZONE 1: ACCOUNT HEADER ═══════════ -->
+          <div class="p-4 border-b border-gray-200">
+            <div class="flex items-start gap-4 mb-1">
+              <div class="flex-1">
+                <h1 class="text-2xl font-semibold text-gray-900">MIC Food</h1>
+                <div class="flex justify-between items-center">
+                  <h3 class="text-sm font-semibold text-gray-600">Account #: <span class="text-sm text-gray-500">102346</span></h3>
+                  <h3 class="text-sm font-semibold text-gray-600">ID: <span class="text-sm text-gray-500">adv-mf-001</span></h3>
+                </div>
+              </div>
+            </div>
+            <hr class="border-gray-300 my-3">
+
+            <!-- ═══════════ ZONE 2: BUDGET & IMPRESSION SUMMARY ═══════════ -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <!-- Budget Summary -->
+              <div>
+                <h2 class="text-lg font-semibold text-gray-800 mb-2">Budget Summary</h2>
+                <div class="bg-gray-50 p-4 border border-gray-200 rounded-md space-y-2">
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600 font-medium">Total Invoice Budget</span>
+                    <input type="text" class="summary-input text-sm text-gray-900 font-semibold text-right w-28 px-1 py-0.5 rounded" placeholder="$0" value="">
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600 font-medium">Total Budget</span>
+                    <input type="text" class="summary-input text-sm text-gray-900 font-semibold text-right w-28 px-1 py-0.5 rounded" placeholder="$0" value="">
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600 font-medium">Budget Remaining</span>
+                    <span class="text-sm text-gray-400 font-semibold italic">auto-calculated</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Impression Summary -->
+              <div>
+                <h2 class="text-lg font-semibold text-gray-800 mb-2">Impression Summary</h2>
+                <div class="bg-gray-50 p-4 border border-gray-200 rounded-md space-y-2">
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600 font-medium">Total Invoice Impressions</span>
+                    <input type="text" id="totalInvoiceImpr" class="summary-input text-sm text-gray-900 font-semibold text-right w-28 px-1 py-0.5 rounded" placeholder="0" value="1,600,000">
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600 font-medium">Total Impressions</span>
+                    <input type="text" id="totalImpr" class="summary-input text-sm text-gray-900 font-semibold text-right w-28 px-1 py-0.5 rounded" placeholder="0" value="1,600,000">
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600 font-medium">Impressions Remaining</span>
+                    <span class="text-sm text-gray-400 font-semibold italic">auto-calculated</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════ ZONE 3: CAMPAIGN GENERATOR ═══════════ -->
+            <div class="flex items-center gap-4 bg-blue-50 border border-blue-200 rounded-md px-4 py-3 mb-4">
+              <label for="numCampaigns" class="text-sm font-medium text-gray-700 whitespace-nowrap">
+                Number of DSP Campaigns:
+              </label>
+              <input type="number" id="numCampaigns" min="1" max="20" value="4"
+                class="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <button type="button" id="generateBtn"
+                class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-medium transition">
+                Generate Campaigns
+              </button>
+              <span class="text-xs text-gray-500 ml-2">Impressions will be split evenly across campaigns</span>
+            </div>
+          </div>
+
+          <!-- ═══════════ ZONE 4: DSP CAMPAIGNS LIST ═══════════ -->
+          <section id="dspCampaigns" class="border-b border-gray-200">
+            <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+              <h2 class="text-sm font-semibold text-gray-800">DSP Campaigns</h2>
+              <span id="campaignCount" class="text-xs text-gray-500">0 Campaigns</span>
+            </div>
+
+            <!-- Campaign List Header -->
+            <div class="hidden md:grid grid-cols-12 gap-2 px-4 py-2 text-[11px] font-semibold tracking-wide text-gray-500 border-b bg-gray-50/50">
+              <div class="col-span-2">DSP Platform</div>
+              <div class="col-span-2">DSP Campaign</div>
+              <div class="col-span-2">GCM Campaign</div>
+              <div class="col-span-2">Template</div>
+              <div class="col-span-1 text-left">Impr.</div>
+              <div class="col-span-1 text-center">Ad Grps</div>
+              <div class="col-span-2 text-center">Status</div>
+            </div>
+
+            <div class="divide-y" id="campaignList">
+              <!-- Campaigns rendered by JS -->
+              <div id="addCampaignContainer" class="bg-gray-50">
+                <div class="px-4 py-3 text-center">
+                  <button id="addCampaignBtn" type="button" class="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline">
+                    + Add Campaign
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Save/Cancel -->
+          <div class="w-full py-4 bg-white border-t border-gray-200 flex justify-center gap-3">
+            <button type="button" class="px-5 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+            <button type="button" class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">Save</button>
+          </div>
+        </div>
+      </main>
+
+      <!-- RIGHT SIDEBAR (Change History) -->
+      <aside id="rightSidebar" class="relative flex-shrink-0 w-56 bg-white border-l border-gray-200 overflow-y-auto">
+        <div class="flex items-center justify-between p-4 border-b border-gray-200">
+          <h2 class="text-sm font-semibold text-gray-800">Change Form</h2>
+        </div>
+        <ul class="mt-2 space-y-1 px-3" id="changeLog">
+          <li><a href="#" class="block px-3 py-2 rounded hover:bg-blue-50 text-xs text-gray-500">No changes yet</a></li>
+        </ul>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- ═══════════ JAVASCRIPT ═══════════ -->
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // ── Constants ──
+    const TEMPLATE_OPTIONS = ['','Programmatic Display','Programmatic Video','Programmatic Audio','Connected TV','Paid Social','Paid Search','Event Targeting','Native Video','DOOH','PLD Display','PLD Video'];
+    const DSP_PLATFORM_OPTIONS = ['','The Trade Desk','DV360','Simpli.fi'];
+    const AD_SERVER_OPTIONS = ['','Google Campaign Manager'];
+    const TACTIC_OPTIONS = ['','Persona','Retargeting','Data Onboarding','Company Targeting','IP Targeting','Addressable','Location Targeting','Frequency Fencing','Contextual','Advanced ABM','Sector'];
+
+    const campaignList = document.getElementById('campaignList');
+    const addContainer = document.getElementById('addCampaignContainer');
+    let campaignCounter = 0;
+
+    // ── Helpers ──
+    function selectHtml(name, options, placeholder) {
+      const opts = options.map(o => o === '' ? `<option value="">${placeholder}</option>` : `<option value="${o}">${o}</option>`).join('');
+      return `<select data-field="${name}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">${opts}</select>`;
+    }
+    function inputHtml(name, placeholder, extra='') {
+      return `<input data-field="${name}" type="text" placeholder="${placeholder}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500 ${extra}">`;
+    }
+    function numberHtml(name, placeholder, value='') {
+      return `<input data-field="${name}" type="number" min="0" placeholder="${placeholder}" value="${value}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500">`;
+    }
+    function dateHtml(name, value='') {
+      return `<input data-field="${name}" type="date" value="${value}" class="w-full px-2 py-1.5 border border-gray-300 rounded text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500">`;
+    }
+
+    function todayStr() {
+      return new Date().toISOString().split('T')[0];
+    }
+    function tenYearsStr() {
+      const d = new Date();
+      d.setFullYear(d.getFullYear() + 10);
+      d.setDate(d.getDate() - 1);
+      return d.toISOString().split('T')[0];
+    }
+
+    function updateCampaignCount() {
+      const n = campaignList.querySelectorAll('[data-campaign-saved]').length;
+      const editing = campaignList.querySelectorAll('.campaign-editing').length;
+      document.getElementById('campaignCount').textContent = `${n} Saved, ${editing} Editing`;
+    }
+
+    // ── Create Campaign Edit Form ──
+    function createCampaignForm(impressions) {
+      campaignCounter++;
+      const div = document.createElement('div');
+      div.className = 'campaign-editing bg-white border-t border-gray-200';
+      div.innerHTML = `
+        <div class="px-4 py-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">Campaign ${campaignCounter}</span>
+            <span class="text-[10px] text-gray-400">New</span>
+          </div>
+
+          <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3 text-[11px]">
+            <!-- GCM Campaign Name -->
+            <div class="sm:col-span-3">
+              <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">GCM Campaign Name</p>
+              ${inputHtml('gcmCampaignName','e.g. Brand Awareness 2025')}
+            </div>
+            <!-- Template -->
+            <div>
+              <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Template</p>
+              ${selectHtml('template', TEMPLATE_OPTIONS, 'Select Template...')}
+            </div>
+            <!-- DSP Impressions -->
+            <div>
+              <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">DSP Impressions</p>
+              ${numberHtml('dspImpressions','0', impressions || '')}
+            </div>
+            <div></div>
+
+            <!-- Connection Settings -->
+            <div class="sm:col-span-3 border-t border-gray-200 pt-3 mt-1">
+              <p class="text-[10px] font-bold text-gray-600 uppercase mb-2">Connection Settings</p>
+              <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+                <div>
+                  <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">DSP Platform</p>
+                  ${selectHtml('dspPlatform', DSP_PLATFORM_OPTIONS, 'Select DSP...')}
+                </div>
+                <div>
+                  <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">DSP Campaign Name <span class="text-gray-400 normal-case">(auto)</span></p>
+                  <input data-field="dspCampaignName" type="text" readonly
+                    class="auto-field w-full px-2 py-1.5 rounded text-[11px] text-gray-500" placeholder="Auto-generated from GCM Name + DSP">
+                </div>
+                <div></div>
+                <div>
+                  <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Ad Server Platform</p>
+                  ${selectHtml('adServerPlatform', AD_SERVER_OPTIONS, 'Select Ad Server...')}
+                </div>
+                <div>
+                  <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Ad Server Campaign Name <span class="text-gray-400 normal-case">(auto)</span></p>
+                  <input data-field="adServerCampaignName" type="text" readonly
+                    class="auto-field w-full px-2 py-1.5 rounded text-[11px] text-gray-500" placeholder="Auto-generated from GCM Name + Ad Server">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex gap-3 pt-4">
+            <button type="button" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-medium" data-action="save-campaign">Save Campaign</button>
+            <button type="button" class="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-xs" data-action="cancel-campaign">Cancel</button>
+          </div>
+        </div>
+      `;
+
+      campaignList.insertBefore(div, addContainer);
+
+      // Wire auto-name generation
+      const gcmInput = div.querySelector('[data-field="gcmCampaignName"]');
+      const dspSelect = div.querySelector('[data-field="dspPlatform"]');
+      const adsSelect = div.querySelector('[data-field="adServerPlatform"]');
+      const dspNameField = div.querySelector('[data-field="dspCampaignName"]');
+      const adsNameField = div.querySelector('[data-field="adServerCampaignName"]');
+
+      function updateAutoNames() {
+        const gcm = gcmInput.value.trim();
+        const dsp = dspSelect.value;
+        const ads = adsSelect.value;
+        dspNameField.value = (gcm && dsp) ? `${gcm} - ${dsp}` : '';
+        adsNameField.value = (gcm && ads) ? `${gcm} - ${ads}` : '';
+      }
+      gcmInput.addEventListener('input', updateAutoNames);
+      dspSelect.addEventListener('change', updateAutoNames);
+      adsSelect.addEventListener('change', updateAutoNames);
+
+      // Save / Cancel
+      div.addEventListener('click', (e) => {
+        if (e.target.closest('[data-action="cancel-campaign"]')) {
+          div.remove();
+          updateCampaignCount();
+        }
+        if (e.target.closest('[data-action="save-campaign"]')) {
+          // Validate required
+          const gcm = gcmInput.value.trim();
+          const template = div.querySelector('[data-field="template"]').value;
+          const dsp = dspSelect.value;
+          const impr = div.querySelector('[data-field="dspImpressions"]').value;
+          let ok = true;
+          if (!gcm) { gcmInput.classList.add('border-red-500'); ok = false; } else gcmInput.classList.remove('border-red-500');
+          if (!template) { div.querySelector('[data-field="template"]').classList.add('border-red-500'); ok = false; } else div.querySelector('[data-field="template"]').classList.remove('border-red-500');
+          if (!dsp) { dspSelect.classList.add('border-red-500'); ok = false; } else dspSelect.classList.remove('border-red-500');
+          if (!impr) { div.querySelector('[data-field="dspImpressions"]').classList.add('border-red-500'); ok = false; } else div.querySelector('[data-field="dspImpressions"]').classList.remove('border-red-500');
+          if (!ok) return;
+
+          const savedRow = buildSavedCampaignRow({
+            gcmCampaignName: gcm,
+            template: template,
+            dspPlatform: dsp,
+            dspCampaignName: dspNameField.value,
+            adServerPlatform: adsSelect.value,
+            adServerCampaignName: adsNameField.value,
+            dspImpressions: impr,
+            adGroups: []
+          });
+          div.replaceWith(savedRow);
+          updateCampaignCount();
+          addChangeLog('Campaign Created');
+        }
+      });
+
+      updateCampaignCount();
+      return div;
+    }
+
+    // ── Build Saved Campaign Row ──
+    function buildSavedCampaignRow(data) {
+      const row = document.createElement('div');
+      row.className = 'campaign-row';
+      row.setAttribute('data-campaign-saved','');
+      row.dataset.template = data.template;
+
+      // Summary button
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'w-full flex flex-col md:grid md:grid-cols-12 gap-2 px-4 py-3 text-left hover:bg-blue-50/40 transition';
+      btn.innerHTML = `
+        <div class="flex items-start gap-2 col-span-2">
+          <span class="inline-flex mt-0.5 h-5 w-5 items-center justify-center rounded border border-gray-300 text-[10px] font-semibold text-gray-600 bg-white" data-caret>+</span>
+          <p class="text-sm font-medium text-gray-800">${data.dspPlatform}</p>
+        </div>
+        <div class="col-span-2 flex items-start"><p class="text-sm font-medium text-gray-800 truncate">${data.dspCampaignName || data.gcmCampaignName}</p></div>
+        <div class="col-span-2 hidden md:flex items-center text-xs text-gray-700">${data.gcmCampaignName}</div>
+        <div class="col-span-2 hidden md:flex items-center text-xs text-gray-700">${data.template}</div>
+        <div class="col-span-1 hidden md:flex items-center justify-start text-xs font-medium text-gray-800">${Number(data.dspImpressions).toLocaleString()}</div>
+        <div class="col-span-1 hidden md:flex items-center justify-center text-xs font-medium text-gray-700" data-adgroup-count>0</div>
+        <div class="col-span-2 hidden md:flex items-center justify-center">
+          <input type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" checked>
+        </div>
+      `;
+
+      // Ad Groups Panel
+      const panel = document.createElement('div');
+      panel.className = 'adgroups-panel hidden bg-gray-50/60 px-6 pb-4 pt-3';
+      panel.innerHTML = `
+        <div class="flex items-center justify-between mb-3">
+          <div class="text-[11px] font-semibold text-gray-500 tracking-wide">AD GROUPS</div>
+          <button type="button" class="text-[11px] text-blue-600 hover:underline font-medium" data-action="add-adgroup">+ Add Ad Group</button>
+        </div>
+        <div class="space-y-3" data-adgroup-container>
+          <div class="text-[11px] text-gray-400 italic" data-empty-msg>No ad groups yet. Click "+ Add Ad Group" to create one.</div>
+        </div>
+      `;
+
+      row.appendChild(btn);
+      row.appendChild(panel);
+
+      // Wire expand
+      const caret = btn.querySelector('[data-caret]');
+      btn.addEventListener('click', (e) => {
+        if (e.target.closest('input[type="checkbox"]')) return;
+        const isOpen = !panel.classList.contains('hidden');
+        // Close all others
+        document.querySelectorAll('.adgroups-panel').forEach(p => {
+          if (p !== panel) { p.classList.add('hidden'); const c = p.parentElement.querySelector('[data-caret]'); if (c) c.textContent = '+'; }
+        });
+        panel.classList.toggle('hidden');
+        caret.textContent = panel.classList.contains('hidden') ? '+' : '–';
+      });
+
+      // Wire add ad group
+      panel.addEventListener('click', (e) => {
+        if (e.target.closest('[data-action="add-adgroup"]')) {
+          addAdGroupForm(panel, data.template, data.dspImpressions);
+        }
+      });
+
+      return row;
+    }
+
+    // ── Ad Group Form ──
+    function addAdGroupForm(panel, campaignTemplate, campaignImpressions) {
+      const container = panel.querySelector('[data-adgroup-container]');
+      const emptyMsg = container.querySelector('[data-empty-msg]');
+      if (emptyMsg) emptyMsg.remove();
+      if (container.querySelector('.adgroup-form')) return;
+
+      const form = document.createElement('div');
+      form.className = 'adgroup-form rounded border border-blue-300 bg-white p-4';
+      form.innerHTML = `
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded">New Ad Group</span>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3 text-[11px]">
+          <!-- Name -->
+          <div class="sm:col-span-3">
+            <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Ad Group Name</p>
+            ${inputHtml('name','e.g. TTD - Programmatic Display Placement 1.1')}
+          </div>
+          <!-- Tactic -->
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Tactic</p>
+            ${selectHtml('tactic', TACTIC_OPTIONS, 'Select Tactic...')}
+          </div>
+          <!-- Content Category (auto from Tactic) -->
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Content Category <span class="text-gray-400 normal-case">(auto from Tactic)</span></p>
+            <input data-field="contentCategory" type="text" readonly class="auto-field w-full px-2 py-1.5 rounded text-[11px] text-gray-500" placeholder="Auto from Tactic">
+          </div>
+          <!-- MV Classification (auto from Template) -->
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">MV Classification <span class="text-gray-400 normal-case">(auto from Template)</span></p>
+            <input data-field="mvClassification" type="text" readonly class="auto-field w-full px-2 py-1.5 rounded text-[11px] text-gray-500" value="${campaignTemplate || ''}" placeholder="From campaign template">
+          </div>
+          <!-- Audience -->
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Audience</p>
+            ${inputHtml('audience','e.g. 1 and 2, e-mails, Website Visitors')}
+          </div>
+          <!-- Geo Target -->
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Geo Target</p>
+            <input data-field="geoTarget" type="text" value="U.S." class="w-full px-2 py-1.5 border border-gray-300 rounded text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </div>
+          <div></div>
+          <!-- Start Date -->
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Start Date <span class="text-gray-400 normal-case">(default: today)</span></p>
+            ${dateHtml('startDate', todayStr())}
+          </div>
+          <!-- End Date -->
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">End Date <span class="text-gray-400 normal-case">(default: +10yr -1d)</span></p>
+            ${dateHtml('endDate', tenYearsStr())}
+          </div>
+          <!-- Impressions -->
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Impressions</p>
+            ${numberHtml('impressions','0', campaignImpressions || '')}
+          </div>
+          <!-- Landing Page -->
+          <div class="sm:col-span-2">
+            <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Landing Page</p>
+            ${inputHtml('landingPage','https://...')}
+          </div>
+          <div></div>
+          <!-- UTM Code -->
+          <div class="sm:col-span-3">
+            <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">UTM Code</p>
+            <textarea data-field="utmCode" rows="2" class="w-full px-2 py-1.5 border border-gray-300 rounded text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="https://...?utm_source=..."></textarea>
+          </div>
+
+          <!-- Connection Settings -->
+          <div class="sm:col-span-3 border-t border-gray-200 pt-3 mt-1">
+            <p class="text-[10px] font-bold text-gray-600 uppercase mb-2">Connection Settings</p>
+            <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+              <div>
+                <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">DSP Reporting ID</p>
+                ${inputHtml('dspReportingId','ID from DSP')}
+              </div>
+              <div>
+                <p class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Ad Server Reporting ID</p>
+                ${inputHtml('adServerReportingId','ID from Ad Server')}
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Buttons -->
+        <div class="flex gap-3 pt-4">
+          <button type="button" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-medium" data-action="save-adgroup">Save Ad Group</button>
+          <button type="button" class="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-xs" data-action="cancel-adgroup">Cancel</button>
+        </div>
+      `;
+
+      container.appendChild(form);
+
+      // Wire Tactic → Content Category auto-copy
+      const tacticSel = form.querySelector('[data-field="tactic"]');
+      const contentCat = form.querySelector('[data-field="contentCategory"]');
+      tacticSel.addEventListener('change', () => { contentCat.value = tacticSel.value; });
+
+      // Wire save/cancel
+      form.addEventListener('click', (e) => {
+        if (e.target.closest('[data-action="cancel-adgroup"]')) {
+          form.remove();
+          if (!container.children.length) {
+            container.innerHTML = '<div class="text-[11px] text-gray-400 italic" data-empty-msg>No ad groups yet.</div>';
+          }
+        }
+        if (e.target.closest('[data-action="save-adgroup"]')) {
+          // Validate
+          const name = form.querySelector('[data-field="name"]');
+          const tactic = form.querySelector('[data-field="tactic"]');
+          let ok = true;
+          if (!name.value.trim()) { name.classList.add('border-red-500'); ok = false; } else name.classList.remove('border-red-500');
+          if (!tactic.value) { tactic.classList.add('border-red-500'); ok = false; } else tactic.classList.remove('border-red-500');
+          if (!ok) return;
+
+          // Build data
+          const d = {};
+          form.querySelectorAll('[data-field]').forEach(el => { d[el.getAttribute('data-field')] = el.value.trim(); });
+
+          // Render card
+          const card = renderAdGroupCard(d);
+          form.replaceWith(card);
+
+          // Update count
+          const campaignRow = panel.parentElement;
+          const countEl = campaignRow.querySelector('[data-adgroup-count]');
+          if (countEl) {
+            countEl.textContent = container.querySelectorAll('.adgroup-card').length;
+          }
+          addChangeLog('Ad Group Created');
+        }
+      });
+    }
+
+    // ── Render Saved Ad Group Card ──
+    function renderAdGroupCard(d) {
+      const card = document.createElement('div');
+      card.className = 'adgroup-card rounded border border-gray-200 bg-white';
+      card.innerHTML = `
+        <div class="px-4 py-4 text-[11px] space-y-3">
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</p>
+            <p class="mt-0.5 font-semibold text-gray-800">
+              ${d.name || '—'}
+              ${d.dspReportingId ? `<span class="ml-2 font-mono bg-amber-100 text-amber-800 px-1 py-0.5 rounded text-[10px]">${d.dspReportingId}</span>` : ''}
+            </p>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Tactic</p><p class="mt-0.5 font-medium text-gray-800">${d.tactic || '—'}</p></div>
+            <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Content Category</p><p class="mt-0.5 font-medium text-gray-800">${d.contentCategory || '—'}</p></div>
+            <div><p class="text-[10px] font-semibold text-gray-500 uppercase">MV Classification</p><p class="mt-0.5 font-medium text-gray-800">${d.mvClassification || '—'}</p></div>
+            <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Audience</p><p class="mt-0.5 font-medium text-gray-800">${d.audience || '—'}</p></div>
+            <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Geo Target</p><p class="mt-0.5 font-medium text-gray-800">${d.geoTarget || '—'}</p></div>
+            <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Impressions</p><p class="mt-0.5 font-medium text-gray-800">${d.impressions ? Number(d.impressions).toLocaleString() : '—'}</p></div>
+          </div>
+          <div class="flex gap-8 flex-wrap">
+            <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Start Date</p><p class="mt-0.5 font-medium text-gray-800">${d.startDate || '—'}</p></div>
+            <div><p class="text-[10px] font-semibold text-gray-500 uppercase">End Date</p><p class="mt-0.5 font-medium text-gray-800">${d.endDate || '—'}</p></div>
+          </div>
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase">Landing Page</p>
+            ${d.landingPage ? `<a href="${d.landingPage}" target="_blank" class="mt-0.5 inline-block text-blue-600 hover:underline break-all text-[11px]">${d.landingPage}</a>` : '<p class="mt-0.5 text-gray-400">—</p>'}
+          </div>
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase">UTM Code</p>
+            <code class="block mt-0.5 bg-gray-100/80 border border-dashed border-gray-300 rounded px-2 py-1.5 break-all text-[10px] text-gray-700">${d.utmCode || '—'}</code>
+          </div>
+          <div class="border-t border-gray-200 pt-2 mt-1">
+            <p class="text-[10px] font-bold text-gray-600 uppercase mb-1">Connection Settings</p>
+            <div class="grid grid-cols-2 gap-3">
+              <div><p class="text-[10px] font-semibold text-gray-500 uppercase">DSP Reporting ID</p><p class="mt-0.5 font-mono bg-gray-100 px-2 py-1 rounded text-gray-800 inline-block">${d.dspReportingId || '—'}</p></div>
+              <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Ad Server Reporting ID</p><p class="mt-0.5 font-mono bg-gray-100 px-2 py-1 rounded text-gray-800 inline-block">${d.adServerReportingId || '—'}</p></div>
+            </div>
+          </div>
+        </div>
+      `;
+      return card;
+    }
+
+    // ── Change Log ──
+    function addChangeLog(msg) {
+      const ul = document.getElementById('changeLog');
+      const noChanges = ul.querySelector('.text-gray-500');
+      if (noChanges && noChanges.textContent.includes('No changes')) noChanges.closest('li').remove();
+
+      const li = document.createElement('li');
+      const now = new Date();
+      const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      li.innerHTML = `<a href="#" class="block px-3 py-2 rounded hover:bg-blue-50 text-xs text-gray-700">${msg} <span class="text-gray-400">${time}</span></a>`;
+      ul.insertBefore(li, ul.firstChild);
+    }
+
+    // ── Generate Campaigns Button ──
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const n = parseInt(document.getElementById('numCampaigns').value) || 0;
+      if (n < 1 || n > 20) return;
+
+      // Parse total impressions
+      const totalImprStr = document.getElementById('totalImpr').value.replace(/,/g,'');
+      const totalImpr = parseInt(totalImprStr) || 0;
+      const perCampaign = totalImpr > 0 ? Math.floor(totalImpr / n) : '';
+
+      // Remove existing editing forms
+      campaignList.querySelectorAll('.campaign-editing').forEach(el => el.remove());
+      campaignCounter = 0;
+
+      for (let i = 0; i < n; i++) {
+        createCampaignForm(String(perCampaign));
+      }
+      updateCampaignCount();
+    });
+
+    // ── Add Campaign Button ──
+    document.getElementById('addCampaignBtn').addEventListener('click', () => {
+      createCampaignForm('');
+    });
+
+    // ── Waffle Menu Toggle ──
+    const menuButton = document.getElementById('menuButton');
+    const menuDropdown = document.getElementById('menuDropdown');
+    menuButton.addEventListener('click', (e) => { e.stopPropagation(); menuDropdown.classList.toggle('hidden'); });
+    document.addEventListener('click', () => menuDropdown.classList.add('hidden'));
+  });
+  </script>
+  <script src="./assets/phase1-core.js" defer></script>
+</body>
+</html>

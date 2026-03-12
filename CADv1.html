@@ -1,0 +1,2283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beacon - Details</title>
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Toast assets (single source of truth) -->
+  <link rel="stylesheet" href="./assets/toast.css">
+  <script src="./assets/toast.js" defer></script>
+
+  <!-- REMOVE OR COMMENT OUT THIS LINE: -->
+  <script src="./assets/notifications.js"></script>
+  <link rel="stylesheet" href="./assets/loading.css">
+  <script src="./assets/loading.js" defer></script>
+
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, Arial, sans-serif; }
+    .table-fixed { table-layout: fixed; } td, th { white-space: nowrap; }
+
+    /* Read-only inputs look like text */
+    input[aria-readonly="true"] {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      caret-color: transparent;
+    }
+    input[aria-readonly="true"]:focus { border: none !important; outline: none !important; box-shadow: none !important; }
+    input[aria-readonly="true"]::-moz-focus-inner { border: 0 !important; }
+    
+    /* Read-only select styling */
+    select[aria-readonly="true"] {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      caret-color: transparent;
+      appearance: none;
+      pointer-events: none;
+    }
+    select[aria-readonly="true"]:focus { border: none !important; outline: none !important; box-shadow: none !important; }
+
+    #rightSidebar {
+  transition: width .25s ease, transform .25s ease;
+}
+#rightSidebar.collapsed {
+  width:0 !important;
+  min-width:0 !important;
+  padding:0 !important;
+  border-left:0 !important;
+  overflow:hidden !important;
+}
+#rightSidebar.collapsed > * {
+  opacity:0;
+  pointer-events:none;
+}
+    /* Optional: let main area reclaim space smoothly */
+    .layout-with-right {
+      display:flex;
+      width:100%;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+  <div class="flex h-screen flex-col">
+    <!-- Header -->
+    <header class="border-b border-gray-200 shadow-sm" style="background-color: #004E8B;">
+      <div class="flex items-center justify-between px-4 py-2">
+        <div class="flex items-center gap-3">
+          <img src="./assets/Beaconlogo.svg" alt="Beacon Logo" class="h-12 w-auto" />
+        </div>
+
+        <nav class="flex items-center gap-3 ml-auto">
+            <a href="./index.html" class="text-base text-white hover:text-blue-100" style="font-size: 1.5rem; padding-right: 15px;" onmouseover="this.style.color='#48A9FE'" onmouseout="this.style.color='white'">
+            Advertisers
+            </a>
+          <span class="text-white select-none">|</span>
+
+          <!-- Notifications -->
+          <div class="relative">
+            <button id="notificationButton" class="p-2 rounded-md  text-white relative" title="Notifications" aria-label="View notifications" onmouseover="this.style.backgroundColor=''" onmouseout="this.style.backgroundColor=''" >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+              </svg>
+              <span id="notificationDot" class="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+            </button>
+
+            <!-- Dropdown -->
+            <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-96 overflow-hidden">
+              <div class="p-3 border-b border-gray-200 bg-gray-50">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
+                  <button id="markAllReadBtn" class="text-xs text-blue-600 hover:text-blue-800">Mark all read</button>
+                </div>
+              </div>
+
+              <div class="max-h-80 overflow-y-auto">
+                <div id="notificationList">
+                  <!-- Sample items -->
+                  <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer notification-item" data-read="false">
+                    <div class="flex items-start gap-3">
+                      <div class="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900">Campaign Performance Alert</p>
+                        <p class="text-xs text-gray-500 mt-1">"Summer Sale" exceeded budget by 15%</p>
+                        <p class="text-xs text-gray-400 mt-1">2 minutes ago</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer notification-item" data-read="false">
+                    <div class="flex items-start gap-3">
+                      <div class="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900">New Advertiser Added</p>
+                        <p class="text-xs text-gray-500 mt-1">Stallion Services LLC onboarded</p>
+                        <p class="text-xs text-gray-400 mt-1">1 hour ago</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer notification-item" data-read="true">
+                    <div class="flex items-start gap-3">
+                      <div class="flex-shrink-0 w-2 h-2 bg-gray-300 rounded-full mt-2"></div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm text-gray-700">Account Sync Complete</p>
+                        <p class="text-xs text-gray-500 mt-1">CRM sync finished for 12 accounts</p>
+                        <p class="text-xs text-gray-400 mt-1">3 hours ago</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-3 text-center border-t border-gray-200">
+                  <a href="#" class="text-sm text-blue-600 hover:text-blue-800 font-medium">View all notifications</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Waffle Menu -->
+          <div class="relative">
+            <button class="p-0 rounded-md text-white" id="menuButton" title="Menu" aria-label="Open navigation menu">
+              <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4h3v3H4V4zM8.5 4h3v3h-3V4zM13 4h3v3h-3V4zM4 8.5h3v3H4v-3zM8.5 8.5h3v3h-3V8.5zM13 8.5h3v3h-3V8.5zM4 13h3v3H4v-3zM8.5 13h3v3h-3V13zM13 13h3v3h-3V13z"></path>
+              </svg>
+            </button>
+            <div id="menuDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Advertisers</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+              <a href="#" id="menuAdmin" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Out</a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Body -->
+    <div class="flex h-screen overflow-hidden">
+
+      <!-- Sidebar -->
+      <nav id="sidebar" class="bg-white w-64 p-4 border-r border-gray-200 overflow-y-auto transition-all duration-200 ease-in-out">
+  <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+    <div class="flex items-center gap-3">
+      <img src="./assets/advertiser.png" alt="Advertiser" class="w-9 h-9 rounded-full" data-sidebar-avatar />
+      <h2 data-sidebar-header class="text-base text-lg font-semibold text-gray-800">Advertiser</h2>
+    </div>
+    <button id="sidebarToggle" class="p-1 rounded hover:bg-gray-100" aria-label="Toggle sidebar" aria-expanded="true" title="Collapse/Expand">
+      <svg id="iconCollapse" class="w-5 h-5 text-gray-900" viewBox="0 0 26 26" fill="currentColor">
+        <path fill="#000000" d="M21.5 11.5h-8.793l3.035-3.035a.5.5 0 10-.707-.707l-3.888 3.888a.518.518 0 00-.109.163.505.505 0 000 .382.518.518 0 00.109.163l3.888 3.888a.5.5 0 00.707-.707L12.707 12.5H21.5a.5.5 0 000-1zM7.5 2h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 7h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 11.5h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 16h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 21h-5a.5.5 0 000 1h5a.5.5 0 000-1z"></path>
+      </svg>
+      <svg id="iconExpand" class="w-5 h-5 text-gray-900 hidden" viewBox="0 0 26 26" fill="currentColor">
+        <path fill="#000000" d="M21.962 12.191a.505.505 0 000-.382.518.518 0 00-.109-.163l-3.888-3.888a.5.5 0 10-.707.707l3.035 3.035H11.5a.5.5 0 000 1h8.793l-3.035 3.035a.5.5 0 10.707.707l3.888-3.888a.518.518 0 00.109-.163zM7.5 2h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 7h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 11.5h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 16h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 21h-5a.5.5 0 000 1h5a.5.5 0 000-1z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <ul class="space-y-1 mt-4">
+    <li>
+      <a href="./WFAdvertiserDetails.html" data-nav-link
+         class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
+        <img src="./assets/svgs/Details.svg" alt="Overview" class="w-6 h-6 mr-2" />
+        <span data-link-label>Overview</span>
+      </a>
+    </li>
+    <li>
+      <a href="./AdvertiserCampaigns.html" data-nav-link
+         class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
+        <img src="./assets/svgs/CampaignsSchedules.svg" alt="Campaigns" class="w-6 h-6 mr-2" />
+        <span data-link-label>Campaigns</span>
+      </a>
+    </li>
+    <li>
+      <a href="./AdvertiserAdGroup.html" data-nav-link
+         class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
+        <img src="./assets/svgs/AdGroups.svg" alt="Ad Groups" class="w-6 h-6 mr-2" />
+        <span data-link-label>Ad Groups</span>
+      </a>
+    </li>
+    <li>
+      <a href="./ChangeOrderList.html" data-nav-link
+         class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
+        <img src="./assets/svgs/ChangeOrder.svg" alt="Change Orders" class="w-6 h-6 mr-2" />
+        <span data-link-label>Change Orders</span>
+      </a>
+    </li>
+    <li>
+      <a href="./WFAdvertiserConnections.html" data-nav-link
+         class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
+        <img src="./assets/svgs/Blueprint.svg" alt="Connections" class="w-6 h-6 mr-2" />
+        <span data-link-label>Connections</span>
+      </a>
+    </li>
+    <!-- CAD (added) -->
+    <li>
+      <a href="./CAD.html" data-nav-link
+         class="flex items-center px-1 py-2 text-sm text-blue-700 bg-blue-50 font-medium rounded-md">
+        <img src="./assets/svgs/Blueprint.svg" class="w-6 h-6 mr-2" alt="CAD">
+        <span data-link-label>CAD</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<main class="flex-1 overflow-y-auto p-6 pr-10">
+        <div class="bg-white rounded-lg shadow-sm">
+          <div class="p-4 border-b border-gray-200">
+            <div class="flex items-start gap-4 mb-3">
+              <div class="flex-1">
+                <h1 data-bind="adv.name" class="md:text-2xl font-semibold text-gray-900">Loading…</h1>
+                <div class="flex justify-between items-center">
+                  <h3 class="text-sm font-semibold text-gray-600">Account #: <span data-bind="adv.account" class="text-sm text-gray-500">—</span></h3>
+                  <h3 class="text-sm font-semibold text-gray-600">ID: <span data-bind="adv.id" class="text-sm text-gray-500">—</span></h3>
+                </div>
+              </div>
+            </div>
+
+            <hr class="border-gray-300 my-2">
+
+
+<!-- ✅ Budget & Impression Summary -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+  <!-- Budget Summary -->
+  <div>
+    <h2 class="text-lg font-semibold text-gray-800 mb-2">Budget Summary</h2>
+    <div class="bg-gray-50 p-4 border border-gray-200 rounded-md space-y-2">
+      <div class="flex justify-between">
+        <span class="text-sm text-gray-600 font-medium">Total Invoice Budget</span>
+        <span class="text-sm text-gray-900 font-semibold">—</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-sm text-gray-600 font-medium">Total Budget</span>
+        <span class="text-sm text-gray-900 font-semibold">—</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-sm text-gray-600 font-medium">Budget Remaining</span>
+        <span class="text-sm text-gray-900 font-semibold">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Impression Summary -->
+  <div>
+    <h2 class="text-lg font-semibold text-gray-800 mb-2">Impression Summary</h2>
+    <div class="bg-gray-50 p-4 border border-gray-200 rounded-md space-y-2">
+      <div class="flex justify-between">
+        <span class="text-sm text-gray-600 font-medium">Total Invoice Impressions</span>
+        <span class="text-sm text-gray-900 font-semibold">1,500,000</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-sm text-gray-600 font-medium">Total Impressions</span>
+        <span class="text-sm text-gray-900 font-semibold">1,500,000</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-sm text-gray-600 font-medium">Impressions Remaining</span>
+        <span class="text-sm text-gray-900 font-semibold">—</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+            <!-- Budget Breakdown -->
+<section class="space-y-4 mt-2">
+  <h2 class="text-xl font-semibold text-gray-800">Budget Breakdown</h2>
+
+  <div class="bg-white shadow rounded-lg border border-gray-200">
+    <div class="p-4 overflow-x-auto">
+      <table class="w-full text-sm text-left text-gray-700 table-auto">
+        <thead>
+          <tr class="border-b border-gray-300 bg-gray-50">
+            <th class="px-4 py-2 font-medium">Product Line</th>
+            <th class="px-4 py-2 font-medium">Reporting Metric</th>
+            <th class="px-4 py-2 font-medium">Invoice Budget</th>
+            <th class="px-4 py-2 font-medium">Allocated Budget</th>
+            <th class="px-4 py-2 font-medium">Remaining</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- ✅ Visible rows (filled-out) -->
+          <tr class="border-b border-gray-100">
+            <td class="px-4 py-2">Programmatic Display</td>
+            <td class="px-4 py-2">Impressions</td>
+            <td class="px-4 py-2">$1,600,000</td>
+            <td class="px-4 py-2">$1,600,000</td>
+            <td class="px-4 py-2">—</td>
+          </tr>
+        </tbody>
+
+        <!-- 🔽 Hidden section for unfilled rows -->
+        <tbody id="hiddenBudgetRows" class="hidden">
+          <tr class="border-b border-gray-100">
+            <td class="px-4 py-2">Association Affinity</td>
+            <td class="px-4 py-2">Impressions</td>
+            <td class="px-4 py-2">—</td>
+            <td class="px-4 py-2">—</td>
+            <td class="px-4 py-2">—</td>
+          </tr>
+          <tr class="border-b border-gray-100">
+            <td class="px-4 py-2">Programmatic Video</td>
+            <td class="px-4 py-2">Impressions</td>
+            <td class="px-4 py-2">—</td>
+            <td class="px-4 py-2">—</td>
+            <td class="px-4 py-2">—</td>
+          </tr>
+          <tr class="border-b border-gray-100">
+            <td class="px-4 py-2">Programmatic Video</td>
+            <td class="px-4 py-2">Impressions</td>
+            <td class="px-4 py-2">—</td>
+            <td class="px-4 py-2">—</td>
+            <td class="px-4 py-2">—</td>
+          </tr>
+          <!-- Add all other product lines similarly -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Toggle Button -->
+    <div class="px-4 py-2 border-t border-gray-200 text-right">
+      <button
+        id="toggleBudgetRows"
+        class="text-sm text-blue-600 hover:underline"
+        onclick="
+          const hiddenRows = document.getElementById('hiddenBudgetRows');
+          hiddenRows.classList.toggle('hidden');
+          this.textContent = hiddenRows.classList.contains('hidden') ? 'Show All Product Lines' : 'Hide Extra Rows';
+        "
+      >
+        Show All Product Lines
+      </button>
+    </div>
+  </div>
+</section>
+
+      <!-- DSP Campaigns -->
+      <section id="dspCampaigns" class="mt-8 bg-white rounded-lg border border-gray-200 shadow-sm">
+        <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+          <h2 class="text-sm font-semibold text-gray-800">DSP Campaigns</h2>
+          <span class="text-xs text-gray-500">4 Active</span>
+        </div>
+
+        <!-- Campaign List Header -->
+<div class="hidden md:grid grid-cols-12 gap-2 px-4 py-2 text-[11px] font-semibold tracking-wide text-gray-500 border-b bg-gray-50">
+  <div class="col-span-2">DSP</div>
+  <div class="col-span-2">Campaign</div>
+  <div class="col-span-2">GCM Campaign</div>
+  <div class="col-span-2">Template</div>
+  <div class="col-span-1 text-left">Impr.</div>
+  <div class="col-span-1 text-center">Ad Grps</div>
+  <div class="col-span-2 text-center">Status</div>
+</div>
+
+        <div class="divide-y" id="campaignList">
+
+          <!-- Campaign Row: TTD -->
+          <div class="campaign-row" data-campaign>
+            <button type="button" class="w-full flex flex-col md:grid md:grid-cols-12 gap-2 px-4 py-3 text-left hover:bg-blue-50/40 transition">
+              <!-- DSP -->
+              <div class="flex items-start gap-2 col-span-2">
+                <span class="inline-flex mt-0.5 h-5 w-5 items-center justify-center rounded border border-gray-300 text-[10px] font-semibold text-gray-600 bg-white" data-caret>+</span>
+                <p class="text-sm font-medium text-gray-800">The Trade Desk</p>
+              </div>
+              <!-- Campaign -->
+              <div class="col-span-2 flex items-start">
+                <p class="text-sm font-medium text-gray-800">Brand Awareness 2025</p>
+              </div>
+              <!-- GCM Campaign -->
+              <div class="col-span-2 hidden md:flex items-center text-xs text-gray-700">Brand Awareness 2025</div>
+              <!-- Template -->
+              <div class="col-span-2 hidden md:flex items-center text-xs text-gray-700">Programmatic Display</div>
+              <!-- Impressions -->
+                <div class="col-span-1 hidden md:flex items-center justify-start text-xs font-medium text-gray-800">800,000</div>
+                <!-- Ad Groups -->
+              <div class="col-span-1 hidden md:flex items-center justify-center text-xs font-medium text-gray-700">1</div>
+              <!-- Checkbox Column -->
+              <div class="col-span-2 hidden md:flex items-center justify-center">
+              <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+            </div>
+
+            </button>
+
+            <!-- Ad Groups Panel -->
+            <div class="adgroups-panel hidden bg-gray-50/60 px-6 pb-6 pt-4">
+              <div class="text-[11px] font-semibold text-gray-500 tracking-wide mb-3">AD GROUPS</div>
+              <div class="space-y-3">
+
+                <!-- Ad Group -->
+                <div class="rounded border border-gray-200 bg-white">
+                  <div class="px-4 py-4 text-[11px] space-y-4">
+                    <div>
+                      <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</p>
+                      <p class="mt-0.5 font-semibold text-gray-800">
+                        The Trade Desk - Programmatic Display Placement 1.1
+                        <span class="ml-2 font-mono bg-amber-100 text-amber-800 px-1 py-0.5 rounded align-middle">szbnv9m</span>
+                      </p>
+                    </div>
+                    <div class="space-y-3">
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Tactic</p><p class="mt-0.5 font-medium text-gray-800">Persona</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Content Category</p><p class="mt-0.5 font-medium text-gray-800">Persona</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">MV Classification</p><p class="mt-0.5 font-medium text-gray-800">Programmatic Display</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Audience</p><p class="mt-0.5 font-medium text-gray-800">1 and 2</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Geotarget</p><p class="mt-0.5 font-medium text-gray-800">U.S.</p></div>
+                      <div class="flex gap-8 flex-wrap">
+                        <div>
+                          <p class="text-[10px] font-semibold text-gray-500 uppercase">Start Date</p>
+                          <p class="mt-0.5 font-medium text-gray-800">12/20/2024</p>
+                        </div>
+                        <div>
+                          <p class="text-[10px] font-semibold text-gray-500 uppercase">End Date</p>
+                          <p class="mt-0.5 font-medium text-gray-800">12/19/2025</p>
+                        </div>
+                      </div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Impressions</p><p class="mt-0.5 font-medium text-gray-800">800,000</p></div>
+                      <div>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase">Landing Page</p>
+                        <a href="https://micfood.com/our-segments/" target="_blank" class="mt-0.5 inline-block text-blue-600 hover:underline break-all">
+                          https://micfood.com/our-segments/
+                        </a>
+                      </div>
+                      <div>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase">DSP Ad Group ID</p>
+                        <p class="mt-0.5 font-mono bg-gray-100 px-2 py-1 rounded text-gray-800 inline-block">szbnv9m</p>
+                      </div>
+                      <div>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase">UTM Code</p>
+                        <code class="block mt-0.5 bg-gray-100/80 border border-dashed border-gray-300 rounded px-2 py-2 leading-snug break-all text-[10px] text-gray-700">
+                          https://micfood.com/our-segments/?utm_source=programmatic&utm_medium=dsp&utm_campaign=placement1
+                        </code>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Campaign Row: Simpli.fi -->
+          <div class="campaign-row" data-campaign>
+            <button type="button" class="w-full flex flex-col md:grid md:grid-cols-12 gap-2 px-4 py-3 text-left hover:bg-green-50/40 transition">
+              <div class="flex items-start gap-2 col-span-2">
+                <span class="inline-flex mt-0.5 h-5 w-5 items-center justify-center rounded border border-gray-300 text-[10px] font-semibold text-gray-600 bg-white" data-caret>+</span>
+                <p class="text-sm font-medium text-gray-800">Simpli.fi</p>
+              </div>
+              <div class="col-span-2 flex items-start">
+                <p class="text-sm font-medium text-gray-800">Brand Awareness 2025</p>
+              </div>
+              <div class="col-span-2 hidden md:flex items-center text-xs text-gray-700">Brand Awareness 2025</div>
+              <div class="col-span-2 hidden md:flex items-center text-xs text-gray-700">Programmatic Display</div>
+              <div class="col-span-1 hidden md:flex items-center justify-start text-xs font-medium text-gray-800">500,000</div>
+              <div class="col-span-1 hidden md:flex items-center justify-center text-xs font-medium text-gray-700">2</div>
+              <!-- Checkbox Column -->
+            <div class="col-span-2 hidden md:flex items-center justify-center">
+            <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+            </div>
+
+            </button>
+
+            <div class="adgroups-panel hidden bg-gray-50/60 px-6 pb-6 pt-4">
+              <div class="text-[11px] font-semibold text-gray-500 tracking-wide mb-3">AD GROUPS</div>
+              <div class="space-y-3">
+
+                <!-- Ad Group 2.1 -->
+                <div class="rounded border border-gray-200 bg-white">
+                  <div class="px-4 py-4 text-[11px] space-y-4">
+                    <div>
+                      <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</p>
+                      <p class="mt-0.5 font-semibold text-gray-800">
+                        Simpli.fi - Programmatic Display Placement 2.1
+                        <span class="ml-2 font-mono bg-amber-100 text-amber-800 px-1 py-0.5 rounded align-middle">4266771</span>
+                      </p>
+                    </div>
+                    <div class="space-y-3">
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Tactic</p><p class="mt-0.5 font-medium text-gray-800">Company Targeting</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Content Category</p><p class="mt-0.5 font-medium text-gray-800">Company Targeting</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">MV Classification</p><p class="mt-0.5 font-medium text-gray-800">Programmatic Display</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Audience</p><p class="mt-0.5 font-medium text-gray-800">1</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Geotarget</p><p class="mt-0.5 font-medium text-gray-800">U.S.</p></div>
+                      <div class="flex gap-8 flex-wrap">
+                        <div>
+                          <p class="text-[10px] font-semibold text-gray-500 uppercase">Start Date</p>
+                          <p class="mt-0.5 font-medium text-gray-800">12/20/2024</p>
+                        </div>
+                        <div>
+                          <p class="text-[10px] font-semibold text-gray-500 uppercase">End Date</p>
+                          <p class="mt-0.5 font-medium text-gray-800">12/19/2025</p>
+                        </div>
+                      </div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Impressions</p><p class="mt-0.5 font-medium text-gray-800">250,000</p></div>
+                      <div>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase">Landing Page</p>
+                        <a href="https://micfood.com/our-segments/k-12/" target="_blank" class="mt-0.5 inline-block text-blue-600 hover:underline break-all">
+                          https://micfood.com/our-segments/k-12/
+                        </a>
+                      </div>
+                      <div>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase">DSP Ad Group ID</p>
+                        <p class="mt-0.5 font-mono bg-gray-100 px-2 py-1 rounded text-gray-800 inline-block">4266771</p>
+                      </div>
+                      <div>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase">UTM Code</p>
+                        <code class="block mt-0.5 bg-gray-100/80 border border-dashed border-gray-300 rounded px-2 py-2 leading-snug break-all text-[10px] text-gray-700">
+                          https://micfood.com/our-segments/k-12/?utm_source=programmatic&utm_medium=dsp&utm_campaign=placement1
+                        </code>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ad Group 2.2 -->
+                <div class="rounded border border-gray-200 bg-white">
+                  <div class="px-4 py-4 text-[11px] space-y-4">
+                    <div>
+                      <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</p>
+                      <p class="mt-0.5 font-semibold text-gray-800">
+                        Simpli.fi - Programmatic Display Placement 2.2
+                        <span class="ml-2 font-mono bg-amber-100 text-amber-800 px-1 py-0.5 rounded align-middle">4266773</span>
+                      </p>
+                    </div>
+                    <div class="space-y-3">
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Tactic</p><p class="mt-0.5 font-medium text-gray-800">Company Targeting</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Content Category</p><p class="mt-0.5 font-medium text-gray-800">Company Targeting</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">MV Classification</p><p class="mt-0.5 font-medium text-gray-800">Programmatic Display</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Audience</p><p class="mt-0.5 font-medium text-gray-800">2</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Geotarget</p><p class="mt-0.5 font-medium text-gray-800">U.S.</p></div>
+                      <div class="flex gap-8 flex-wrap">
+                        <div>
+                          <p class="text-[10px] font-semibold text-gray-500 uppercase">Start Date</p>
+                          <p class="mt-0.5 font-medium text-gray-800">12/20/2024</p>
+                        </div>
+                        <div>
+                          <p class="text-[10px] font-semibold text-gray-500 uppercase">End Date</p>
+                          <p class="mt-0.5 font-medium text-gray-800">12/19/2025</p>
+                        </div>
+                      </div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Impressions</p><p class="mt-0.5 font-medium text-gray-800">250,000</p></div>
+                      <div>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase">Landing Page</p>
+                        <a href="https://micfood.com/our-segments/restaurants-catering/" target="_blank" class="mt-0.5 inline-block text-blue-600 hover:underline break-all">
+                          https://micfood.com/our-segments/restaurants-catering/
+                        </a>
+                      </div>
+                      <div>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase">DSP Ad Group ID</p>
+                        <p class="mt-0.5 font-mono bg-gray-100 px-2 py-1 rounded text-gray-800 inline-block">4266773</p>
+                      </div>
+                      <div>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase">UTM Code</p>
+                        <code class="block mt-0.5 bg-gray-100/80 border border-dashed border-gray-300 rounded px-2 py-2 leading-snug break-all text-[10px] text-gray-700">
+                          https://micfood.com/our-segments/restaurants-catering/?utm_source=programmatic&utm_medium=...
+                        </code>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Campaign Row: StackAdapt -->
+          <div class="campaign-row" data-campaign>
+            <button type="button" class="w-full flex flex-col md:grid md:grid-cols-12 gap-2 px-4 py-3 text-left hover:bg-rose-50/50 transition">
+              <div class="flex items-start gap-2 col-span-2">
+                <span class="inline-flex mt-0.5 h-5 w-5 items-center justify-center rounded border border-gray-300 text-[10px] font-semibold text-gray-600 bg-white" data-caret>+</span>
+                <p class="text-sm font-medium text-gray-800">StackAdapt</p>
+              </div>
+              <div class="col-span-2 flex items-start">
+                <p class="text-sm font-medium text-gray-800">Brand Awareness 2025</p>
+              </div>
+              <div class="col-span-2 hidden md:flex items-center text-xs text-gray-700">Brand Awareness 2025</div>
+              <div class="col-span-2 hidden md:flex items-center text-xs text-gray-700">Programmatic Display</div>
+              <div class="col-span-1 hidden md:flex items-center justify-start text-xs font-medium text-gray-800">200,000</div>
+              <div class="col-span-1 hidden md:flex items-center justify-center text-xs font-medium text-gray-700">1</div>
+              <!-- Checkbox Column -->
+            <div class="col-span-2 hidden md:flex items-center justify-center">
+              <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+            </div>
+
+            </button>
+
+            <div class="adgroups-panel hidden bg-gray-50/60 px-6 pb-6 pt-4">
+              <div class="text-[11px] font-semibold text-gray-500 tracking-wide mb-3">AD GROUPS</div>
+              <div class="space-y-3">
+
+                <!-- Ad Group 3.1 -->
+                <div class="rounded border border-gray-200 bg-white">
+                  <div class="px-4 py-4 text-[11px] space-y-4">
+                    <div>
+                      <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</p>
+                      <p class="mt-0.5 font-semibold text-gray-800">
+                        StackAdapt - Programmatic Display Placement 3.1
+                        <span class="ml-2 font-mono bg-amber-100 text-amber-800 px-1 py-0.5 rounded align-middle">1777131</span>
+                      </p>
+                    </div>
+                    <div class="space-y-3">
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Tactic</p><p class="mt-0.5 font-medium text-gray-800">Data Onboarding</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Content Category</p><p class="mt-0.5 font-medium text-gray-800">Data Onboarding</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">MV Classification</p><p class="mt-0.5 font-medium text-gray-800">Programmatic Display</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Audience</p><p class="mt-0.5 font-medium text-gray-800">e-mails</p></div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Geotarget</p><p class="mt-0.5 font-medium text-gray-800">U.S.</p></div>
+                      <div class="flex gap-8 flex-wrap">
+                        <div>
+                          <p class="text-[10px] font-semibold text-gray-500 uppercase">Start Date</p>
+                          <p class="mt-0.5 font-medium text-gray-800">12/20/2024</p>
+                        </div>
+                        <div>
+                          <p class="text-[10px] font-semibold text-gray-500 uppercase">End Date</p>
+                          <p class="mt-0.5 font-medium text-gray-800">12/19/2025</p>
+                        </div>
+                      </div>
+                      <div><p class="text-[10px] font-semibold text-gray-500 uppercase">Impressions</p><p class="mt-0.5 font-medium text-gray-800">200,000</p></div>
+                      <div>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase">Landing Page</p>
+                        <a href="https://micfood.com/our-segments/" target="_blank" class="mt-0.5 inline-block text-blue-600 hover:underline break-all">
+                          https://micfood.com/our-segments/
+                        </a>
+                      </div>
+                      <div>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase">DSP Ad Group ID</p>
+                        <p class="mt-0.5 font-mono bg-gray-100 px-2 py-1 rounded text-gray-800 inline-block">1777131</p>
+                      </div>
+                      <div>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase">UTM Code</p>
+                        <code class="block mt-0.5 bg-gray-100/80 border border-dashed border-gray-300 rounded px-2 py-2 leading-snug break-all text-[10px] text-gray-700">
+                          https://micfood.com/our-segments/?utm_source=programmatic&utm_medium=...
+                        </code>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Campaign Row (moved inside campaignList) -->
+          <div id="addCampaignContainer" class="bg-gray-50">
+            <div class="px-4 py-3 text-center">
+              <button id="addCampaignBtn" type="button"
+                class="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline">
+                + Add Campaign
+              </button>
+            </div>
+          </div>
+        </div>
+        </section>
+        <!-- Action buttons moved outside <main>. Place this right AFTER </main> and BEFORE the right sidebar (or after the flex container) -->
+        
+        <div class="w-full py-4 bg-white border-t border-gray-200 flex justify-center gap-3">
+          <button type="button" id="mainCancelBtn"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+            Cancel
+          </button>
+          <button type="button" id="mainSaveBtn"
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+            Save
+          </button>
+        </div>
+
+      </main>
+
+        <!-- ✅ RIGHT SIDEBAR -->
+<aside id="rightSidebar" class="relative flex-shrink-0 w-64 bg-white border-l border-gray-200 overflow-y-auto transition-all duration-200 ease-in-out collapsed">
+    <div class="flex items-center justify-between p-4 border-b border-gray-200">
+      <h2 class="text-base font-semibold text-gray-800">Change Form</h2>
+      <button id="rightSidebarToggle"
+              class="p-1 rounded hover:bg-gray-100 flex items-center justify-center"
+              aria-label="Collapse right sidebar"
+              aria-expanded="true"
+              title="Collapse Panel">
+        <!-- Open (collapse) icon -->
+        <svg id="rsIconCollapse" class="w-5 h-5 text-gray-700" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M12.75 4.75a.75.75 0 00-1.06 0L7.44 9l4.25 4.25a.75.75 0 001.06-1.06L9.56 9l3.19-3.19a.75.75 0 000-1.06z"/>
+        </svg>
+        <!-- Closed (expand) icon -->
+        <svg id="rsIconExpand" class="w-5 h-5 text-gray-700 hidden" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M7.25 15.25a.75.75 0 001.06 0L12.56 11 8.31 6.75a.75.75 0 10-1.06 1.06L10.44 11l-3.19 3.19a.75.75 0 000 1.06z"/>
+        </svg>
+      </button>
+    </div>
+    <ul class="mt-4 space-y-2 px-4">
+      <li><a href="#" class="block px-3 py-2 rounded hover:bg-blue-50 text-sm text-gray-700">Create Campaign 10/09/2025</a></li>
+      <li><a href="#" class="block px-3 py-2 rounded hover:bg-blue-50 text-sm text-gray-700">Update Ad Group 10/15/2025</a></li>
+      <li><a href="#" class="block px-3 py-2 rounded hover:bg-blue-50 text-sm text-gray-700">Update Impressions 10/20/2025</a></li>
+      <li><a href="#" class="block px-3 py-2 rounded hover:bg-blue-50 text-sm text-gray-700">Original</a></li>
+    </ul>
+  </aside>
+
+  <!-- Reopen button OUTSIDE the sidebar -->
+  <button id="rightSidebarReopen"
+          class="fixed top-1/2 -translate-y-1/2 right-0 z-40 bg-white border border-gray-300 border-r-0 rounded-l px-2 py-3 shadow text-xs font-medium text-gray-600 hover:bg-blue-50"
+           aria-label="Expand right sidebar"
+           title="Expand Panel">
+    |||
+  </button>
+
+  <!-- Waffle menu toggle -->
+  <script>
+    const menuButton = document.getElementById('menuButton');
+    const menuDropdown = document.getElementById('menuDropdown');
+    if (menuButton && menuDropdown) {
+      menuButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuDropdown.classList.toggle('hidden');
+      });
+      document.addEventListener('click', (event) => {
+        if (!menuButton.contains(event.target) && !menuDropdown.contains(event.target)) {
+          menuDropdown.classList.add('hidden');
+        }
+      });
+    }
+  </script>
+
+  <!-- Details page data-binding -->
+  <script>
+    (function() {
+      const STORAGE_KEY_DATA = 'adv_list_data';
+
+      function loadAdvertisersFromStorage() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY_DATA);
+          return raw ? JSON.parse(raw) : [];
+        } catch { return []; }
+      }
+
+      function bindAll(key, value, fallback = '—') {
+        const nodes = document.querySelectorAll(`[data-bind="${key}"]`);
+        const text = (value != null && String(value).trim() !== '') ? value : fallback;
+        nodes.forEach(el => {
+          if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
+            el.value = text;
+            el.setAttribute('data-original', text);
+          } else {
+            el.textContent = text;
+            if (key === 'adv.account') {
+              const accountDisplay = document.getElementById('accountDisplay');
+              const accountLookupBtn = document.getElementById('accountLookupBtn');
+              if (accountDisplay && accountLookupBtn) {
+                if (text && text !== '—' && text !== 'N/A') {
+                  accountDisplay.classList.remove('hidden');
+                  accountLookupBtn.classList.add('hidden');
+                } else {
+                  accountDisplay.classList.add('hidden');
+                  accountLookupBtn.classList.remove('hidden');
+                }
+              }
+            }
+          }
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        let adv = null;
+        try {
+          const rawObj = localStorage.getItem('adv_selected_data');
+          if (rawObj) adv = JSON.parse(rawObj);
+        } catch {}
+
+        const selectedId = localStorage.getItem('adv_selected_id');
+        if (!adv && selectedId) {
+          const advertisers = loadAdvertisersFromStorage();
+          adv = advertisers.find(a => String(a.id) === String(selectedId)) || null;
+        }
+        if (!adv) {
+          const advertisers = loadAdvertisersFromStorage();
+          adv = (advertisers && advertisers.length) ? advertisers[0] : null;
+        }
+
+        if (adv) {
+          // MIGRATION: Handle both 'status' and 'state' fields for backward compatibility
+          if (adv.status && !adv.state) {
+            adv.state = adv.status;
+          }
+          
+          bindAll('adv.name', adv.name, 'No advertiser found');
+          bindAll('adv.id', adv.id, '');
+          bindAll('adv.account', adv.account, 'N/A');
+          bindAll('adv.state', adv.state, 'N/A');     // ✓ use state field
+          bindAll('adv.website', adv.website, 'N/A');
+        } else {
+          bindAll('adv.name', 'No advertiser found', 'No advertiser found');
+          bindAll('adv.id', '', '');
+          bindAll('adv.account', 'N/A', 'N/A');
+          bindAll('adv.state', 'N/A', 'N/A');
+          bindAll('adv.website', 'N/A', 'N/A');
+        }
+
+        // Expose for other modules if needed
+        window.bindAll = bindAll;
+      });
+    })();
+  </script>
+
+  <!-- Team filter -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const chip = document.getElementById('teamStateChip');
+      const menu = document.getElementById('teamStateMenu');
+      const label = document.getElementById('teamStateChipLabel');
+      const tbody = document.getElementById('teamTableBody');
+      if (!chip || !menu || !label || !tbody) return;
+
+      const closeMenu = () => { menu.classList.add('hidden'); chip.setAttribute('aria-expanded', 'false'); };
+
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = menu.classList.toggle('hidden');
+        chip.setAttribute('aria-expanded', String(!open));
+        if (!open) { menu.setAttribute('tabindex','-1'); menu.focus(); }
+      });
+
+      document.addEventListener('click', closeMenu);
+
+      menu.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { closeMenu(); chip.focus(); }
+      });
+
+      menu.addEventListener('click', (e) => {
+        const btn = e.target.closest('button'); if (!btn) return;
+        const value = btn.dataset.value;
+        label.textContent = value;
+
+        tbody.querySelectorAll('tr').forEach(row => {
+          const rowState = (row.getAttribute('data-state') || '').toLowerCase().trim();
+          let show = true;
+          if (value === 'Active') show = rowState === 'active';
+          else if (value === 'Inactive') show = rowState === 'inactive';
+          else show = true;
+          row.style.display = show ? '' : 'none';
+        });
+
+        closeMenu();
+      });
+
+      // Default view = Active
+      label.textContent = 'Active';
+      tbody.querySelectorAll('tr').forEach(row => {
+        const rowState = (row.getAttribute('data-state') || '').toLowerCase().trim();
+        row.style.display = rowState === 'active' ? '' : 'none';
+      });
+    });
+  </script>
+
+  <!-- Account # display toggle -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const accountDisplay = document.getElementById('accountDisplay');
+      const accountLookupBtn = document.getElementById('accountLookupBtn');
+      if (!accountDisplay || !accountLookupBtn) return;
+
+      function updateAccountDisplay() {
+        const val = (accountDisplay.textContent || '').trim();
+        const has = !!val && val !== '—' && val !== 'N/A';
+        accountDisplay.classList.toggle('hidden', !has);
+        accountLookupBtn.classList.toggle('hidden', has);
+      }
+
+      // initialize after bind
+      setTimeout(updateAccountDisplay, 100);
+      const obs = new MutationObserver(updateAccountDisplay);
+      obs.observe(accountDisplay, { childList: true, subtree: true });
+    });
+  </script>
+
+
+
+  <!-- General Edit/Save/Cancel behavior -->
+  <script>
+    (function () {
+      const STORAGE_KEY_DATA = 'adv_list_data';
+      const SELECTED_ID_KEY  = 'adv_selected_id';
+      const SELECTED_DATA_KEY= 'adv_selected_data';
+
+      const editableSelectors = ['#companyName', '#advertiserState', '#advertiserWebsite'];
+
+      const btnEdit   = document.getElementById('editGeneralBtn');
+      const btnSave   = document.getElementById('saveGeneralBtn');
+      const btnCancel = document.getElementById('cancelGeneralBtn');
+
+      let editing = false;
+      let snapshot = null;
+      let dirty = false;
+
+      function qInputs() {
+        return editableSelectors.map(s => document.querySelector(s)).filter(Boolean);
+      }
+      function getValues() {
+        const map = {};
+        qInputs().forEach(i => { map[i.id] = i.value ?? ''; });
+        return map;
+      }
+      function setValues(vals) {
+        qInputs().forEach(i => { if (vals.hasOwnProperty(i.id)) i.value = vals[i.id]; });
+      }
+      function shallowEqual(a,b){
+        const ka = Object.keys(a), kb = Object.keys(b);
+        if (ka.length !== kb.length) return false;
+        for (const k of ka) if ((a[k] ?? '') !== (b[k] ?? '')) return false;
+        return true;
+      }
+
+      function applyViewStyle(input) {
+        input.readOnly = true;
+        input.setAttribute('aria-readonly','true');
+        input.tabIndex = -1;
+        
+        if (input.tagName === 'SELECT') {
+          // For select elements in read-only mode
+          ['border','rounded','px-3','py-2','focus:outline-none','focus:bg-white','focus:border-blue-300','bg-white','w-full','text-gray-900']
+            .forEach(c => input.classList.remove(c));
+          ['bg-transparent','border-0','p-0','text-gray-700','leading-tight']
+            .forEach(c => input.classList.add(c));
+          input.style.pointerEvents = 'none';
+          input.style.appearance = 'none';
+        } else {
+          // For input elements
+          ['border','rounded','px-3','py-2','focus:outline-none','focus:bg-white','focus:border-blue-300','bg-white','w-full','text-gray-900']
+            .forEach(c => input.classList.remove(c));
+          ['bg-transparent','border-0','p-0','text-gray-700','leading-tight']
+            .forEach(c => input.classList.add(c));
+        }
+      }
+
+      function applyEditStyle(input) {
+        input.readOnly = false;
+        input.removeAttribute('aria-readonly');
+        input.tabIndex = 0;
+        
+        if (input.tagName === 'SELECT') {
+          // For select elements in edit mode
+          ['bg-transparent','border-0','p-0','text-gray-700','leading-tight'].forEach(c => input.classList.remove(c));
+          ['bg-white','border','border-gray-300','rounded','px-3','py-2','text-gray-900','w-full','focus:outline-none','focus:bg-white','focus:border-blue-300'].forEach(c => input.classList.add(c));
+          input.style.pointerEvents = '';
+          input.style.appearance = '';
+        } else {
+          // For input elements
+          ['bg-transparent','border-0','p-0','text-gray-700','leading-tight'].forEach(c => input.classList.remove(c));
+          ['bg-white','border','border-gray-300','rounded','px-3','py-2','text-gray-900','w-full','focus:outline-none','focus:bg-white','focus:border-blue-300'].forEach(c => input.classList.add(c));
+        }
+      }
+
+      function setMode(isEditing) {
+        editing = isEditing;
+        const inputs = qInputs();
+        inputs.forEach(i => isEditing ? applyEditStyle(i) : applyViewStyle(i));
+        btnEdit?.classList.toggle('hidden', isEditing);
+        btnSave?.classList.toggle('hidden', !isEditing);
+        btnCancel?.classList.toggle('hidden', !isEditing);
+
+        if (isEditing) {
+          snapshot = getValues();
+          dirty = false;
+          inputs.forEach(i => i.addEventListener('input', onDirty));
+          inputs.forEach(i => i.addEventListener('change', onDirty)); // For select elements
+          inputs[0]?.focus();
+        } else {
+          snapshot = null;
+          dirty = false;
+          inputs.forEach(i => i.removeEventListener('input', onDirty));
+          inputs.forEach(i => i.removeEventListener('change', onDirty));
+        }
+      }
+
+      function onDirty() {
+        if (!editing || !snapshot) return;
+        dirty = !shallowEqual(snapshot, getValues());
+      }
+
+      function saveAll() {
+        const selectedId = localStorage.getItem(SELECTED_ID_KEY);
+        if (!selectedId) {
+          showToast({ message: 'No advertiser selected.', type: 'error' });
+          return false;
+        }
+        try {
+          const vals = getValues();
+          const advertisers = JSON.parse(localStorage.getItem(STORAGE_KEY_DATA) || '[]');
+          const idx = advertisers.findIndex(a => String(a.id) === String(selectedId));
+          if (idx === -1) {
+            showToast({ message: 'Advertiser not found in storage.', type: 'error' });
+            return false;
+          }
+
+          // Map inputs → adv fields
+          advertisers[idx].name    = vals.companyName?.trim() || '';
+          advertisers[idx].state   = vals.advertiserState?.trim() || '';   // ✓ use state field
+          advertisers[idx].website = vals.advertiserWebsite?.trim() || '';
+
+          localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(advertisers));
+          localStorage.setItem(SELECTED_DATA_KEY, JSON.stringify(advertisers[idx]));
+
+          // Rebind view
+          if (typeof window.bindAll === 'function') {
+            bindAll('adv.name', advertisers[idx].name, 'No advertiser found');
+            bindAll('adv.state', advertisers[idx].state, 'N/A');
+            bindAll('adv.website', advertisers[idx].website, 'N/A');
+          }
+
+          return true;
+        } catch (e) {
+          console.error(e);
+          showToast({ message: 'Save failed. Check console.', type: 'error' });
+          return false;
+        }
+      }
+
+      function beforeUnloadHandler(e){
+        if (dirty) {
+          e.preventDefault();
+          e.returnValue = '';
+          return '';
+        }
+      }
+      function navGuard(e){
+        if (!dirty) return;
+        const a = e.target.closest('a,button,[role="link"]');
+        if (!a) return;
+        if (a === btnSave || a === btnCancel || a === btnEdit) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const wantsSave = confirm('You have unsaved changes. Save now?\n\nOK = Save  |  Cancel = Discard');
+        if (wantsSave) {
+          const ok = saveAll();
+          if (ok) {
+            dirty = false;
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+            document.removeEventListener('click', navGuard, true);
+            showToast({ message: 'Saved successfully.', type: 'success' });
+            if (a.tagName === 'A' && a.href) window.location.href = a.href; else a.click?.();
+          }
+        } else {
+          setValues(snapshot || {});
+          dirty = false;
+          window.removeEventListener('beforeunload', beforeUnloadHandler);
+          document.removeEventListener('click', navGuard, true);
+          if (a.tagName === 'A' && a.href) window.location.href = a.href; else a.click?.();
+        }
+      }
+
+      // Simple toast function for compatibility
+      function showToast(options, fallbackType = 'info') {
+        const isObject = typeof options === 'object' && options !== null;
+        const message = typeof options === 'string' ? options : (options && options.message) || 'Notification';
+        const type = isObject ? (options.type || fallbackType) : fallbackType;
+        const duration = isObject ? options.duration : undefined;
+        const title = isObject ? options.title : undefined;
+
+        if (typeof window.showToast === 'function') {
+          window.showToast({ message, type, duration, title });
+        } else {
+          console.log('TOAST:', String(type).toUpperCase(), message);
+        }
+      }
+
+      btnEdit?.addEventListener('click', () => {
+        setMode(true);
+        window.addEventListener('beforeunload', beforeUnloadHandler);
+        document.addEventListener('click', navGuard, true);
+      });
+      btnCancel?.addEventListener('click', () => {
+        if (snapshot) setValues(snapshot);
+        dirty = false;
+        window.removeEventListener('beforeunload', beforeUnloadHandler);
+        document.removeEventListener('click', navGuard, true);
+        setMode(false);
+      });
+      btnSave?.addEventListener('click', () => {
+        if (!dirty) {
+          showToast({ message: 'No changes to save.', type: 'warning' });
+          setMode(false);
+          window.removeEventListener('beforeunload', beforeUnloadHandler);
+          document.removeEventListener('click', navGuard, true);
+          return;
+        }
+        const ok = saveAll();
+        if (ok) {
+          dirty = false;
+          window.removeEventListener('beforeunload', beforeUnloadHandler);
+          document.removeEventListener('click', navGuard, true);
+          setMode(false);
+          showToast({ message: 'Data saved successfully.', type: 'success' });
+        }
+      });
+
+      // Initialize to view mode
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => { qInputs().forEach(applyViewStyle); }, 50);
+      });
+    })();
+  </script>
+
+  <!-- Account Lookup Modal -->
+  <div id="accountLookupModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[80vh] overflow-auto">
+      <div class="flex items-center justify-between p-4 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-900">Account Lookup</h2>
+        <button type="button" id="closeLookupX" class="text-gray-400 hover:text-gray-600 transition-colors" title="Close">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-4">
+        <div class="mb-4">
+          <input type="text" id="lookupSearch" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search by account number or name...">
+        </div>
+        
+        <div class="max-h-96 overflow-y-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 sticky top-0">
+              <tr>
+                <th class="text-left py-2 px-4 font-medium text-gray-700">Account #</th>
+                <th class="text-left py-2 px-4 font-medium text-gray-700">Account Name</th>
+              </tr>
+            </thead>
+            <tbody id="lookupResults" class="divide-y divide-gray-200">
+              <!-- Results populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end space-x-3 p-4 border-t border-gray-200">
+        <button type="button" id="cancelLookupBtn" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+        <button type="button" id="selectAccountBtn" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50" disabled>Select</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Lookup Logic -->
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Sample CRM accounts (same as other pages)
+    const SAMPLE_CRM_ACCOUNTS = [
+      { accountNumber: '12345', accountName: 'Acme Corporation' },
+      { accountNumber: '67890', accountName: 'Global Tech Solutions' },
+      { accountNumber: '11111', accountName: 'Sunrise Marketing' },
+      { accountNumber: '22222', accountName: 'Metro Retail Group' },
+      { accountNumber: '33333', accountName: 'Advanced Systems Inc' }
+    ];
+
+    const accountLookupBtn = document.getElementById('accountLookupBtn');
+    const accountLookupModal = document.getElementById('accountLookupModal');
+    const closeLookupX = document.getElementById('closeLookupX');
+    const cancelLookupBtn = document.getElementById('cancelLookupBtn');
+    const lookupSearch = document.getElementById('lookupSearch');
+    const lookupResults = document.getElementById('lookupResults');
+    const selectAccountBtn = document.getElementById('selectAccountBtn');
+
+    if (!accountLookupBtn || !accountLookupModal) return;
+
+    function closeLookupModal() {
+      accountLookupModal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+      if (lookupSearch) lookupSearch.value = '';
+      if (selectAccountBtn) selectAccountBtn.disabled = true;
+    }
+
+    function renderResults(accounts) {
+      if (!lookupResults) return;
+      lookupResults.innerHTML = '';
+      
+      accounts.forEach(account => {
+        const tr = document.createElement('tr');
+        tr.className = 'cursor-pointer hover:bg-gray-50';
+        tr.dataset.accountNumber = account.accountNumber;
+        tr.dataset.accountName = account.accountName;
+        tr.innerHTML = `
+          <td class="py-2 px-4">${account.accountNumber}</td>
+          <td class="py-2 px-4">${account.accountName}</td>
+        `;
+        
+        tr.addEventListener('click', function() {
+          const prev = lookupResults.querySelector('tr.selected');
+          if (prev) prev.classList.remove('bg-blue-50', 'selected');
+          tr.classList.add('bg-blue-50', 'selected');
+          if (selectAccountBtn) selectAccountBtn.disabled = false;
+        });
+        
+        lookupResults.appendChild(tr);
+      });
+    }
+
+    // Open modal
+    accountLookupBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      accountLookupModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      renderResults(SAMPLE_CRM_ACCOUNTS);
+      if (lookupSearch) lookupSearch.focus();
+    });
+
+    // Close modal handlers
+    if (closeLookupX) closeLookupX.addEventListener('click', closeLookupModal);
+    if (cancelLookupBtn) cancelLookupBtn.addEventListener('click', closeLookupModal);
+
+    // Search functionality
+    if (lookupSearch) {
+      lookupSearch.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        const filtered = SAMPLE_CRM_ACCOUNTS.filter(account => 
+          account.accountNumber.toLowerCase().includes(query) ||
+          account.accountName.toLowerCase().includes(query)
+        );
+        renderResults(filtered);
+      });
+    }
+
+    // Select account
+    if (selectAccountBtn) {
+      selectAccountBtn.addEventListener('click', function() {
+        const selected = lookupResults ? lookupResults.querySelector('tr.selected') : null;
+        if (!selected) return;
+
+        const accountNumber = selected.dataset.accountNumber;
+        const accountName = selected.dataset.accountName;
+
+        // Update the display
+        const accountDisplay = document.getElementById('accountDisplay');
+        if (accountDisplay) {
+          accountDisplay.textContent = accountNumber;
+          accountDisplay.classList.remove('hidden');
+        }
+        
+        if (accountLookupBtn) {
+          accountLookupBtn.classList.add('hidden');
+        }
+
+        // Update the data in localStorage
+        try {
+          const selectedId = localStorage.getItem('adv_selected_id');
+          if (selectedId) {
+            const advertisers = JSON.parse(localStorage.getItem('adv_list_data') || '[]');
+            const advIndex = advertisers.findIndex(a => String(a.id) === String(selectedId));
+            
+            if (advIndex !== -1) {
+              advertisers[advIndex].account = accountNumber;
+              localStorage.setItem('adv_list_data', JSON.stringify(advertisers));
+              localStorage.setItem('adv_selected_data', JSON.stringify(advertisers[advIndex]));
+              
+              // Update data binding if available
+              if (typeof window.bindAll === 'function') {
+                window.bindAll('adv.account', accountNumber, 'N/A');
+              }
+            }
+          }
+        } catch (e) {
+          console.error('Error updating account in storage:', e);
+        }
+
+        closeLookupModal();
+        
+        // Show success toast if available
+        if (window.toast && typeof window.toast.success === 'function') {
+          window.toast.success('Account updated successfully');
+        }
+      });
+    }
+
+    // Close on outside click
+    accountLookupModal.addEventListener('click', function(e) {
+      if (e.target === accountLookupModal) {
+        closeLookupModal();
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !accountLookupModal.classList.contains('hidden')) {
+        closeLookupModal();
+      }
+    });
+  });
+  </script>
+  <script src="./assets/sidebar.js" defer></script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const campaignListEl = document.getElementById('campaignList');
+  const addBtn = document.getElementById('addCampaignBtn');
+
+  // Re-wire static rows (original expand logic)
+  function wireExpand(row) {
+    const btn   = row.querySelector('button[data-campaign-row]');
+    const panel = row.querySelector('.adgroups-panel');
+    const caret = row.querySelector('[data-caret]');
+    if (!btn || !panel) return;
+
+    btn.addEventListener('click', (e) => {
+      if (e.target.closest('input[type="checkbox"]')) return;
+      if (row.classList.contains('is-editing')) return;
+      const isOpen = !panel.classList.contains('hidden');
+      if (!isOpen) {
+        document.querySelectorAll('#campaignList .adgroups-panel').forEach(p => {
+          if (p !== panel) {
+            p.classList.add('hidden');
+            const ct = p.parentElement.querySelector('[data-caret]');
+            if (ct) ct.textContent = '+';
+          }
+        });
+      }
+      if (isOpen) { panel.classList.add('hidden'); if (caret) caret.textContent = '+'; }
+      else { panel.classList.remove('hidden'); if (caret) caret.textContent = '–'; }
+    });
+
+    row.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('click', ev => ev.stopPropagation());
+    });
+  }
+
+  // Tag existing static buttons so wireExpand works
+  document.querySelectorAll('#campaignList [data-campaign] > button:not([data-campaign-row])')
+    .forEach(b => b.setAttribute('data-campaign-row',''));
+
+  document.querySelectorAll('#campaignList [data-campaign]').forEach(wireExpand);
+
+  // Utility
+  function el(tag, cls='', html='') {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html) e.innerHTML = html;
+    return e;
+  }
+
+  function input(name, placeholder='', extra='') {
+    return `<input data-field="${name}" type="text" placeholder="${placeholder}"
+             class="w-full px-2 py-1 border border-gray-300 rounded text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500 ${extra}">`;
+  }
+
+  function dateInput(name) {
+    return `<input data-field="${name}" type="date"
+             class="w-full px-2 py-1 border border-gray-300 rounded text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500">`;
+  }
+
+  function numberInput(name, placeholder='') {
+    return `<input data-field="${name}" type="number" min="0" placeholder="${placeholder}"
+             class="w-full px-2 py-1 border border-gray-300 rounded text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500">`;
+  }
+
+  let editingCampaignRow = null;
+
+  function cancelEditingRow(row) {
+    row.remove();
+    editingCampaignRow = null;
+  }
+
+  function createEditingCampaignRow() {
+    const wrapper = el('div','campaign-row is-editing border-t bg-white','');
+    wrapper.setAttribute('data-campaign','');
+    const formBtn = el('div','w-full flex flex-col md:grid md:grid-cols-12 gap-2 px-4 py-3');
+
+    formBtn.innerHTML = `
+      <!-- DSP (col-span-2) -->
+      <div class="flex items-start gap-2 col-span-2">
+        <span class="inline-flex mt-0.5 h-5 w-5 items-center justify-center rounded border border-gray-300 text-[10px] font-semibold text-gray-400 bg-gray-50">+</span>
+        <div class="flex-1">${input('dsp','DSP')}</div>
+      </div>
+      <!-- Campaign (col-span-2) -->
+      <div class="col-span-2">${input('campaignName','Campaign Name')}</div>
+      <!-- GCM Campaign (col-span-2) -->
+      <div class="col-span-2 hidden md:flex">${input('gcmCampaignName','GCM Campaign')}</div>
+      <!-- Template (col-span-2) -->
+      <div class="col-span-2 hidden md:flex">${input('template','Template')}</div>
+      <!-- Impr. (col-span-1) -->
+      <div class="col-span-1 hidden md:flex">${numberInput('impressions','Impr.')}</div>
+      <!-- Ad Grps (col-span-1) -->
+      <div class="col-span-1 hidden md:flex items-center justify-center">
+        <span class="text-[11px] text-gray-400" data-field-static="adGroupCount">0</span>
+      </div>
+      <!-- Active Checkbox (col-span-2) -->
+      <div class="col-span-2 hidden md:flex items-center justify-center">
+        <input type="checkbox" data-field="isActive"
+               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+               aria-label="Active status" checked>
+      </div>
+      <!-- Action buttons -->
+      <div class="col-span-12 flex gap-3 pt-2 pl-7 md:pl-0">
+        <button type="button" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs" data-action="save-campaign">Save Campaign</button>
+        <button type="button" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded text-xs" data-action="cancel-campaign">Cancel</button>
+      </div>
+    `;
+
+    const panel = el('div','adgroups-panel hidden bg-gray-50/60 px-6 pb-6 pt-4');
+    panel.innerHTML = `<div class="text-[11px] font-semibold text-gray-500 tracking-wide mb-3">AD GROUPS (Save campaign first)</div>`;
+    wrapper.appendChild(formBtn);
+    wrapper.appendChild(panel);
+    return wrapper;
+  }
+
+  function validateCampaignInputs(row) {
+    const required = ['dsp','campaignName','impressions'];
+    let ok = true;
+    required.forEach(f => {
+      const inp = row.querySelector(`[data-field="${f}"]`);
+      if (!inp) return;
+      const val = (inp.value || '').trim();
+      const fail = !val || (f === 'impressions' && isNaN(Number(val)));
+      inp.classList.toggle('border-red-500', fail);
+      if (fail) ok = false;
+    });
+    return ok;
+  }
+
+  function buildSavedCampaignRow(data) {
+    const row = el('div','campaign-row','');
+    row.setAttribute('data-campaign','');
+    row.dataset.campaignId = data.id;
+
+    const isActive = (data.status || 'Active') === 'Active';
+
+    const btn = el('button','w-full flex flex-col md:grid md:grid-cols-12 gap-2 px-4 py-3 text-left hover:bg-blue-50/40 transition','');
+    btn.type = 'button';
+    btn.setAttribute('data-campaign-row','');
+
+    btn.innerHTML = `
+      <!-- DSP -->
+      <div class="flex items-start gap-2 col-span-2">
+        <span class="inline-flex mt-0.5 h-5 w-5 items-center justify-center rounded border border-gray-300 text-[10px] font-semibold text-gray-600 bg-white" data-caret>+</span>
+        <p class="text-sm font-medium text-gray-800">${data.dsp}</p>
+      </div>
+      <!-- Campaign -->
+      <div class="col-span-2 flex items-start">
+        <p class="text-sm font-medium text-gray-800">${data.campaignName}</p>
+      </div>
+      <!-- GCM Campaign -->
+      <div class="col-span-2 hidden md:flex items-center text-xs text-gray-700">${data.gcmCampaignName || data.campaignName}</div>
+      <!-- Template -->
+      <div class="col-span-2 hidden md:flex items-center text-xs text-gray-700">${data.template || '—'}</div>
+      <!-- Impr. -->
+      <div class="col-span-1 hidden md:flex items-center justify-start text-xs font-medium text-gray-800">${Number(data.impressions).toLocaleString()}</div>
+      <!-- Ad Groups -->
+      <div class="col-span-1 hidden md:flex items-center justify-center text-xs font-medium text-gray-700" data-adgroup-count>${data.adGroups.length}</div>
+      <!-- Status (checkbox) -->
+      <div class="col-span-2 hidden md:flex items-center justify-center">
+        <input type="checkbox" data-active-toggle
+               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+               aria-label="Active status"
+               ${isActive ? 'checked' : ''}>
+      </div>
+    `;
+
+    const panel = el('div','adgroups-panel hidden bg-gray-50/60 px-6 pb-6 pt-4','');
+    panel.innerHTML = `
+      <div class="flex items-center justify-between mb-3">
+        <div class="text-[11px] font-semibold text-gray-500 tracking-wide">AD GROUPS</div>
+        <button type="button" class="text-[11px] text-blue-600 hover:underline" data-action="add-adgroup">+ Add Ad Group</button>
+      </div>
+      <div class="space-y-3" data-adgroup-container>
+        <div class="text-[11px] text-gray-500" data-empty-msg>No ad groups yet. Click "Add Ad Group".</div>
+      </div>
+    `;
+
+    row.appendChild(btn);
+    row.appendChild(panel);
+
+    // Wire expand + panel
+    wireExpand(row);
+    wirePanel(panel, row);
+
+    return row;
+  }
+
+  function wirePanel(panel, campaignRow) {
+    panel.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action="add-adgroup"]');
+      if (btn) {
+        e.preventDefault();
+        addAdGroupForm(panel, campaignRow);
+      }
+    });
+  }
+
+  function addAdGroupForm(panel, campaignRow) {
+    const container = panel.querySelector('[data-adgroup-container]');
+    const emptyMsg = panel.querySelector('[data-empty-msg]');
+    if (emptyMsg) emptyMsg.remove();
+
+    // Only allow one unsaved form at a time per campaign
+    if (container.querySelector('.adgroup-form')) return;
+
+    const form = el('div','rounded border border-gray-300 bg-white p-4 adgroup-form','');
+    form.innerHTML = `
+      <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 text-[11px]">
+        <div class="sm:col-span-3">
+          <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</p>
+          ${input('name','Ad Group Name','mt-0.5')}
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase">Tactic</p>
+          ${input('tactic','Tactic','mt-0.5')}
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase">Content Category</p>
+          ${input('contentCategory','Content Category','mt-0.5')}
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase">MV Classification</p>
+          ${input('mvClassification','Classification','mt-0.5')}
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase">Audience</p>
+          ${input('audience','Audience','mt-0.5')}
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase">Geotarget</p>
+          ${input('geotarget','Geotarget','mt-0.5')}
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase">Start Date</p>
+          ${dateInput('startDate')}
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase">End Date</p>
+          ${dateInput('endDate')}
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase">Impressions</p>
+          ${numberInput('impressions','0')}
+        </div>
+        <div class="sm:col-span-2">
+          <p class="text-[10px] font-semibold text-gray-500 uppercase">Landing Page</p>
+          ${input('landingPage','https://...','mt-0.5')}
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase">DSP Ad Group ID</p>
+          ${input('dspId','ID','mt-0.5')}
+        </div>
+        <div class="sm:col-span-3">
+          <p class="text-[10px] font-semibold text-gray-500 uppercase">UTM Code</p>
+          <textarea data-field="utm" rows="2"
+            class="mt-0.5 w-full px-2 py-1 border border-gray-300 rounded text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500"
+            placeholder="https://..."></textarea>
+        </div>
+      </div>
+      <div class="flex gap-3 mt-4">
+        <button type="button" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs" data-action="save-adgroup">Save Ad Group</button>
+        <button type="button" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded text-xs" data-action="cancel-adgroup">Cancel</button>
+      </div>
+    `;
+
+    container.appendChild(form);
+
+    form.addEventListener('click', (e) => {
+      const save = e.target.closest('[data-action="save-adgroup"]');
+      const cancel = e.target.closest('[data-action="cancel-adgroup"]');
+
+      if (cancel) {
+        form.remove();
+        if (!container.children.length) {
+          container.innerHTML = `<div class="text-[11px] text-gray-500" data-empty-msg>No ad groups yet. Click "Add Ad Group".</div>`;
+        }
+      }
+
+      if (save) {
+        if (!validateAdGroup(form)) return;
+        const data = extractAdGroupData(form);
+        const card = renderAdGroupCard(data);
+        form.replaceWith(card);
+        updateAdGroupCount(campaignRow);
+      }
+    });
+  }
+
+  function validateAdGroup(form) {
+    const req = ['name','startDate','endDate','impressions'];
+    let ok = true;
+    req.forEach(f => {
+      const inp = form.querySelector(`[data-field="${f}"]`);
+      if (!inp) return;
+      const val = (inp.value || '').trim();
+      const fail = !val || (f === 'impressions' && isNaN(Number(val)));
+      inp.classList.toggle('border-red-500', fail);
+      if (fail) ok = false;
+    });
+    return ok;
+  }
+
+  function extractAdGroupData(form) {
+    const data = {};
+    form.querySelectorAll('[data-field]').forEach(i => {
+      data[i.getAttribute('data-field')] = i.value.trim();
+    });
+    return data;
+  }
+
+  function renderAdGroupCard(d) {
+    const card = el('div','rounded border border-gray-200 bg-white','');
+    card.innerHTML = `
+      <div class="px-4 py-4 text-[11px] space-y-4">
+        <div>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Name</p>
+          <p class="mt-0.5 font-semibold text-gray-800">
+            ${d.name || '—'}
+            ${d.dspId ? `<span class="ml-2 font-mono bg-amber-100 text-amber-800 px-1 py-0.5 rounded align-middle">${d.dspId}</span>`:''}
+          </p>
+        </div>
+        <div class="space-y-3">
+          ${pair('Tactic', d.tactic)}
+          ${pair('Content Category', d.contentCategory)}
+          ${pair('MV Classification', d.mvClassification)}
+          ${pair('Audience', d.audience)}
+          ${pair('Geotarget', d.geotarget)}
+          <div class="flex gap-8 flex-wrap">
+            ${smallPair('Start Date', d.startDate)}
+            ${smallPair('End Date', d.endDate)}
+          </div>
+          ${pair('Impressions', d.impressions ? Number(d.impressions).toLocaleString() : '—')}
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase">Landing Page</p>
+            ${d.landingPage ? `<a href="${d.landingPage}" target="_blank" class="mt-0.5 inline-block text-blue-600 hover:underline break-all">${d.landingPage}</a>`:'<p class="mt-0.5 text-gray-800">—</p>'}
+          </div>
+          ${d.dspId ? pair('DSP Ad Group ID', `<span class="font-mono bg-gray-100 px-2 py-1 rounded inline-block">${d.dspId}</span>`) : ''}
+          <div>
+            <p class="text-[10px] font-semibold text-gray-500 uppercase">UTM Code</p>
+            <code class="block mt-0.5 bg-gray-100/80 border border-dashed border-gray-300 rounded px-2 py-2 leading-snug break-all text-[10px] text-gray-700">
+              ${d.utm || '—'}
+            </code>
+          </div>
+        </div>
+      </div>
+    `;
+    return card;
+  }
+
+  function pair(label, val) {
+    return `<div>
+      <p class="text-[10px] font-semibold text-gray-500 uppercase">${label}</p>
+      <p class="mt-0.5 font-medium text-gray-800">${val && val !== '' ? val : '—'}</p>
+    </div>`;
+  }
+  function smallPair(label, val) {
+    return `<div>
+      <p class="text-[10px] font-semibold text-gray-500 uppercase">${label}</p>
+      <p class="mt-0.5 font-medium text-gray-800">${val && val !== '' ? val : '—'}</p>
+    </div>`;
+  }
+
+  function updateAdGroupCount(campaignRow) {
+    const countEl = campaignRow.querySelector('[data-adgroup-count]');
+    const panel = campaignRow.querySelector('.adgroups-panel');
+    if (countEl && panel) {
+      const num = panel.querySelectorAll('[data-adgroup-container] > .rounded').length;
+      countEl.textContent = num;
+    }
+  }
+
+  // Add Campaign button handler
+  addBtn?.addEventListener('click', () => {
+    if (editingCampaignRow) {
+      editingCampaignRow.scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+    const newRow = createEditingCampaignRow();
+    campaignListEl.insertBefore(newRow, document.getElementById('addCampaignContainer'));
+    editingCampaignRow = newRow;
+
+    newRow.addEventListener('click', (e) => {
+      const save = e.target.closest('[data-action="save-campaign"]');
+      const cancel = e.target.closest('[data-action="cancel-campaign"]');
+      if (cancel) {
+        cancelEditingRow(newRow);
+      }
+      if (save) {
+        if (!validateCampaignInputs(newRow)) return;
+        const data = {};
+        newRow.querySelectorAll('[data-field]').forEach(inp => {
+          if (inp.type === 'checkbox') return; // skip here, handle separately
+          data[inp.getAttribute('data-field')] = inp.value.trim();
+        });
+        const activeEl = newRow.querySelector('[data-field="isActive"]');
+        data.status = activeEl && activeEl.checked ? 'Active' : 'Paused';
+        data.id = 'cmp-' + Date.now();
+        data.gcmCampaignName = data.gcmCampaignName || data.campaignName;
+        data.adGroups = [];
+        const saved = buildSavedCampaignRow(data);
+        newRow.replaceWith(saved);
+        editingCampaignRow = null;
+      }
+    });
+  });
+
+  // Select all checkboxes by default for static campaign rows
+  document.querySelectorAll('#campaignList input[type="checkbox"]').forEach(cb => {
+    cb.checked = true;
+  });
+
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar   = document.getElementById('rightSidebar');
+  const toggleBtn = document.getElementById('rightSidebarToggle');
+  const reopenBtn = document.getElementById('rightSidebarReopen');
+  const iconCollapse = document.getElementById('rsIconCollapse');
+  const iconExpand   = document.getElementById('rsIconExpand');
+
+  if (!sidebar || !toggleBtn || !reopenBtn) return;
+
+  function setState(collapsed) {
+    if (collapsed) {
+      sidebar.classList.add('collapsed');
+      reopenBtn.classList.remove('hidden');
+      toggleBtn.setAttribute('aria-expanded','false');
+      toggleBtn.setAttribute('aria-label','Expand right sidebar');
+      toggleBtn.title = 'Expand Panel';
+      iconCollapse.classList.add('hidden');
+      iconExpand.classList.remove('hidden');
+    } else {
+      sidebar.classList.remove('collapsed');
+      reopenBtn.classList.add('hidden');
+      toggleBtn.setAttribute('aria-expanded','true');
+      toggleBtn.setAttribute('aria-label','Collapse right sidebar');
+      toggleBtn.title = 'Collapse Panel';
+      iconCollapse.classList.remove('hidden');
+      iconExpand.classList.add('hidden');
+    }
+  }
+
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setState(!sidebar.classList.contains('collapsed'));
+  });
+
+  reopenBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setState(false);
+  });
+
+  // Start collapsed
+  setState(true);
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Right sidebar change tracking functionality
+  function addChangeRecord(type) {
+    const rightSidebarList = document.querySelector('#rightSidebar ul');
+    if (!rightSidebarList) return;
+
+    let label;
+    switch (type) {
+      case 'Create Campaign':
+        label = 'Create Campaign Update';
+        break;
+      case 'Create Ad Group':
+        label = 'Create Ad Group Update';
+        break;
+      default:
+        label = (type ? type + ' Update' : 'Update');
+    }
+
+    const listItem = document.createElement('li');
+    listItem.innerHTML = `
+      <a href="#" class="block px-3 py-2 rounded hover:bg-blue-50 text-sm text-gray-700">
+        ${label}
+      </a>
+    `;
+
+    rightSidebarList.insertBefore(listItem, rightSidebarList.firstChild);
+
+    console.log(`Change record added: ${label}`);
+  }
+
+  // Track changes made during this session
+  let sessionChanges = [];
+
+  const campaignListEl = document.getElementById('campaignList');
+  if (campaignListEl) {
+    // Track campaign creation (when the inline campaign Save Campaign button is pressed)
+    campaignListEl.addEventListener('click', (e) => {
+      const saveCampaignBtn = e.target.closest('[data-action="save-campaign"]');
+      if (saveCampaignBtn) {
+        const campaignRow = saveCampaignBtn.closest('.campaign-row');
+        if (campaignRow && campaignRow.classList.contains('is-editing')) {
+          sessionChanges.push({ type: 'Create Campaign', timestamp: Date.now() });
+        }
+      }
+    });
+
+    // Track ad group creation (when Save Ad Group button pressed)
+    campaignListEl.addEventListener('click', (e) => {
+      const saveAdGroupBtn = e.target.closest('[data-action="save-adgroup"]');
+      if (saveAdGroupBtn) {
+        sessionChanges.push({ type: 'Create Ad Group', timestamp: Date.now() });
+      }
+    });
+  }
+
+  // Commit queued changes to sidebar when main Save pressed
+  const mainSaveBtn = document.getElementById('mainSaveBtn');
+  if (mainSaveBtn) {
+    mainSaveBtn.addEventListener('click', () => {
+      if (!sessionChanges.length) {
+        console.log('No new campaign/ad group changes this session.');
+        return;
+      }
+      sessionChanges.forEach(change => addChangeRecord(change.type));
+      sessionChanges = [];
+      console.log('Session changes flushed to change log.');
+    });
+  }
+
+  window.addChangeRecord = addChangeRecord;
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Store original state when page loads
+  let originalCampaignsHTML = '';
+  
+  // Capture original campaigns HTML after DOM is ready
+  setTimeout(() => {
+    const campaignList = document.getElementById('campaignList');
+    if (campaignList) {
+      originalCampaignsHTML = campaignList.innerHTML;
+    }
+  }, 100);
+
+  // Handle "Original" click in right sidebar
+  document.addEventListener('click', (e) => {
+    const originalLink = e.target.closest('a');
+    if (originalLink && originalLink.textContent.trim() === 'Original') {
+      e.preventDefault();
+      
+      // Confirm with user before resetting
+      if (confirm('Are you sure you want to reset all changes? This will remove any campaigns or ad groups you\'ve added and cannot be undone.')) {
+        resetToOriginal();
+      }
+    }
+  });
+
+  function resetToOriginal() {
+    const campaignList = document.getElementById('campaignList');
+    if (!campaignList || !originalCampaignsHTML) return;
+
+    // Reset campaigns to original state
+    campaignList.innerHTML = originalCampaignsHTML;
+
+    // Re-wire all the event handlers for the restored content
+    rewireEventHandlers();
+
+    // Clear session changes
+    if (window.sessionChanges) {
+      window.sessionChanges = [];
+    }
+
+    // Reset any editing state
+    if (window.editingCampaignRow) {
+      window.editingCampaignRow = null;
+    }
+
+    // Show success message
+    if (window.toast && typeof window.toast.success === 'function') {
+      window.toast.success('Page reset to original state');
+    } else {
+      alert('Page reset to original state');
+    }
+
+    console.log('CAD page reset to original state');
+  }
+
+  function rewireEventHandlers() {
+    // Re-wire expand/collapse for campaign rows
+    document.querySelectorAll('#campaignList [data-campaign]').forEach(row => {
+      const btn = row.querySelector('button[data-campaign-row]');
+      const panel = row.querySelector('.adgroups-panel');
+      const caret = row.querySelector('[data-caret]');
+      
+      if (!btn || !panel) return;
+
+      // Remove any existing listeners by cloning the button
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+
+      newBtn.addEventListener('click', (e) => {
+        if (e.target.closest('input[type="checkbox"]')) return;
+        if (row.classList.contains('is-editing')) return;
+        
+        const isOpen = !panel.classList.contains('hidden');
+        if (!isOpen) {
+          document.querySelectorAll('#campaignList .adgroups-panel').forEach(p => {
+            if (p !== panel) {
+              p.classList.add('hidden');
+              const ct = p.parentElement.querySelector('[data-caret]');
+              if (ct) ct.textContent = '+';
+            }
+          });
+        }
+        if (isOpen) { 
+          panel.classList.add('hidden'); 
+          if (caret) caret.textContent = '+'; 
+        } else { 
+          panel.classList.remove('hidden'); 
+          if (caret) caret.textContent = '–'; 
+        }
+      });
+
+      // Re-wire checkbox click prevention
+      row.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('click', ev => ev.stopPropagation());
+      });
+    });
+
+    // Re-wire the "Add Campaign" button
+    const addBtn = document.getElementById('addCampaignBtn');
+    if (addBtn) {
+      // Remove existing listeners by cloning
+      const newAddBtn = addBtn.cloneNode(true);
+      addBtn.parentNode.replaceChild(newAddBtn, addBtn);
+      
+      // Re-attach the add campaign functionality
+      // (You'll need to move your existing addCampaignBtn logic into a reusable function)
+      wireAddCampaignButton(newAddBtn);
+    }
+
+    // Set all checkboxes to checked (original state)
+    document.querySelectorAll('#campaignList input[type="checkbox"]').forEach(cb => {
+      cb.checked = true;
+    });
+  }
+
+  function wireAddCampaignButton(addBtn) {
+    // Move your existing add campaign logic here
+    addBtn.addEventListener('click', () => {
+      if (window.editingCampaignRow) {
+        window.editingCampaignRow.scrollIntoView({ behavior:'smooth', block:'center' });
+        return;
+      }
+      
+      // Your existing campaign creation logic goes here
+      // (This should be the same as what you have in your current addCampaignBtn event listener)
+    });
+  }
+
+  // Expose functions globally for use by other scripts
+  window.resetToOriginal = resetToOriginal;
+});
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Versioning system - stores snapshots of the page state
+  let versionHistory = [];
+  let originalCampaignsHTML = '';
+  let sessionChanges = [];
+
+  // Capture original campaigns HTML after DOM is ready
+  setTimeout(() => {
+    const campaignList = document.getElementById('campaignList');
+    if (campaignList) {
+      originalCampaignsHTML = campaignList.innerHTML;
+      // Add "Original" as the base version
+      versionHistory.push({
+        id: 'original',
+        label: 'Original',
+        timestamp: Date.now(),
+        html: originalCampaignsHTML
+      });
+    }
+  }, 100);
+
+  // Right sidebar change tracking functionality
+  function addChangeRecord(type, html) {
+    const rightSidebarList = document.querySelector('#rightSidebar ul');
+    if (!rightSidebarList) return;
+
+    // Get current date in MM/DD/YYYY format
+    const now = new Date();
+    const dateStr = `${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getDate().toString().padStart(2, '0')}/${now.getFullYear()}`;
+
+    let label;
+    switch (type) {
+      case 'Create Campaign':
+        label = `Create Campaign ${dateStr}`;
+        break;
+      case 'Create Ad Group':
+        label = `Create Ad Group ${dateStr}`;
+        break;
+      default:
+        label = `${type} ${dateStr}`;
+    }
+
+    // Create version record
+    const versionId = `version-${Date.now()}`;
+    const version = {
+      id: versionId,
+      label: label,
+      timestamp: Date.now(),
+      html: html
+    };
+
+    // Add to version history
+    versionHistory.push(version);
+
+    // Create list item with data attribute for version ID
+    const listItem = document.createElement('li');
+    listItem.innerHTML = `
+      <a href="#" data-version-id="${versionId}" class="block px-3 py-2 rounded hover:bg-blue-50 text-sm text-gray-700">
+        ${label}
+      </a>
+    `;
+
+    // Insert at the top (after Original, which should stay at bottom)
+    const originalItem = rightSidebarList.querySelector('a[data-version-id="original"]')?.parentElement;
+    if (originalItem) {
+      rightSidebarList.insertBefore(listItem, originalItem);
+    } else {
+      rightSidebarList.insertBefore(listItem, rightSidebarList.firstChild);
+    }
+
+    console.log(`Change record added: ${label}`);
+  }
+
+  // Track changes made during this session
+  const campaignListEl = document.getElementById('campaignList');
+  if (campaignListEl) {
+    // Track campaign creation (when the inline campaign Save Campaign button is pressed)
+    campaignListEl.addEventListener('click', (e) => {
+      const saveCampaignBtn = e.target.closest('[data-action="save-campaign"]');
+      if (saveCampaignBtn) {
+        const campaignRow = saveCampaignBtn.closest('.campaign-row');
+        if (campaignRow && campaignRow.classList.contains('is-editing')) {
+          sessionChanges.push({ type: 'Create Campaign', timestamp: Date.now() });
+        }
+      }
+    });
+
+    // Track ad group creation (when Save Ad Group button pressed)
+    campaignListEl.addEventListener('click', (e) => {
+      const saveAdGroupBtn = e.target.closest('[data-action="save-adgroup"]');
+      if (saveAdGroupBtn) {
+        sessionChanges.push({ type: 'Create Ad Group', timestamp: Date.now() });
+      }
+    });
+  }
+
+  // Commit queued changes to sidebar when main Save pressed
+  const mainSaveBtn = document.getElementById('mainSaveBtn');
+  if (mainSaveBtn) {
+    mainSaveBtn.addEventListener('click', () => {
+      if (!sessionChanges.length) {
+        console.log('No new campaign/ad group changes this session.');
+        return;
+      }
+
+      // Capture current state
+      const campaignList = document.getElementById('campaignList');
+      const currentHTML = campaignList ? campaignList.innerHTML : '';
+
+      // Add each session change as a version
+      sessionChanges.forEach(change => {
+        addChangeRecord(change.type, currentHTML);
+      });
+
+      sessionChanges = [];
+      console.log('Session changes flushed to change log.');
+    });
+  }
+
+  // Handle version restoration from right sidebar clicks
+  document.addEventListener('click', (e) => {
+    const versionLink = e.target.closest('a[data-version-id]');
+    if (versionLink) {
+      e.preventDefault();
+      const versionId = versionLink.getAttribute('data-version-id');
+      restoreVersion(versionId);
+    }
+  });
+
+  function restoreVersion(versionId) {
+    const version = versionHistory.find(v => v.id === versionId);
+    if (!version) {
+      console.error('Version not found:', versionId);
+      return;
+    }
+
+    const campaignList = document.getElementById('campaignList');
+    if (!campaignList) return;
+
+    // Confirm with user before restoring (except for Original)
+    if (versionId !== 'original') {
+      if (!confirm(`Are you sure you want to restore to "${version.label}"? This will replace the current state.`)) {
+        return;
+      }
+    }
+
+    // Restore the HTML state
+    campaignList.innerHTML = version.html;
+
+    // Re-wire all the event handlers for the restored content
+    rewireEventHandlers();
+
+    // Clear session changes since we're now at a different state
+    sessionChanges = [];
+
+    // Reset any editing state
+    if (window.editingCampaignRow) {
+      window.editingCampaignRow = null;
+    }
+
+    // Show success message
+    const message = versionId === 'original' ? 
+      'Page reset to original state' : 
+      `Restored to "${version.label}"`;
+
+    if (window.toast && typeof window.toast.success === 'function') {
+      window.toast.success(message);
+    } else {
+      alert(message);
+    }
+
+    console.log(`Restored to version: ${version.label}`);
+  }
+
+  function rewireEventHandlers() {
+    // Re-wire expand/collapse for campaign rows
+    document.querySelectorAll('#campaignList [data-campaign]').forEach(row => {
+      const btn = row.querySelector('button[data-campaign-row]');
+      const panel = row.querySelector('.adgroups-panel');
+      const caret = row.querySelector('[data-caret]');
+      
+      if (!btn || !panel) return;
+
+      // Remove any existing listeners by cloning the button
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+
+      newBtn.addEventListener('click', (e) => {
+        if (e.target.closest('input[type="checkbox"]')) return;
+        if (row.classList.contains('is-editing')) return;
+        
+        const isOpen = !panel.classList.contains('hidden');
+        if (!isOpen) {
+          document.querySelectorAll('#campaignList .adgroups-panel').forEach(p => {
+            if (p !== panel) {
+              p.classList.add('hidden');
+              const ct = p.parentElement.querySelector('[data-caret]');
+              if (ct) ct.textContent = '+';
+            }
+          });
+        }
+        if (isOpen) { 
+          panel.classList.add('hidden'); 
+          if (caret) caret.textContent = '+'; 
+        } else { 
+          panel.classList.remove('hidden'); 
+          if (caret) caret.textContent = '–'; 
+        }
+      });
+
+      // Re-wire checkbox click prevention
+      row.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('click', ev => ev.stopPropagation());
+      });
+
+      // Re-wire ad groups panel functionality
+      const adGroupsPanel = row.querySelector('.adgroups-panel');
+      if (adGroupsPanel) {
+        wirePanel(adGroupsPanel, row);
+      }
+    });
+
+    // Re-wire the "Add Campaign" button
+    const addBtn = document.getElementById('addCampaignBtn');
+    if (addBtn) {
+      // Remove existing listeners by cloning
+      const newAddBtn = addBtn.cloneNode(true);
+      addBtn.parentNode.replaceChild(newAddBtn, addBtn);
+      
+      // Re-attach the add campaign functionality
+      wireAddCampaignButton(newAddBtn);
+    }
+
+    // Set all checkboxes to checked (original state)
+    document.querySelectorAll('#campaignList input[type="checkbox"]').forEach(cb => {
+      cb.checked = true;
+    });
+  }
+
+  function wirePanel(panel, campaignRow) {
+    panel.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action="add-adgroup"]');
+      if (btn) {
+        e.preventDefault();
+        addAdGroupForm(panel, campaignRow);
+      }
+    });
+  }
+
+  function wireAddCampaignButton(addBtn) {
+    addBtn.addEventListener('click', () => {
+      if (window.editingCampaignRow) {
+        window.editingCampaignRow.scrollIntoView({ behavior:'smooth', block:'center' });
+        return;
+      }
+      
+      // Create new campaign editing row
+      const newRow = createEditingCampaignRow();
+      const campaignListEl = document.getElementById('campaignList');
+      campaignListEl.insertBefore(newRow, document.getElementById('addCampaignContainer'));
+      window.editingCampaignRow = newRow;
+
+      // Wire up save/cancel handlers
+      newRow.addEventListener('click', (e) => {
+        const save = e.target.closest('[data-action="save-campaign"]');
+        const cancel = e.target.closest('[data-action="cancel-campaign"]');
+        if (cancel) {
+          cancelEditingRow(newRow);
+        }
+        if (save) {
+          if (!validateCampaignInputs(newRow)) return;
+          const data = {};
+          newRow.querySelectorAll('[data-field]').forEach(inp => {
+            if (inp.type === 'checkbox') return;
+            data[inp.getAttribute('data-field')] = inp.value.trim();
+          });
+          const activeEl = newRow.querySelector('[data-field="isActive"]');
+          data.status = activeEl && activeEl.checked ? 'Active' : 'Paused';
+          data.id = 'cmp-' + Date.now();
+          data.gcmCampaignName = data.gcmCampaignName || data.campaignName;
+          data.adGroups = [];
+          const saved = buildSavedCampaignRow(data);
+          newRow.replaceWith(saved);
+          window.editingCampaignRow = null;
+        }
+      });
+    });
+  }
+
+  // Initialize Original version link
+  setTimeout(() => {
+    const rightSidebarList = document.querySelector('#rightSidebar ul');
+    if (rightSidebarList) {
+      // Update existing "Original" link to have version ID
+      const originalLink = rightSidebarList.querySelector('a');
+      if (originalLink && originalLink.textContent.trim() === 'Original') {
+        originalLink.setAttribute('data-version-id', 'original');
+      }
+    }
+  }, 200);
+
+  // Expose functions globally for use by other scripts
+  window.addChangeRecord = addChangeRecord;
+  window.restoreVersion = restoreVersion;
+  window.versionHistory = versionHistory;
+});
+
+
+
+
+</script>
+
+<script src="./assets/phase1-core.js" defer></script>

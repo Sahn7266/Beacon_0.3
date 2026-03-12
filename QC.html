@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beacon Quick Create</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./assets/theme.css" />
+  <link rel="stylesheet" href="./assets/toast.css" />
+  <script src="./assets/toast.js" defer></script>
+  <script src="./assets/admin-config.js" defer></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif; }
+
+    .card-shell {
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      background: white;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.625rem 0.875rem;
+      border-bottom: 1px solid #e5e7eb;
+      background: #f8fafc;
+    }
+
+    .card-head h2 {
+      margin: 0;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #1f2937;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      border: 1px solid #d1d5db;
+      padding: 0.15rem 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #4b5563;
+      background: white;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .chip.ok {
+      color: #166534;
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+    }
+
+    .chip.warn {
+      color: #92400e;
+      border-color: #fcd34d;
+      background: #fffbeb;
+    }
+
+    .compact-input,
+    .compact-select,
+    .compact-textarea {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 0.4rem;
+      padding: 0.4rem 0.55rem;
+      font-size: 0.79rem;
+      line-height: 1.25rem;
+      color: #111827;
+      background: white;
+    }
+
+    .compact-textarea {
+      min-height: 64px;
+      resize: vertical;
+    }
+
+    .compact-input:focus,
+    .compact-select:focus,
+    .compact-textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .field-label.required::after {
+      content: " *";
+      color: #dc2626;
+    }
+
+    .dense-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1080px;
+      font-size: 0.78rem;
+    }
+
+    .dense-table th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #f1f5f9;
+      color: #334155;
+      border-bottom: 1px solid #d1d5db;
+      padding: 0.42rem 0.38rem;
+      text-align: left;
+      font-size: 0.67rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+
+    .dense-table td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0.33rem;
+      vertical-align: top;
+      background: white;
+    }
+
+    .dense-table tbody tr:nth-child(even) td {
+      background: #fbfdff;
+    }
+
+    .readonly-pill {
+      display: block;
+      border: 1px dashed #cbd5e1;
+      border-radius: 0.37rem;
+      padding: 0.35rem 0.45rem;
+      background: #f8fafc;
+      color: #334155;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 0.75rem;
+      min-height: 2rem;
+      line-height: 1.25rem;
+    }
+
+    .campaign-block {
+      border: 1px solid #d1d5db;
+      border-radius: 0.45rem;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .campaign-block + .campaign-block {
+      margin-top: 0.55rem;
+    }
+
+    .campaign-block-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      padding: 0.45rem 0.65rem;
+      border-bottom: 1px solid #e5e7eb;
+      background: #f8fafc;
+    }
+
+    .campaign-block-head h3 {
+      margin: 0;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #1f2937;
+      line-height: 1.2;
+    }
+
+    .campaign-block-head small {
+      color: #64748b;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .icon-btn {
+      border: 1px solid #d1d5db;
+      border-radius: 0.35rem;
+      width: 1.8rem;
+      height: 1.8rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #334155;
+      background: white;
+    }
+
+    .icon-btn:hover { background: #f8fafc; }
+
+    .text-btn {
+      border: 1px solid #d1d5db;
+      border-radius: 0.4rem;
+      padding: 0.32rem 0.55rem;
+      font-size: 0.73rem;
+      font-weight: 700;
+      color: #1f2937;
+      background: #fff;
+      line-height: 1.2;
+    }
+
+    .text-btn:hover {
+      background: #f8fafc;
+    }
+
+    .text-btn.primary {
+      color: #ffffff;
+      border-color: #1d4ed8;
+      background: #2563eb;
+    }
+
+    .text-btn.primary:hover {
+      background: #1d4ed8;
+    }
+
+    .text-btn.success {
+      color: #ffffff;
+      border-color: #166534;
+      background: #15803d;
+    }
+
+    .text-btn.success:hover {
+      background: #166534;
+    }
+
+    .text-btn.warn {
+      color: #92400e;
+      border-color: #fcd34d;
+      background: #fefce8;
+    }
+
+    .text-btn.warn:hover {
+      background: #fef9c3;
+    }
+
+    .text-btn.muted {
+      color: #374151;
+      border-color: #d1d5db;
+      background: #f9fafb;
+    }
+
+    .footer-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      border-top: 1px solid #d1d5db;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(5px);
+      box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.06);
+    }
+
+    .footer-inner {
+      max-width: 1460px;
+      margin: 0 auto;
+      padding: 0.52rem 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(15, 23, 42, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-shell {
+      width: min(980px, 100%);
+      max-height: 86vh;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border-radius: 0.7rem;
+      border: 1px solid #d1d5db;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(2, 6, 23, 0.34);
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.7rem 0.9rem;
+      border-bottom: 1px solid #e5e7eb;
+      background: #f8fafc;
+    }
+
+    .modal-head h4 {
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .modal-body {
+      padding: 0.8rem;
+      overflow: auto;
+      background: #ffffff;
+    }
+
+    .payload-box {
+      width: 100%;
+      min-height: 320px;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      padding: 0.7rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.73rem;
+      line-height: 1.35;
+      background: #f8fafc;
+      color: #111827;
+      white-space: pre;
+      overflow: auto;
+    }
+
+    .required-flag {
+      outline: 2px solid rgba(220, 38, 38, 0.5);
+      border-color: #dc2626 !important;
+      background: #fff5f5;
+    }
+
+    @media (max-width: 960px) {
+      .dense-table { min-width: 900px; }
+      .footer-inner { padding-bottom: calc(0.65rem + env(safe-area-inset-bottom)); }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <div class="flex h-screen flex-col">
+    <header class="border-b border-gray-200 shadow-sm" style="background-color: #004E8B;">
+      <div class="flex items-center justify-between px-4 py-2">
+        <div class="flex items-center gap-3">
+          <img src="./assets/Beaconlogo.svg" alt="Beacon Logo" class="h-12 w-auto" />
+        </div>
+
+        <nav class="flex items-center gap-3 ml-auto">
+          <a href="./index.html" class="text-base text-white hover:text-blue-100" style="font-size: 1.3rem; padding-right: 10px;">Advertisers</a>
+          <span class="text-white select-none">|</span>
+
+          <div class="relative">
+            <button class="p-0 rounded-md text-white" id="menuButton" title="Menu" aria-label="Open navigation menu">
+              <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4h3v3H4V4zM8.5 4h3v3h-3V4zM13 4h3v3h-3V4zM4 8.5h3v3H4v-3zM8.5 8.5h3v3h-3V8.5zM13 8.5h3v3h-3V8.5zM4 13h3v3H4v-3zM8.5 13h3v3h-3V13zM13 13h3v3h-3V13z"></path>
+              </svg>
+            </button>
+            <div id="menuDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+              <a href="./index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Advertisers</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+              <a href="./Admin_Users.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Out</a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto pb-24">
+      <div class="max-w-[1460px] mx-auto px-3 py-3 space-y-3">
+        <section class="card-shell">
+          <div class="card-head">
+            <div class="flex items-center gap-2">
+              <h2>Quick Create</h2>
+              <span class="chip">MALT-Compact</span>
+            </div>
+            <span class="text-[11px] text-gray-600 font-semibold">One advertiser per run, records saved directly to Beacon</span>
+          </div>
+
+          <div class="p-3 space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="space-y-2">
+                <div>
+                  <label for="accountNumber" class="field-label required">Account Number</label>
+                  <input id="accountNumber" class="compact-input" placeholder="CRM Account Number" />
+                </div>
+                <div>
+                  <label for="totalInvoiceImpressions" class="field-label">Total Invoice Impressions</label>
+                  <input id="totalInvoiceImpressions" type="number" min="0" step="1" class="compact-input" placeholder="1600000" />
+                </div>
+                <div>
+                  <label for="totalInvoiceBudget" class="field-label">Total Invoice Budget</label>
+                  <input id="totalInvoiceBudget" class="compact-input" placeholder="0.00" />
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <div>
+                  <label for="accountName" class="field-label required">Account Name</label>
+                  <input id="accountName" class="compact-input" placeholder="CRM Account Name" />
+                </div>
+                <div>
+                  <label for="totalImpressions" class="field-label">Total Impressions</label>
+                  <input id="totalImpressions" type="number" min="0" step="1" class="compact-input" placeholder="1600000" />
+                </div>
+                <div>
+                  <label for="totalBudget" class="field-label">Total Budget</label>
+                  <input id="totalBudget" class="compact-input" placeholder="0.00" />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label for="advertiserNotes" class="field-label">Advertiser Notes (Optional)</label>
+              <textarea id="advertiserNotes" class="compact-textarea" placeholder="Informational notes for this quick-create batch"></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="card-shell">
+          <div class="card-head">
+            <div class="flex items-center gap-2">
+              <h2>Campaign Grid</h2>
+              <span id="campaignCountChip" class="chip">0 rows</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="addCampaignBtn" type="button" class="text-btn">+ Campaign Row</button>
+              <button id="splitBtnTop" type="button" class="text-btn">Split Impressions</button>
+            </div>
+          </div>
+
+          <div class="table-scroll">
+            <table class="dense-table" id="campaignTable">
+              <thead>
+                <tr>
+                  <th style="width: 42px;">#</th>
+                  <th style="min-width: 210px;">Campaign Name</th>
+                  <th style="min-width: 190px;">Template</th>
+                  <th style="min-width: 170px;">DSP Selected</th>
+                  <th style="min-width: 190px;">Ad Server Selected</th>
+                  <th style="width: 94px;">Ad Groups</th>
+                  <th style="width: 135px;">DSP Impressions</th>
+                  <th style="width: 56px;">Del</th>
+                </tr>
+              </thead>
+              <tbody id="campaignBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card-shell">
+          <div class="card-head">
+            <div class="flex items-center gap-2">
+              <h2>Ad Group Grids</h2>
+              <span id="adGroupCountChip" class="chip">0 rows</span>
+            </div>
+            <span class="text-[11px] text-gray-600 font-semibold">All campaigns shown, grouped by parent campaign</span>
+          </div>
+
+          <div id="adGroupBlocks" class="p-2"></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer-bar">
+      <div class="footer-inner">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span id="advStatusChip" class="chip warn">Advertiser: Missing Required</span>
+          <span id="campaignStatusChip" class="chip warn">Campaign Rows: 0/0 Ready</span>
+          <span id="adGroupStatusChip" class="chip warn">Ad Group Rows: 0/0 Ready</span>
+          <span id="campaignSummaryChip" class="chip">Campaigns: 0</span>
+          <span id="adGroupSummaryChip" class="chip">Ad Groups: 0</span>
+          <span id="impressionSummaryChip" class="chip">Impressions: 0</span>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <button id="previewBtn" type="button" class="text-btn">Preview</button>
+          <button id="splitBtnBottom" type="button" class="text-btn">Split Impressions</button>
+          <button id="resetBtn" type="button" class="text-btn warn">Reset</button>
+          <button id="saveBtn" type="button" class="text-btn success">Save Quick Create</button>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <div id="previewModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-shell">
+      <div class="modal-head">
+        <h4>Quick Create Preview Payload</h4>
+        <button id="closePreviewBtn" type="button" class="text-btn">Close</button>
+      </div>
+      <div class="modal-body">
+        <pre id="payloadPreview" class="payload-box"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var PLATFORM_EMPTY = '';
+
+      var defaults = {
+        templates: [
+          'Programmatic Display',
+          'Programmatic Video',
+          'Programmatic Audio',
+          'Connected TV',
+          'Paid Social',
+          'Paid Search',
+          'Event Targeting',
+          'Native Video',
+          'DOOH',
+          'PLD Display',
+          'PLD Video'
+        ],
+        tactics: [
+          'Persona',
+          'Retargeting',
+          'Data Onboarding',
+          'Company Targeting',
+          'IP Targeting',
+          'Addressable',
+          'Location Targeting',
+          'Frequency Fencing',
+          'Contextual',
+          'Advanced ABM',
+          'Sector'
+        ],
+        dspPlatforms: ['The Trade Desk', 'DV360', 'Simpli.fi'],
+        adServerPlatforms: ['Google Campaign Manager']
+      };
+
+      var state = {
+        advertiser: {
+          accountNumber: '',
+          accountName: '',
+          totalInvoiceImpressions: '',
+          totalImpressions: '',
+          totalInvoiceBudget: '',
+          totalBudget: '',
+          advertiserNotes: ''
+        },
+        campaigns: [],
+        config: JSON.parse(JSON.stringify(defaults))
+      };
+
+      var elements = {
+        menuButton: document.getElementById('menuButton'),
+        menuDropdown: document.getElementById('menuDropdown'),
+        accountNumber: document.getElementById('accountNumber'),
+        accountName: document.getElementById('accountName'),
+        totalInvoiceImpressions: document.getElementById('totalInvoiceImpressions'),
+        totalImpressions: document.getElementById('totalImpressions'),
+        totalInvoiceBudget: document.getElementById('totalInvoiceBudget'),
+        totalBudget: document.getElementById('totalBudget'),
+        advertiserNotes: document.getElementById('advertiserNotes'),
+        campaignBody: document.getElementById('campaignBody'),
+        adGroupBlocks: document.getElementById('adGroupBlocks'),
+        campaignCountChip: document.getElementById('campaignCountChip'),
+        adGroupCountChip: document.getElementById('adGroupCountChip'),
+        advStatusChip: document.getElementById('advStatusChip'),
+        campaignStatusChip: document.getElementById('campaignStatusChip'),
+        adGroupStatusChip: document.getElementById('adGroupStatusChip'),
+        campaignSummaryChip: document.getElementById('campaignSummaryChip'),
+        adGroupSummaryChip: document.getElementById('adGroupSummaryChip'),
+        impressionSummaryChip: document.getElementById('impressionSummaryChip'),
+        addCampaignBtn: document.getElementById('addCampaignBtn'),
+        splitBtnTop: document.getElementById('splitBtnTop'),
+        splitBtnBottom: document.getElementById('splitBtnBottom'),
+        previewBtn: document.getElementById('previewBtn'),
+        resetBtn: document.getElementById('resetBtn'),
+        saveBtn: document.getElementById('saveBtn'),
+        previewModal: document.getElementById('previewModal'),
+        payloadPreview: document.getElementById('payloadPreview'),
+        closePreviewBtn: document.getElementById('closePreviewBtn')
+      };
+
+      function toast(message, type, duration) {
+        if (typeof showToast === 'function') {
+          try {
+            showToast({ message: message, type: type || 'info', duration: duration || 3500 });
+            return;
+          } catch (err) {
+            try {
+              showToast(message, duration || 3500);
+              return;
+            } catch (_) {
+              // ignore
+            }
+          }
+        }
+        window.alert(message);
+      }
+
+      function getTodayIso() {
+        return new Date().toISOString().slice(0, 10);
+      }
+
+      function getTenYearsMinusOneIso() {
+        var d = new Date();
+        d.setFullYear(d.getFullYear() + 10);
+        d.setDate(d.getDate() - 1);
+        return d.toISOString().slice(0, 10);
+      }
+
+      function parsePositiveInt(value) {
+        var n = Number(value);
+        if (!Number.isFinite(n) || n < 0) return 0;
+        return Math.floor(n);
+      }
+
+      function formatInt(value) {
+        var n = Number(value || 0);
+        if (!Number.isFinite(n)) return '0';
+        return n.toLocaleString();
+      }
+
+      function slugify(value) {
+        return String(value || '')
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      function uid(prefix) {
+        return prefix + '-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+      }
+
+      function getCampaignOrdinal(campaign) {
+        var idx = state.campaigns.indexOf(campaign);
+        return idx >= 0 ? (idx + 1) : 1;
+      }
+
+      function getCampaignDisplayName(campaign) {
+        var ordinal = getCampaignOrdinal(campaign);
+        var explicitName = String(campaign && campaign.name || '').trim();
+        return explicitName || ('Campaign ' + ordinal);
+      }
+
+      function buildAutoAdGroupName(campaign, adGroupOrdinal) {
+        var campaignOrdinal = getCampaignOrdinal(campaign);
+        return getCampaignDisplayName(campaign) + ' ' + campaignOrdinal + '.' + adGroupOrdinal;
+      }
+
+      function makeCampaign(index) {
+        var template = state.config.templates[0] || '';
+        var dsp = PLATFORM_EMPTY;
+        var adServer = PLATFORM_EMPTY;
+
+        var campaign = {
+          tempId: uid('TMP-CAM'),
+          name: 'Campaign ' + index,
+          template: template,
+          dspSelected: dsp,
+          adServerSelected: adServer,
+          adGroupCount: 1,
+          dspImpressions: 0,
+          collapsed: false,
+          adGroups: []
+        };
+
+        campaign.adGroups.push(makeAdGroup(campaign, 1));
+        return campaign;
+      }
+
+      function makeAdGroup(campaign, index) {
+        var tactic = state.config.tactics[0] || '';
+        var today = getTodayIso();
+        return {
+          tempId: uid('TMP-AG'),
+          name: buildAutoAdGroupName(campaign, index),
+          autoName: true,
+          tactic: tactic,
+          contentCategory: tactic,
+          mvClassification: campaign ? (campaign.template || '') : '',
+          audience: '',
+          geo: 'U.S.',
+          startDate: today,
+          endDate: getTenYearsMinusOneIso(),
+          impressions: 0,
+          landingPage: '',
+          utmCode: ''
+        };
+      }
+
+      function ensureCampaignAdGroups(campaign) {
+        var needed = parsePositiveInt(campaign.adGroupCount);
+        if (needed < 1) needed = 1;
+        campaign.adGroupCount = needed;
+
+        if (!Array.isArray(campaign.adGroups)) {
+          campaign.adGroups = [];
+        }
+
+        while (campaign.adGroups.length < needed) {
+          campaign.adGroups.push(makeAdGroup(campaign, campaign.adGroups.length + 1));
+        }
+
+        if (campaign.adGroups.length > needed) {
+          campaign.adGroups = campaign.adGroups.slice(0, needed);
+        }
+
+        for (var i = 0; i < campaign.adGroups.length; i += 1) {
+          var ag = campaign.adGroups[i];
+          if (typeof ag.autoName === 'undefined') ag.autoName = true;
+          if (!ag.name || !ag.name.trim()) ag.autoName = true;
+          if (ag.autoName) ag.name = buildAutoAdGroupName(campaign, i + 1);
+          ag.mvClassification = campaign.template || '';
+          if (!ag.tactic) {
+            ag.tactic = state.config.tactics[0] || '';
+          }
+          ag.contentCategory = ag.tactic || '';
+        }
+      }
+
+      function normalizeCampaigns() {
+        if (!Array.isArray(state.campaigns)) state.campaigns = [];
+        if (!state.campaigns.length) {
+          state.campaigns.push(makeCampaign(1));
+        }
+
+        state.campaigns.forEach(function (campaign) {
+          ensureCampaignAdGroups(campaign);
+        });
+      }
+
+      function syncAutoAdGroupNamesAllCampaigns() {
+        state.campaigns.forEach(function (campaign) {
+          ensureCampaignAdGroups(campaign);
+        });
+      }
+
+      function distributeWithinCampaign(campaign) {
+        ensureCampaignAdGroups(campaign);
+        var total = parsePositiveInt(campaign.dspImpressions);
+        var count = campaign.adGroups.length || 1;
+        var per = Math.floor(total / count);
+
+        campaign.adGroups.forEach(function (adGroup, idx) {
+          if (idx === count - 1) {
+            adGroup.impressions = total - per * (count - 1);
+          } else {
+            adGroup.impressions = per;
+          }
+        });
+      }
+
+      function splitAllImpressions() {
+        var total = parsePositiveInt(state.advertiser.totalImpressions || state.advertiser.totalInvoiceImpressions);
+        var campaignCount = state.campaigns.length || 1;
+        var per = Math.floor(total / campaignCount);
+
+        state.campaigns.forEach(function (campaign, idx) {
+          if (idx === campaignCount - 1) {
+            campaign.dspImpressions = total - per * (campaignCount - 1);
+          } else {
+            campaign.dspImpressions = per;
+          }
+          distributeWithinCampaign(campaign);
+        });
+
+        renderAll();
+        toast('Impressions split across campaigns and ad groups.', 'success', 2200);
+      }
+
+      function buildOptions(options, selected, includeBlank) {
+        var html = '';
+        if (includeBlank) {
+          html += '<option value="">-- Select --</option>';
+        }
+        options.forEach(function (item) {
+          var safe = escapeHtml(item);
+          var isSelected = item === selected ? ' selected' : '';
+          html += '<option value="' + safe + '"' + isSelected + '>' + safe + '</option>';
+        });
+        return html;
+      }
+
+      function escapeHtml(text) {
+        return String(text == null ? '' : text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function renderCampaignRows() {
+        var rows = state.campaigns.map(function (campaign, idx) {
+          return [
+            '<tr data-campaign-id="', escapeHtml(campaign.tempId), '">',
+            '<td>', String(idx + 1), '</td>',
+            '<td><input class="compact-input" data-entity="campaign" data-key="name" data-campaign-id="', escapeHtml(campaign.tempId), '" value="', escapeHtml(campaign.name), '" /></td>',
+            '<td><select class="compact-select" data-entity="campaign" data-key="template" data-campaign-id="', escapeHtml(campaign.tempId), '">',
+            buildOptions(state.config.templates, campaign.template, true),
+            '</select></td>',
+            '<td><select class="compact-select" data-entity="campaign" data-key="dspSelected" data-campaign-id="', escapeHtml(campaign.tempId), '">',
+            buildOptions(state.config.dspPlatforms, campaign.dspSelected, true),
+            '</select></td>',
+            '<td><select class="compact-select" data-entity="campaign" data-key="adServerSelected" data-campaign-id="', escapeHtml(campaign.tempId), '">',
+            buildOptions(state.config.adServerPlatforms, campaign.adServerSelected, true),
+            '</select></td>',
+            '<td><input class="compact-input" type="number" min="1" step="1" data-entity="campaign" data-key="adGroupCount" data-campaign-id="', escapeHtml(campaign.tempId), '" value="', String(campaign.adGroupCount || 1), '" /></td>',
+            '<td><input class="compact-input" type="number" min="0" step="1" data-entity="campaign" data-key="dspImpressions" data-campaign-id="', escapeHtml(campaign.tempId), '" value="', String(parsePositiveInt(campaign.dspImpressions)), '" /></td>',
+            '<td><button class="icon-btn" type="button" title="Remove campaign" data-action="remove-campaign" data-campaign-id="', escapeHtml(campaign.tempId), '">x</button></td>',
+            '</tr>'
+          ].join('');
+        }).join('');
+
+        elements.campaignBody.innerHTML = rows;
+      }
+
+      function renderAdGroupBlocks() {
+        var html = state.campaigns.map(function (campaign, idx) {
+          ensureCampaignAdGroups(campaign);
+          var collapsedClass = campaign.collapsed ? 'hidden' : '';
+
+          var rows = campaign.adGroups.map(function (adGroup, rowIdx) {
+            return [
+              '<tr data-campaign-id="', escapeHtml(campaign.tempId), '" data-adgroup-id="', escapeHtml(adGroup.tempId), '">',
+              '<td>', String(idx + 1), '.', String(rowIdx + 1), '</td>',
+              '<td><input class="compact-input" data-entity="adgroup" data-key="name" data-campaign-id="', escapeHtml(campaign.tempId), '" data-adgroup-id="', escapeHtml(adGroup.tempId), '" value="', escapeHtml(adGroup.name), '" /></td>',
+              '<td><select class="compact-select" data-entity="adgroup" data-key="tactic" data-campaign-id="', escapeHtml(campaign.tempId), '" data-adgroup-id="', escapeHtml(adGroup.tempId), '">',
+              buildOptions(state.config.tactics, adGroup.tactic, true),
+              '</select></td>',
+              '<td><span class="readonly-pill">', escapeHtml(adGroup.contentCategory), '</span></td>',
+              '<td><span class="readonly-pill">', escapeHtml(adGroup.mvClassification), '</span></td>',
+              '<td><input class="compact-input" data-entity="adgroup" data-key="audience" data-campaign-id="', escapeHtml(campaign.tempId), '" data-adgroup-id="', escapeHtml(adGroup.tempId), '" value="', escapeHtml(adGroup.audience), '" /></td>',
+              '<td><input class="compact-input" data-entity="adgroup" data-key="geo" data-campaign-id="', escapeHtml(campaign.tempId), '" data-adgroup-id="', escapeHtml(adGroup.tempId), '" value="', escapeHtml(adGroup.geo), '" /></td>',
+              '<td><input class="compact-input" type="date" data-entity="adgroup" data-key="startDate" data-campaign-id="', escapeHtml(campaign.tempId), '" data-adgroup-id="', escapeHtml(adGroup.tempId), '" value="', escapeHtml(adGroup.startDate), '" /></td>',
+              '<td><input class="compact-input" type="date" data-entity="adgroup" data-key="endDate" data-campaign-id="', escapeHtml(campaign.tempId), '" data-adgroup-id="', escapeHtml(adGroup.tempId), '" value="', escapeHtml(adGroup.endDate), '" /></td>',
+              '<td><input class="compact-input" type="number" min="0" step="1" data-entity="adgroup" data-key="impressions" data-campaign-id="', escapeHtml(campaign.tempId), '" data-adgroup-id="', escapeHtml(adGroup.tempId), '" value="', String(parsePositiveInt(adGroup.impressions)), '" /></td>',
+              '<td><input class="compact-input" data-entity="adgroup" data-key="landingPage" data-campaign-id="', escapeHtml(campaign.tempId), '" data-adgroup-id="', escapeHtml(adGroup.tempId), '" value="', escapeHtml(adGroup.landingPage), '" /></td>',
+              '<td><input class="compact-input" data-entity="adgroup" data-key="utmCode" data-campaign-id="', escapeHtml(campaign.tempId), '" data-adgroup-id="', escapeHtml(adGroup.tempId), '" value="', escapeHtml(adGroup.utmCode), '" /></td>',
+              '<td><button class="icon-btn" type="button" title="Remove ad group" data-action="remove-adgroup" data-campaign-id="', escapeHtml(campaign.tempId), '" data-adgroup-id="', escapeHtml(adGroup.tempId), '">x</button></td>',
+              '</tr>'
+            ].join('');
+          }).join('');
+
+          return [
+            '<section class="campaign-block" data-campaign-block="', escapeHtml(campaign.tempId), '">',
+            '<header class="campaign-block-head">',
+            '<div>',
+            '<h3>', String(idx + 1), '. ', escapeHtml(campaign.name || ('Campaign ' + (idx + 1))), '</h3>',
+            '<small>Template: ', escapeHtml(campaign.template || '—'), ' | DSP: ', escapeHtml(campaign.dspSelected || '—'), ' | Ad Server: ', escapeHtml(campaign.adServerSelected || '—'), '</small>',
+            '</div>',
+            '<div class="flex items-center gap-2">',
+            '<span class="chip">', String(campaign.adGroups.length), ' ad group rows</span>',
+            '<button class="text-btn" type="button" data-action="add-adgroup-row" data-campaign-id="', escapeHtml(campaign.tempId), '">+ Row</button>',
+            '<button class="text-btn muted" type="button" data-action="toggle-campaign" data-campaign-id="', escapeHtml(campaign.tempId), '">', campaign.collapsed ? 'Expand' : 'Collapse', '</button>',
+            '</div>',
+            '</header>',
+            '<div class="table-scroll ', collapsedClass, '" data-campaign-content="', escapeHtml(campaign.tempId), '">',
+            '<table class="dense-table" style="min-width: 1420px;">',
+            '<thead><tr>',
+            '<th style="width:42px;">#</th>',
+            '<th style="min-width:180px;">Ad Group Name</th>',
+            '<th style="min-width:150px;">Tactic</th>',
+            '<th style="min-width:150px;">Content Category</th>',
+            '<th style="min-width:160px;">MV Classification</th>',
+            '<th style="min-width:160px;">Audience</th>',
+            '<th style="min-width:96px;">Geo</th>',
+            '<th style="min-width:136px;">Start Date</th>',
+            '<th style="min-width:136px;">End Date</th>',
+            '<th style="min-width:122px;">Impressions</th>',
+            '<th style="min-width:190px;">Landing Page</th>',
+            '<th style="min-width:210px;">UTM Code</th>',
+            '<th style="width:56px;">Del</th>',
+            '</tr></thead>',
+            '<tbody>', rows, '</tbody>',
+            '</table>',
+            '</div>',
+            '</section>'
+          ].join('');
+        }).join('');
+
+        elements.adGroupBlocks.innerHTML = html;
+      }
+
+      function countAdGroups() {
+        return state.campaigns.reduce(function (sum, campaign) {
+          return sum + (campaign.adGroups ? campaign.adGroups.length : 0);
+        }, 0);
+      }
+
+      function totalCampaignImpressions() {
+        return state.campaigns.reduce(function (sum, campaign) {
+          return sum + parsePositiveInt(campaign.dspImpressions);
+        }, 0);
+      }
+
+      function campaignIsReady(campaign) {
+        return Boolean(
+          String(campaign.name || '').trim() &&
+          String(campaign.template || '').trim() &&
+          String(campaign.dspSelected || '').trim() &&
+          String(campaign.adServerSelected || '').trim() &&
+          parsePositiveInt(campaign.adGroupCount) >= 1
+        );
+      }
+
+      function adGroupIsReady(adGroup) {
+        return Boolean(
+          String(adGroup.name || '').trim() &&
+          String(adGroup.tactic || '').trim() &&
+          String(adGroup.startDate || '').trim() &&
+          String(adGroup.endDate || '').trim()
+        );
+      }
+
+      function updateChips() {
+        var campaignTotal = state.campaigns.length;
+        var adGroupTotal = countAdGroups();
+
+        var advReady = Boolean(String(state.advertiser.accountNumber || '').trim() && String(state.advertiser.accountName || '').trim());
+
+        var campaignReady = state.campaigns.filter(campaignIsReady).length;
+        var adGroupReady = state.campaigns.reduce(function (sum, campaign) {
+          return sum + campaign.adGroups.filter(adGroupIsReady).length;
+        }, 0);
+
+        elements.campaignCountChip.textContent = campaignTotal + ' rows';
+        elements.adGroupCountChip.textContent = adGroupTotal + ' rows';
+
+        elements.advStatusChip.className = 'chip ' + (advReady ? 'ok' : 'warn');
+        elements.advStatusChip.textContent = advReady ? 'Advertiser: Ready' : 'Advertiser: Missing Required';
+
+        elements.campaignStatusChip.className = 'chip ' + (campaignReady === campaignTotal && campaignTotal > 0 ? 'ok' : 'warn');
+        elements.campaignStatusChip.textContent = 'Campaign Rows: ' + campaignReady + '/' + campaignTotal + ' Ready';
+
+        elements.adGroupStatusChip.className = 'chip ' + (adGroupReady === adGroupTotal && adGroupTotal > 0 ? 'ok' : 'warn');
+        elements.adGroupStatusChip.textContent = 'Ad Group Rows: ' + adGroupReady + '/' + adGroupTotal + ' Ready';
+
+        elements.campaignSummaryChip.textContent = 'Campaigns: ' + campaignTotal;
+        elements.adGroupSummaryChip.textContent = 'Ad Groups: ' + adGroupTotal;
+        elements.impressionSummaryChip.textContent = 'Impressions: ' + formatInt(totalCampaignImpressions());
+      }
+
+      function renderAll() {
+        normalizeCampaigns();
+        syncAutoAdGroupNamesAllCampaigns();
+        renderCampaignRows();
+        renderAdGroupBlocks();
+        updateChips();
+      }
+
+      function findCampaignByTempId(tempId) {
+        return state.campaigns.find(function (campaign) { return campaign.tempId === tempId; }) || null;
+      }
+
+      function findAdGroup(campaign, adGroupTempId) {
+        if (!campaign || !Array.isArray(campaign.adGroups)) return null;
+        return campaign.adGroups.find(function (row) { return row.tempId === adGroupTempId; }) || null;
+      }
+
+      function wireAdvertiserInputs() {
+        [
+          'accountNumber',
+          'accountName',
+          'totalInvoiceImpressions',
+          'totalImpressions',
+          'totalInvoiceBudget',
+          'totalBudget',
+          'advertiserNotes'
+        ].forEach(function (key) {
+          var el = elements[key];
+          if (!el) return;
+          el.addEventListener('input', function () {
+            state.advertiser[key] = el.value;
+            updateChips();
+          });
+        });
+      }
+
+      function wireCampaignTableEvents() {
+        function applyCampaignDraftFromTarget(target) {
+          if (!target || target.dataset.entity !== 'campaign') return null;
+
+          var campaign = findCampaignByTempId(target.dataset.campaignId);
+          if (!campaign) return null;
+
+          var key = target.dataset.key;
+          var value = target.value;
+
+          if (key === 'adGroupCount' || key === 'dspImpressions') {
+            campaign[key] = parsePositiveInt(value);
+          } else {
+            campaign[key] = value;
+          }
+
+          if (key === 'template') {
+            campaign.adGroups.forEach(function (adGroup) {
+              adGroup.mvClassification = campaign.template || '';
+            });
+          }
+
+          if (key === 'name') {
+            campaign.adGroups.forEach(function (adGroup) {
+              if (adGroup.autoName !== false) adGroup.autoName = true;
+            });
+          }
+
+          return { campaign: campaign, key: key };
+        }
+
+        elements.campaignBody.addEventListener('input', function (event) {
+          var target = event.target;
+          var result = applyCampaignDraftFromTarget(target);
+          if (!result) return;
+          updateChips();
+        });
+
+        elements.campaignBody.addEventListener('change', function (event) {
+          var target = event.target;
+          var result = applyCampaignDraftFromTarget(target);
+          if (!result) return;
+
+          if (result.key === 'adGroupCount') {
+            result.campaign.adGroupCount = Math.max(1, parsePositiveInt(result.campaign.adGroupCount));
+            ensureCampaignAdGroups(result.campaign);
+            distributeWithinCampaign(result.campaign);
+            renderAll();
+            return;
+          }
+
+          if (result.key === 'dspImpressions') {
+            distributeWithinCampaign(result.campaign);
+            renderAll();
+            return;
+          }
+
+          renderAll();
+        });
+
+        elements.campaignBody.addEventListener('click', function (event) {
+          var button = event.target.closest('button[data-action="remove-campaign"]');
+          if (!button) return;
+
+          if (state.campaigns.length <= 1) {
+            toast('At least one campaign row is required.', 'warning', 2200);
+            return;
+          }
+
+          var campaignId = button.dataset.campaignId;
+          state.campaigns = state.campaigns.filter(function (campaign) {
+            return campaign.tempId !== campaignId;
+          });
+          renderAll();
+        });
+      }
+
+      function wireAdGroupEvents() {
+        function applyAdGroupDraftFromTarget(target) {
+          if (!target || target.dataset.entity !== 'adgroup') return null;
+
+          var campaign = findCampaignByTempId(target.dataset.campaignId);
+          if (!campaign) return null;
+          var adGroup = findAdGroup(campaign, target.dataset.adgroupId);
+          if (!adGroup) return null;
+
+          var key = target.dataset.key;
+          var value = target.value;
+
+          if (key === 'impressions') {
+            adGroup.impressions = parsePositiveInt(value);
+          } else {
+            adGroup[key] = value;
+          }
+
+          if (key === 'name') {
+            if (String(value || '').trim()) {
+              adGroup.autoName = false;
+            } else {
+              adGroup.autoName = true;
+              adGroup.name = buildAutoAdGroupName(campaign, (campaign.adGroups || []).indexOf(adGroup) + 1);
+            }
+          }
+
+          if (key === 'tactic') {
+            adGroup.contentCategory = value || '';
+          }
+
+          return { campaign: campaign, adGroup: adGroup, key: key };
+        }
+
+        elements.adGroupBlocks.addEventListener('click', function (event) {
+          var toggleBtn = event.target.closest('button[data-action="toggle-campaign"]');
+          if (toggleBtn) {
+            var toggledCampaign = findCampaignByTempId(toggleBtn.dataset.campaignId);
+            if (!toggledCampaign) return;
+            toggledCampaign.collapsed = !toggledCampaign.collapsed;
+            renderAll();
+            return;
+          }
+
+          var addBtn = event.target.closest('button[data-action="add-adgroup-row"]');
+          if (addBtn) {
+            var campaignToAdd = findCampaignByTempId(addBtn.dataset.campaignId);
+            if (!campaignToAdd) return;
+            campaignToAdd.adGroupCount = parsePositiveInt(campaignToAdd.adGroupCount) + 1;
+            ensureCampaignAdGroups(campaignToAdd);
+            distributeWithinCampaign(campaignToAdd);
+            renderAll();
+            return;
+          }
+
+          var removeBtn = event.target.closest('button[data-action="remove-adgroup"]');
+          if (removeBtn) {
+            var campaignToRemove = findCampaignByTempId(removeBtn.dataset.campaignId);
+            if (!campaignToRemove) return;
+            if ((campaignToRemove.adGroups || []).length <= 1) {
+              toast('Each campaign requires at least one ad group row.', 'warning', 2200);
+              return;
+            }
+
+            campaignToRemove.adGroups = campaignToRemove.adGroups.filter(function (row) {
+              return row.tempId !== removeBtn.dataset.adgroupId;
+            });
+            campaignToRemove.adGroupCount = campaignToRemove.adGroups.length;
+            distributeWithinCampaign(campaignToRemove);
+            renderAll();
+          }
+        });
+
+        elements.adGroupBlocks.addEventListener('input', function (event) {
+          var target = event.target;
+          var result = applyAdGroupDraftFromTarget(target);
+          if (!result) return;
+          updateChips();
+        });
+
+        elements.adGroupBlocks.addEventListener('change', function (event) {
+          var target = event.target;
+          var result = applyAdGroupDraftFromTarget(target);
+          if (!result) return;
+          renderAll();
+        });
+      }
+
+      function wireGlobalButtons() {
+        elements.addCampaignBtn.addEventListener('click', function () {
+          state.campaigns.push(makeCampaign(state.campaigns.length + 1));
+          renderAll();
+        });
+
+        elements.splitBtnTop.addEventListener('click', splitAllImpressions);
+        elements.splitBtnBottom.addEventListener('click', splitAllImpressions);
+
+        elements.previewBtn.addEventListener('click', function () {
+          var payload = buildPreviewPayload();
+          elements.payloadPreview.textContent = JSON.stringify(payload, null, 2);
+          elements.previewModal.classList.add('active');
+          elements.previewModal.setAttribute('aria-hidden', 'false');
+        });
+
+        elements.closePreviewBtn.addEventListener('click', function () {
+          elements.previewModal.classList.remove('active');
+          elements.previewModal.setAttribute('aria-hidden', 'true');
+        });
+
+        elements.previewModal.addEventListener('click', function (event) {
+          if (event.target === elements.previewModal) {
+            elements.previewModal.classList.remove('active');
+            elements.previewModal.setAttribute('aria-hidden', 'true');
+          }
+        });
+
+        elements.resetBtn.addEventListener('click', function () {
+          if (!window.confirm('Reset the entire Quick Create form?')) return;
+          state.advertiser.accountNumber = '';
+          state.advertiser.accountName = '';
+          state.advertiser.totalInvoiceImpressions = '';
+          state.advertiser.totalImpressions = '';
+          state.advertiser.totalInvoiceBudget = '';
+          state.advertiser.totalBudget = '';
+          state.advertiser.advertiserNotes = '';
+          state.campaigns = [makeCampaign(1)];
+          syncAdvertiserInputs();
+          renderAll();
+        });
+
+        elements.saveBtn.addEventListener('click', handleSave);
+      }
+
+      function wireHeaderMenu() {
+        if (!elements.menuButton || !elements.menuDropdown) return;
+        elements.menuButton.addEventListener('click', function (event) {
+          event.stopPropagation();
+          elements.menuDropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function (event) {
+          if (!event.target.closest('#menuButton') && !event.target.closest('#menuDropdown')) {
+            elements.menuDropdown.classList.add('hidden');
+          }
+        });
+      }
+
+      function syncAdvertiserInputs() {
+        elements.accountNumber.value = state.advertiser.accountNumber || '';
+        elements.accountName.value = state.advertiser.accountName || '';
+        elements.totalInvoiceImpressions.value = state.advertiser.totalInvoiceImpressions || '';
+        elements.totalImpressions.value = state.advertiser.totalImpressions || '';
+        elements.totalInvoiceBudget.value = state.advertiser.totalInvoiceBudget || '';
+        elements.totalBudget.value = state.advertiser.totalBudget || '';
+        elements.advertiserNotes.value = state.advertiser.advertiserNotes || '';
+      }
+
+      function buildPreviewPayload() {
+        return {
+          advertiser: {
+            accountNumber: state.advertiser.accountNumber,
+            accountName: state.advertiser.accountName,
+            totalInvoiceImpressions: state.advertiser.totalInvoiceImpressions,
+            totalImpressions: state.advertiser.totalImpressions,
+            totalInvoiceBudget: state.advertiser.totalInvoiceBudget,
+            totalBudget: state.advertiser.totalBudget,
+            advertiserNotes: state.advertiser.advertiserNotes
+          },
+          campaigns: state.campaigns.map(function (campaign) {
+            return {
+              name: campaign.name,
+              template: campaign.template,
+              dspSelected: campaign.dspSelected,
+              adServerSelected: campaign.adServerSelected,
+              adGroupCount: campaign.adGroupCount,
+              dspImpressions: parsePositiveInt(campaign.dspImpressions),
+              adGroups: campaign.adGroups.map(function (adGroup) {
+                return {
+                  name: adGroup.name,
+                  tactic: adGroup.tactic,
+                  contentCategory: adGroup.contentCategory,
+                  mvClassification: adGroup.mvClassification,
+                  audience: adGroup.audience,
+                  geo: adGroup.geo,
+                  startDate: adGroup.startDate,
+                  endDate: adGroup.endDate,
+                  impressions: parsePositiveInt(adGroup.impressions),
+                  landingPage: adGroup.landingPage,
+                  utmCode: adGroup.utmCode
+                };
+              })
+            };
+          })
+        };
+      }
+
+      function clearValidationMarks() {
+        document.querySelectorAll('.required-flag').forEach(function (node) {
+          node.classList.remove('required-flag');
+        });
+      }
+
+      function validateBeforeSave() {
+        clearValidationMarks();
+
+        var errors = [];
+        var accountNumber = String(state.advertiser.accountNumber || '').trim();
+        var accountName = String(state.advertiser.accountName || '').trim();
+
+        if (!accountNumber) {
+          elements.accountNumber.classList.add('required-flag');
+          errors.push('Account Number is required.');
+        }
+
+        if (!accountName) {
+          elements.accountName.classList.add('required-flag');
+          errors.push('Account Name is required.');
+        }
+
+        state.campaigns.forEach(function (campaign) {
+          if (!campaignIsReady(campaign)) {
+            errors.push('Each campaign row requires Campaign Name, Template, DSP Selected, Ad Server Selected, and at least one Ad Group.');
+          }
+
+          campaign.adGroups.forEach(function (adGroup) {
+            if (!adGroupIsReady(adGroup)) {
+              errors.push('Each ad group row requires Name, Tactic, Start Date, and End Date.');
+            }
+          });
+        });
+
+        if (!state.campaigns.length) {
+          errors.push('At least one campaign row is required.');
+        }
+
+        return {
+          valid: errors.length === 0,
+          message: errors[0] || ''
+        };
+      }
+
+      function loadJson(key, fallback) {
+        try {
+          var raw = localStorage.getItem(key);
+          if (!raw) return fallback;
+          var parsed = JSON.parse(raw);
+          return parsed;
+        } catch (error) {
+          return fallback;
+        }
+      }
+
+      function saveJson(key, value) {
+        localStorage.setItem(key, JSON.stringify(value));
+      }
+
+      function normalizeCampaignStore(raw) {
+        if (Array.isArray(raw)) {
+          return { campaigns: [], groups: raw };
+        }
+
+        var obj = raw && typeof raw === 'object' ? raw : {};
+        var campaigns = Array.isArray(obj.campaigns) ? obj.campaigns : [];
+        var groups = Array.isArray(obj.groups) ? obj.groups : [];
+        return { campaigns: campaigns, groups: groups };
+      }
+
+      function resolveAdvertiserRecord() {
+        var advertisers = loadJson('adv_list_data', []);
+        if (!Array.isArray(advertisers)) advertisers = [];
+
+        var normalizedAccount = String(state.advertiser.accountNumber || '').trim();
+        var advertiser = advertisers.find(function (item) {
+          return String(item && item.account || '').trim() === normalizedAccount;
+        }) || null;
+
+        if (!advertiser) {
+          advertiser = {
+            id: uid('ADV'),
+            name: String(state.advertiser.accountName || '').trim(),
+            account: normalizedAccount,
+            totalInvoiceImpressions: String(state.advertiser.totalInvoiceImpressions || '').trim(),
+            totalImpressions: String(state.advertiser.totalImpressions || '').trim(),
+            totalInvoiceBudget: String(state.advertiser.totalInvoiceBudget || '').trim(),
+            totalBudget: String(state.advertiser.totalBudget || '').trim(),
+            status: 'Active',
+            state: 'Active',
+            campaign: '0',
+            adGroup: '0',
+            owner: 'Quick Create',
+            quickCreateNotes: String(state.advertiser.advertiserNotes || '').trim()
+          };
+          advertisers.unshift(advertiser);
+          saveJson('adv_list_data', advertisers);
+        }
+
+        return { advertiser: advertiser, advertisers: advertisers };
+      }
+
+      function makeCampaignRecord(campaign, advertiserId, campaignId) {
+        var dspSlug = slugify(campaign.dspSelected);
+        var adServerSlug = slugify(campaign.adServerSelected);
+
+        return {
+          id: campaignId,
+          advertiserId: advertiserId,
+          name: String(campaign.name || '').trim(),
+          state: 'Active',
+          beaconCampaignId: campaignId,
+          beaconCampaignName: String(campaign.name || '').trim(),
+          beaconTemplate: campaign.template || '',
+          beaconDspImpressions: String(parsePositiveInt(campaign.dspImpressions)),
+          template: campaign.template || '',
+          dspImpressions: parsePositiveInt(campaign.dspImpressions),
+          dsp: campaign.dspSelected || '',
+          adServer: campaign.adServerSelected || '',
+          quickCreatePlatforms: {
+            dspSelected: campaign.dspSelected || '',
+            adServerSelected: campaign.adServerSelected || ''
+          },
+          connectors: {
+            dsp: dspSlug ? [dspSlug] : [],
+            adServer: adServerSlug ? [adServerSlug] : [],
+            status: {}
+          }
+        };
+      }
+
+      function makeAdGroupRecord(campaign, adGroup, advertiserId, campaignId, adGroupId) {
+        var dspSlug = slugify(campaign.dspSelected);
+        var adServerSlug = slugify(campaign.adServerSelected);
+        var mv = adGroup.mvClassification || campaign.template || '';
+
+        return {
+          id: adGroupId,
+          advertiserId: advertiserId,
+          name: String(adGroup.name || '').trim(),
+          campaign: campaignId,
+          campaignId: campaignId,
+          template: campaign.template || '',
+          multiviewClassification: mv,
+          multiviewTactic: adGroup.tactic || '',
+          contentCategory: adGroup.contentCategory || '',
+          classification: mv,
+          beaconAudience: adGroup.audience || '',
+          geoTarget: adGroup.geo || '',
+          startDate: adGroup.startDate || '',
+          endDate: adGroup.endDate || '',
+          impressions: parsePositiveInt(adGroup.impressions),
+          landingPage: adGroup.landingPage || '',
+          utmCode: adGroup.utmCode || '',
+          dsp: campaign.dspSelected || '',
+          adServer: campaign.adServerSelected || '',
+          quickCreatePlatforms: {
+            dspSelected: campaign.dspSelected || '',
+            adServerSelected: campaign.adServerSelected || ''
+          },
+          connectors: {
+            dsp: dspSlug ? [dspSlug] : [],
+            adServer: adServerSlug ? [adServerSlug] : [],
+            status: {}
+          },
+          source: 'quick-create',
+          state: 'Active'
+        };
+      }
+
+      function handleSave() {
+        var validation = validateBeforeSave();
+        if (!validation.valid) {
+          toast(validation.message || 'Complete required Beacon fields before saving.', 'error', 3600);
+          return;
+        }
+
+        var advertiserResult = resolveAdvertiserRecord();
+        var advertiser = advertiserResult.advertiser;
+
+        var normalizedStore = normalizeCampaignStore(loadJson('campaign_tree_groups', { campaigns: [], groups: [] }));
+        var existingCampaigns = Array.isArray(normalizedStore.campaigns) ? normalizedStore.campaigns : [];
+
+        var newCampaignRecords = [];
+        var campaignIdMap = {};
+
+        state.campaigns.forEach(function (campaign) {
+          var campaignId = uid('CAM');
+          campaignIdMap[campaign.tempId] = campaignId;
+          newCampaignRecords.push(makeCampaignRecord(campaign, advertiser.id, campaignId));
+        });
+
+        normalizedStore.campaigns = newCampaignRecords.concat(existingCampaigns);
+        saveJson('campaign_tree_groups', normalizedStore);
+
+        var existingAdGroups = loadJson('adgroups_data_v1', []);
+        if (!Array.isArray(existingAdGroups)) existingAdGroups = [];
+
+        var newAdGroupRecords = [];
+        state.campaigns.forEach(function (campaign) {
+          var mappedCampaignId = campaignIdMap[campaign.tempId];
+          campaign.adGroups.forEach(function (adGroup) {
+            var adGroupId = uid('AG');
+            newAdGroupRecords.push(makeAdGroupRecord(campaign, adGroup, advertiser.id, mappedCampaignId, adGroupId));
+          });
+        });
+
+        var mergedAdGroups = newAdGroupRecords.concat(existingAdGroups);
+        saveJson('adgroups_data_v1', mergedAdGroups);
+
+        localStorage.setItem('adv_selected_id', advertiser.id);
+        localStorage.setItem('adv_selected_data', JSON.stringify(advertiser));
+
+        toast('Quick Create saved: ' + newCampaignRecords.length + ' campaigns and ' + newAdGroupRecords.length + ' ad groups.', 'success', 2200);
+
+        setTimeout(function () {
+          window.location.href = './WFAdvertiserDetails.html?advertiserId=' + encodeURIComponent(advertiser.id);
+        }, 260);
+      }
+
+      function refreshConfigOptions() {
+        var config = defaults;
+        if (window.beaconAdminConfig && typeof window.beaconAdminConfig.loadConfig === 'function') {
+          try {
+            config = window.beaconAdminConfig.loadConfig() || defaults;
+          } catch (error) {
+            config = defaults;
+          }
+        }
+
+        state.config.templates = Array.isArray(config.templates) && config.templates.length ? config.templates.slice() : defaults.templates.slice();
+        state.config.tactics = Array.isArray(config.tactics) && config.tactics.length ? config.tactics.slice() : defaults.tactics.slice();
+        state.config.dspPlatforms = Array.isArray(config.dspPlatforms) && config.dspPlatforms.length ? config.dspPlatforms.slice() : defaults.dspPlatforms.slice();
+        state.config.adServerPlatforms = Array.isArray(config.adServerPlatforms) && config.adServerPlatforms.length ? config.adServerPlatforms.slice() : defaults.adServerPlatforms.slice();
+
+        state.campaigns.forEach(function (campaign) {
+          if (campaign.template && state.config.templates.indexOf(campaign.template) === -1) {
+            campaign.template = PLATFORM_EMPTY;
+          }
+          if (campaign.dspSelected && state.config.dspPlatforms.indexOf(campaign.dspSelected) === -1) {
+            campaign.dspSelected = PLATFORM_EMPTY;
+          }
+          if (campaign.adServerSelected && state.config.adServerPlatforms.indexOf(campaign.adServerSelected) === -1) {
+            campaign.adServerSelected = PLATFORM_EMPTY;
+          }
+
+          if (!campaign.template && state.config.templates.length) {
+            campaign.template = state.config.templates[0];
+          }
+
+          campaign.adGroups.forEach(function (adGroup) {
+            if (adGroup.tactic && state.config.tactics.indexOf(adGroup.tactic) === -1) {
+              adGroup.tactic = PLATFORM_EMPTY;
+              adGroup.contentCategory = PLATFORM_EMPTY;
+            }
+            if (!adGroup.tactic && state.config.tactics.length) {
+              adGroup.tactic = state.config.tactics[0];
+              adGroup.contentCategory = adGroup.tactic;
+            }
+            adGroup.mvClassification = campaign.template || '';
+          });
+        });
+
+        renderAll();
+      }
+
+      function init() {
+        wireHeaderMenu();
+        wireAdvertiserInputs();
+        wireCampaignTableEvents();
+        wireAdGroupEvents();
+        wireGlobalButtons();
+
+        state.campaigns = [makeCampaign(1)];
+        syncAdvertiserInputs();
+        refreshConfigOptions();
+
+        window.addEventListener('beacon-admin-config-changed', function () {
+          refreshConfigOptions();
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', init);
+    })();
+  </script>
+</body>
+</html>

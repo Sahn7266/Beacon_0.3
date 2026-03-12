@@ -1,0 +1,3612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Beacon - Details</title>
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Toast assets (single source of truth) -->
+  <link rel="stylesheet" href="./assets/toast.css">
+  <script src="./assets/toast.js" defer></script>
+  
+  <!-- Theme CSS for platform styling -->
+  <link rel="stylesheet" href="./assets/theme.css">
+
+  <!-- REMOVE OR COMMENT OUT THIS LINE: -->
+  <script src="./assets/notifications.js"></script>
+  <script src="./assets/audit.js" defer></script>
+  <link rel="stylesheet" href="./assets/loading.css">
+  <script src="./assets/loading.js" defer></script>
+
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, Arial, sans-serif; }
+    .table-fixed { table-layout: fixed; } td, th { white-space: nowrap; }
+
+    /* Fixed table row height to prevent resizing during edit mode */
+    .campaign-details-table tbody tr {
+      height: 2rem; /* Fixed height for consistent table dimensions */
+    }
+    
+    .campaign-details-table tbody td {
+      vertical-align: middle;
+      padding-top: 0.25rem !important;
+      padding-bottom: 0.25rem !important;
+    }
+
+    /* Seamless input styling to match spans */
+    .campaign-details-input {
+      background: white !important;
+      border: 1px solid #d1d5db !important;
+      outline: none !important;
+      box-shadow: none !important;
+      padding: 0.125rem 0.5rem !important;
+      margin: 0 !important;
+      height: auto !important;
+      line-height: 1.25rem;
+      font-size: 0.875rem;
+      color: #374151;
+      width: 100% !important;
+      box-sizing: border-box;
+      border-radius: 0.25rem;
+    }
+    
+    /* Enhanced focus state for better UX */
+    .campaign-details-input:focus {
+      border: 1px solid #3b82f6 !important;
+      box-shadow: 0 0 0 1px #3b82f6 !important;
+    }
+
+    /* Read-only inputs look like text */
+    input[aria-readonly="true"] {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      caret-color: transparent;
+    }
+    input[aria-readonly="true"]:focus { border: none !important; outline: none !important; box-shadow: none !important; }
+    input[aria-readonly="true"]::-moz-focus-inner { border: 0 !important; }
+    
+    /* Read-only select styling */
+    select[aria-readonly="true"] {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      caret-color: transparent;
+      appearance: none;
+      pointer-events: none;
+    }
+    select[aria-readonly="true"]:focus { border: none !important; outline: none !important; box-shadow: none !important; }
+
+    /* Search bar styling */
+    .search-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      border-radius: 0.375rem;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      height: 40px;
+      width: 50px;
+      overflow: hidden;
+    }
+
+    .search-wrapper.expanded {
+      width: 300px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 5px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s ease;
+    }
+
+    .search-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: #666;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 8px 40px 8px 40px;
+      font-size: 14px;
+      color: #333;
+      opacity: 0;
+      transition: opacity 0.2s ease 0.1s;
+    }
+
+    .search-input::placeholder {
+      color: #999;
+    }
+
+    .search-wrapper.expanded .search-input {
+      opacity: 1;
+      background-color: white;
+      height: 80%;
+      border: #c5c4c4 1px solid;
+      border-radius: .375rem;
+    }
+
+    .clear-button {
+      position: absolute;
+      right: 10px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+      z-index: 2;
+    }
+
+    .clear-button svg {
+      width: 100%;
+      height: 100%;
+      fill: #666;
+    }
+
+    .clear-button:hover svg {
+      fill: #333;
+    }
+
+    .clear-button.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Inline Record ID popover */
+    .inline-record-id-popover {
+      position: fixed;
+      z-index: 9999;
+      background: rgba(70, 70, 70, 0.95);
+      border-radius: 6px;
+      padding: 6px 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      white-space: nowrap;
+    }
+
+    .inline-record-id-popover input {
+      width: 180px;
+      padding: 4px 10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      outline: none;
+      background: white;
+      color: #333;
+    }
+
+    .inline-record-id-popover input::placeholder {
+      color: #999;
+    }
+
+    .inline-record-id-popover .popover-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .inline-record-id-popover .popover-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: #1a1a1a;
+    }
+
+    .inline-record-id-popover .popover-btn:hover svg {
+      fill: #000;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+  <div class="flex h-screen flex-col">
+    <!-- Header -->
+    <header class="border-b border-gray-200 shadow-sm" style="background-color: #004E8B;">
+      <div class="flex items-center justify-between px-4 py-2">
+        <div class="flex items-center gap-3">
+          <img src="./assets/Beaconlogo.svg" alt="Beacon Logo" class="h-12 w-auto" />
+        </div>
+
+        <nav class="flex items-center gap-3 ml-auto">
+            <a href="./index.html" class="text-base text-white hover:text-blue-100" style="font-size: 1.5rem; padding-right: 15px;" onmouseover="this.style.color='#48A9FE'" onmouseout="this.style.color='white'">
+            Advertisers
+            </a>
+          <span class="text-white select-none">|</span>
+
+          <!-- Notifications -->
+          <div class="relative">
+            <button id="notificationButton" class="p-2 rounded-md  text-white relative" title="Notifications" aria-label="View notifications" onmouseover="this.style.backgroundColor=''" onmouseout="this.style.backgroundColor=''" >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+              </svg>
+              <span id="notificationDot" class="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+            </button>
+
+            <!-- Dropdown -->
+            <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-96 overflow-hidden">
+              <div class="p-3 border-b border-gray-200 bg-gray-50">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
+                  <button id="markAllReadBtn" class="text-xs text-blue-600 hover:text-blue-800">Mark all read</button>
+                </div>
+              </div>
+
+              <div class="max-h-80 overflow-y-auto">
+                <div id="notificationList">
+                  <!-- Sample items -->
+                  <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer notification-item" data-read="false">
+                    <div class="flex items-start gap-3">
+                      <div class="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900">Campaign Performance Alert</p>
+                        <p class="text-xs text-gray-500 mt-1">"Summer Sale" exceeded budget by 15%</p>
+                        <p class="text-xs text-gray-400 mt-1">2 minutes ago</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer notification-item" data-read="false">
+                    <div class="flex items-start gap-3">
+                      <div class="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900">New Advertiser Added</p>
+                        <p class="text-xs text-gray-500 mt-1">Stallion Services LLC onboarded</p>
+                        <p class="text-xs text-gray-400 mt-1">1 hour ago</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer notification-item" data-read="true">
+                    <div class="flex items-start gap-3">
+                      <div class="flex-shrink-0 w-2 h-2 bg-gray-300 rounded-full mt-2"></div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm text-gray-700">Account Sync Complete</p>
+                        <p class="text-xs text-gray-500 mt-1">CRM sync finished for 12 accounts</p>
+                        <p class="text-xs text-gray-400 mt-1">3 hours ago</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-3 text-center border-t border-gray-200">
+                  <a href="#" class="text-sm text-blue-600 hover:text-blue-800 font-medium">View all notifications</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Waffle Menu -->
+          <div class="relative">
+            <button class="p-0 rounded-md text-white" id="menuButton" title="Menu" aria-label="Open navigation menu">
+              <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4h3v3H4V4zM8.5 4h3v3h-3V4zM13 4h3v3h-3V4zM4 8.5h3v3H4v-3zM8.5 8.5h3v3h-3V8.5zM13 8.5h3v3h-3V8.5zM4 13h3v3H4v-3zM8.5 13h3v3h-3V13zM13 13h3v3h-3V13z"></path>
+              </svg>
+            </button>
+            <div id="menuDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Advertisers</a>
+              <a href="#" id="menuProfile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+              <a href="./Admin_Users.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Out</a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Breadcrumb Bar -->
+    <div class="bg-white border-b border-gray-200 px-6 py-2">
+      <nav class="flex items-center text-sm text-gray-600">
+        <a href="./index.html" class="hover:text-blue-600 transition-colors">Advertisers</a>
+        <svg class="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+        <a href="#" id="breadcrumbAdvertiser" class="hover:text-blue-600 transition-colors">—</a>
+        <svg class="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+        <a href="#" id="breadcrumbCampaigns" class="hover:text-blue-600 transition-colors">Campaigns</a>
+        <svg class="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+        <a href="#" id="breadcrumbCampaign" class="hover:text-blue-600 transition-colors">—</a>
+        <svg class="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+        <a href="#" id="breadcrumbAdGroups" class="hover:text-blue-600 transition-colors">Ad Groups</a>
+        <svg class="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+        <a href="#" id="breadcrumbAdGroup" class="hover:text-blue-600 transition-colors">—</a>
+        <svg class="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+        <span class="font-semibold text-gray-900">Connections</span>
+      </nav>
+    </div>
+
+    <!-- Body -->
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Sidebar -->
+      <nav id="sidebar" class="bg-white w-64 p-4 border-r border-gray-200 overflow-y-auto transition-all duration-200 ease-in-out">
+  <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+    <div class="flex items-center gap-3">
+      <img src="./assets/svgs/AdGroups.svg" alt="Ad Group" class="w-9 h-9 rounded-full" data-sidebar-avatar />
+      <h2 data-sidebar-header class="text-base text-lg font-semibold text-gray-800">Ad Group</h2>
+    </div>
+    <button id="sidebarToggle" class="p-1 rounded hover:bg-gray-100" aria-label="Toggle sidebar" aria-expanded="true" title="Collapse/Expand">
+      <svg id="iconCollapse" class="w-5 h-5 text-gray-900" viewBox="0 0 26 26" fill="currentColor">
+        <path fill="#000000" d="M21.5 11.5h-8.793l3.035-3.035a.5.5 0 10-.707-.707l-3.888 3.888a.518.518 0 00-.109.163.505.505 0 000 .382.518.518 0 00.109.163l3.888 3.888a.5.5 0 00.707-.707L12.707 12.5H21.5a.5.5 0 000-1zM7.5 2h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 7h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 11.5h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 16h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 21h-5a.5.5 0 000 1h5a.5.5 0 000-1z"></path>
+      </svg>
+      <svg id="iconExpand" class="w-5 h-5 text-gray-900 hidden" viewBox="0 0 26 26" fill="currentColor">
+        <path fill="#000000" d="M21.962 12.191a.505.505 0 000-.382.518.518 0 00-.109-.163l-3.888-3.888a.5.5 0 10-.707.707l3.035 3.035H11.5a.5.5 0 000 1h8.793l-3.035 3.035a.5.5 0 10.707.707l3.888-3.888a.518.518 0 00.109-.163zM7.5 2h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 7h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 11.5h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 16h-5a.5.5 0 000 1h5a.5.5 0 000-1zM7.5 21h-5a.5.5 0 000 1h5a.5.5 0 000-1z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <ul class="space-y-1 mt-4">
+    <li>
+      <a href="./AdGroupDetails.html" data-nav-link class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
+        <img src="./assets/svgs/Details.svg" alt="Overview" class="w-6 h-6 mr-2" />
+        <span data-link-label>Overview</span>
+      </a>
+    </li>
+    <li>
+      <a href="./AdGroupsConnections.html" data-nav-link class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
+        <img src="./assets/svgs/Blueprint.svg" alt="Connections" class="w-6 h-6 mr-2" />
+        <span data-link-label>Connections</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+      <!-- Main Content -->
+      <main class="flex-1 overflow-y-auto p-6">
+       <div class="app-card rounded-lg shadow-lg overflow-hidden">
+          <!-- Advertiser Header -->
+          <div class="px-4 pt-4">
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <!-- Left Column: Advertiser Name & Account # -->
+              <div>
+                <h1 class="text-2xl font-semibold text-gray-900 mx-2">AD GROUP CONNECTIONS</h1>
+              </div>
+              <!-- Right Column: Ad Group IDs -->
+              <div class="text-right">
+                <div class="flex justify-end gap-2">
+                  <!-- <span class="text-sm font-semibold text-gray-600">Delivery ID:</span>
+                  <a id="adGroupDeliveryId" href="https://www.thetradedesk.com/" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline w-40 text-left">—</a> -->
+                </div>
+                <div class="flex justify-end gap-2">
+                  <!-- <span class="text-sm font-semibold text-gray-600">Reporting ID:</span>
+                  <a id="adGroupReportingId" href="https://campaignmanager.google.com/" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline w-40 text-left">—</a> -->
+                </div>
+                <div class="flex justify-end gap-2">
+                  <span class="text-sm font-semibold text-gray-600">ID:</span>
+                  <span id="adGroupIdDisplay" class="text-sm text-gray-500 w-40 text-left">—</span>
+                </div>
+              </div>
+            </div>
+            <hr class="app-divider mp-4">
+          </div>
+
+          <!-- Page Header-->
+          <!-- <div class="px-4 pt-5">
+            <section class="space-y-2">
+              <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-semibold text-gray-900 mx-2">CONNECTIONS</h1>
+              </div>
+            </section>
+          </div> -->
+
+          <!-- Toolbar -->
+          <div class="px-6 py-3">
+            <div class="mb-4">
+              <div class="flex items-center space-x-3  bg-[var(--tbl-head-bg)] border border-gray-300 rounded-md">
+                <!-- New Ad Group Button -->
+                <button id="createBtn" class="flex items-center h-10 px-3 rounded-md hover:bg-gray-50 transition" title="Create New Ad Group">
+                  <span class="w-6 h-6 flex items-center justify-center rounded-full bg-white border border-gray-400 mr-2">
+                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                  </span>
+                  <span class="text-sm font-medium text-gray-700">New Connection</span>
+                </button>
+
+                <div class="h-6 border-l border-gray-300 mx-1"></div>
+
+                <!-- Filters -->
+                <div id="filtersGroup" class="flex items-center space-x-2">
+                  <div class="flex items-center px-2 h-10 rounded-md">
+                    <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01.293.707l-6.707 8.707V21l-4-2v-4.586L2.707 6.707A1 1 0 013 6V4z"></path>
+                    </svg>
+
+                    <!-- Platform Filter -->
+                    <div class="relative">
+                      <button id="platformChip" class="flex items-center h-8 px-3 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap" data-filter="platform" title="Platform filter" type="button">
+                        <span id="platformChipLabel">All</span>
+                        <svg class="w-4 h-4 text-gray-500 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M5.23 7.21a.75.75 0 011.06 0L10 10.92l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.27a.75.75 0 010-1.06z"/>
+                        </svg>
+                      </button>
+                      <div id="platformMenu" class="hidden absolute mt-2 left-0 bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-56 overflow-auto min-w-max">
+                        <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="All">All</button>
+                        <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="Google Campaign Manager">Google Campaign Manager</button>
+                        <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="The Trade Desk">The Trade Desk</button>
+                        <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="SimpliFi">SimpliFi</button>
+                        <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="StackAdapt">StackAdapt</button>
+                      </div>
+                    </div>
+
+                    <!-- Platform Type Filter -->
+                    <div class="relative">
+                      <button id="platformTypeChip" class="flex items-center h-8 px-3 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap" data-filter="platformType" title="Platform Type filter" type="button">
+                        <span id="platformTypeChipLabel">All</span>
+                        <svg class="w-4 h-4 text-gray-500 ml-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M5.23 7.21a.75.75 0 011.06 0L10 10.92l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.27a.75.75 0 010-1.06z"/>
+                        </svg>
+                      </button>
+                      <div id="platformTypeMenu" class="hidden absolute mt-2 left-0 bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-56 overflow-auto min-w-max">
+                        <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="All">All</button>
+                        <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="DSP">DSP</button>
+                        <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="Ad Server">Ad Server</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="h-6 border-l border-gray-300 mx-1"></div>
+
+                <!-- Search -->
+                <div class="relative">
+                  <div class="search-container">
+                    <div class="search-wrapper" id="searchWrapper" style="height:40px;">
+                      <button id="searchToggle" class="search-icon" aria-label="Open search" type="button">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                      </button>
+                      <input type="text" id="searchInput" class="search-input" placeholder="Enter Platform Name" autocomplete="off" aria-label="Search campaigns" />
+                      <button id="searchClear" class="clear-button" aria-label="Clear search" type="button">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table -->
+              <div class="overflow-x-auto border border-default rounded-md">
+                <table id="campaignTable" class="min-w-full table-fixed rounded-md overflow-hidden tbl tbl-row-hover tbl-row-alt">
+                  <colgroup>
+                    <col style="width:40%" />
+                    <col style="width:15%" />
+                    <col style="width:15%" />
+                    <col style="width:15%" />
+                    <col style="width:15%" />
+                    <col style="width:80px" />
+                  </colgroup>
+                  <thead class="tbl-head">
+                    <tr>
+                      <th scope="col" class="text-sm font-medium uppercase tracking-wider border-r border-default">
+                        <div class="px-6 py-2 whitespace-nowrap">Platform</div>
+                      </th>
+                      <th scope="col" class="text-sm font-medium uppercase tracking-wider border-r border-default">
+                        <div class="px-6 py-2 whitespace-nowrap">Platform Type</div>
+                      </th>
+                      <th scope="col" class="text-sm font-medium uppercase tracking-wider border-r border-default">
+                        <div class="px-6 py-2 whitespace-nowrap">Record ID</div>
+                      </th>
+                      <th scope="col" class="text-sm font-medium uppercase tracking-wider border-r border-default">
+                        <div class="px-6 py-2 whitespace-nowrap">Enabled At</div>
+                      </th>
+                      <th scope="col" class="text-sm font-medium uppercase tracking-wider border-r border-default">
+                        <div class="px-6 py-2 whitespace-nowrap">Disabled At</div>
+                      </th>
+                      <th scope="col" class="text-sm font-medium uppercase tracking-wider">
+                        <div class="px-6 py-2 whitespace-nowrap">Actions</div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="campaignTableBody" class="divide-y">
+                  </tbody>
+                </table>
+              </div>
+
+            <!-- Footer -->
+            <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
+              <span id="recordCount">0 of 0 showing</span>
+              <div id="pagination" class="flex space-x-2">
+                <!-- Pagination buttons will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+  <!-- Edit Connections Modal -->
+  <div id="editConnectionsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-6xl max-h-[90vh] relative mx-4 overflow-hidden">
+      
+      <!-- Wizard Header -->
+      <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-semibold text-white">Edit Connections</h2>
+          </div>
+          <button type="button" id="closeEditConnectionsModal" class="text-white hover:text-blue-200 transition-colors" aria-label="Close modal">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Wizard Body -->
+      <div class="flex max-h-[calc(90vh-180px)]">
+        
+        <!-- Left Sidebar - Steps Navigation -->
+        <div class="w-64 bg-gray-50 border-r border-gray-200 p-6 overflow-y-auto">
+          <nav class="space-y-2">
+            
+            <!-- Step 1 (Only Step) -->
+            <div class="wizard-step active" data-step="1">
+              <div class="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold step-number">
+                  1
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 step-title">Platform Connectors</p>
+                  <p class="text-xs text-gray-500 step-subtitle">Select DSPs & Ad Servers</p>
+                </div>
+              </div>
+            </div>
+
+          </nav>
+        </div>
+
+        <!-- Right Content Area -->
+        <div class="flex-1 p-6 overflow-y-auto">
+          <div class="mb-6 flex items-start justify-between">
+            <div>
+              <h3 class="text-xl font-semibold text-gray-900 mb-2">Platform Connectors</h3>
+              <p class="text-sm text-gray-600">Select which DSPs and Ad Servers to connect</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <label for="editReportingId" class="text-sm font-medium text-gray-700 whitespace-nowrap">Reporting ID</label>
+              <input type="text" id="editReportingId" class="w-40 px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter ID" />
+            </div>
+          </div>
+
+            <div class="space-y-4">
+            <!-- DSP Section Header -->
+            <div class="pt-2">
+              <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                </svg>
+                <span id="editConnectorSectionLabel">DSP (Demand-Side Platform)</span>
+              </h4>
+            </div>
+
+            <!-- Read-only platform field -->
+            <div class="border border-gray-300 rounded-md px-4 py-2.5 bg-gray-50">
+              <span id="editConnectorPlatformName" class="text-sm text-gray-900">The Trade Desk</span>
+            </div>
+
+            <!-- Sync to platform on creation checkbox -->
+            <div class="flex items-center mt-3">
+              <input 
+                type="checkbox" 
+                id="editSyncOnCreation" 
+                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <label for="editSyncOnCreation" class="ml-2 text-sm text-gray-700">Sync to platform</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wizard Footer -->
+      <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end space-x-3">
+        <button type="button" id="cancelEditConnections" class="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+          Cancel
+        </button>
+        <button type="button" id="saveEditConnections" class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Connection Modal -->
+  <div id="newConnectionModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-6xl max-h-[90vh] relative mx-4 overflow-hidden">
+      
+      <!-- Wizard Header -->
+      <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-semibold text-white">New Connection</h2>
+          </div>
+          <button id="closeNewConnectionModal" class="text-white hover:text-blue-200 transition-colors" aria-label="Close modal">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Wizard Body -->
+      <div class="flex max-h-[calc(90vh-180px)]">
+        
+        <!-- Left Sidebar - Steps Navigation -->
+        <div class="w-64 bg-gray-50 border-r border-gray-200 p-6 overflow-y-auto">
+          <nav class="space-y-2">
+            
+            <!-- Step 1 (Only Step) -->
+            <div class="wizard-step active" data-step="1">
+              <div class="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold step-number">
+                  1
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 step-title">Platform Connectors</p>
+                  <p class="text-xs text-gray-500 step-subtitle">Select DSPs & Ad Servers</p>
+                </div>
+              </div>
+            </div>
+
+          </nav>
+
+          <!-- Progress Indicator -->
+          <div class="mt-8 pt-6 border-t border-gray-200">
+            <div class="flex items-center justify-between text-xs text-gray-600 mb-2">
+              <span>Progress</span>
+              <span>100%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 100%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Content Area -->
+        <div class="flex-1 p-6 overflow-y-auto">
+          <div class="mb-6">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Platform Connectors</h3>
+            <p class="text-sm text-gray-600">Select which DSPs and Ad Servers to connect</p>
+          </div>
+
+          <div id="newConnectionStep1" class="space-y-4"></div>
+
+          <div id="newConnectionStep2" class="space-y-4 hidden">
+            
+            <!-- Toggle All Connectors -->
+            <div class="flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div>
+                <p class="text-sm font-medium text-gray-900">Enable Platform Connectors</p>
+                <p class="text-xs text-gray-600 mt-1">Toggle to mark selected platforms as Connected</p>
+              </div>
+              <button type="button" id="newConnectorsToggle" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" role="switch" aria-checked="false">
+                <span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
+              </button>
+            </div>
+
+            <!-- Connectors Content -->
+            <div id="newConnectorsContent" class="space-y-4">
+              
+              <!-- DSP Section Header -->
+              <div class="pt-2">
+                <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                  <svg class="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                  </svg>
+                  DSP (Demand-Side Platform)
+                </h4>
+              </div>
+
+              <!-- The Trade Desk -->
+              <div class="connector-card border-2 rounded-lg p-4 cursor-pointer transition-all hover:border-blue-300 hover:shadow-md" data-connector="trade-desk">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <input 
+                      type="checkbox" 
+                      id="new-dsp-trade-desk" 
+                      name="new-dsp" 
+                      value="trade-desk"
+                      class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <div>
+                      <p class="text-sm font-semibold text-gray-900">The Trade Desk</p>
+                      <p class="text-xs text-gray-500">Programmatic advertising platform</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-3">
+                    <!-- <span class="connector-status-label text-xs font-medium text-gray-600">Not Connected</span> -->
+                    <span class="px-2 py-1 text-xs font-bold rounded bg-blue-100 text-blue-700">API</span>
+                    <!-- <button type="button" class="new-connector-toggle relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" role="switch" aria-checked="false" data-connector="trade-desk">
+                      <span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
+                    </button> -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- DV360 -->
+              <div class="connector-card border-2 rounded-lg p-4 cursor-pointer transition-all hover:border-blue-300 hover:shadow-md" data-connector="dv360">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <input 
+                      type="checkbox" 
+                      id="new-dsp-dv360" 
+                      name="new-dsp" 
+                      value="dv360"
+                      class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <div>
+                      <p class="text-sm font-semibold text-gray-900">DV360</p>
+                      <p class="text-xs text-gray-500">Google Display & Video 360</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-3">
+                    <!-- <span class="connector-status-label text-xs font-medium text-gray-600">Not Connected</span> -->
+                    <span class="px-2 py-1 text-xs font-bold rounded bg-yellow-100 text-yellow-700">PDF</span>
+                    <!-- <button type="button" class="new-connector-toggle relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" role="switch" aria-checked="false" data-connector="dv360">
+                      <span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
+                    </button> -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Simpli.fi -->
+              <div class="connector-card border-2 rounded-lg p-4 cursor-pointer transition-all hover:border-blue-300 hover:shadow-md" data-connector="simplifi">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <input 
+                      type="checkbox" 
+                      id="new-dsp-simplifi" 
+                      name="new-dsp" 
+                      value="simplifi"
+                      class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <div>
+                      <p class="text-sm font-semibold text-gray-900">Simpli.fi</p>
+                      <p class="text-xs text-gray-500">Local advertising platform</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-3">
+                    <!-- <span class="connector-status-label text-xs font-medium text-gray-600">Not Connected</span> -->
+                    <span class="px-2 py-1 text-xs font-bold rounded bg-yellow-100 text-yellow-700">PDF</span>
+                    <!-- <button type="button" class="new-connector-toggle relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" role="switch" aria-checked="false" data-connector="simplifi">
+                      <span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
+                    </button> -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ad Server Section Header -->
+              <div class="pt-4">
+                <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                  <svg class="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                  </svg>
+                  Ad Server
+                </h4>
+              </div>
+
+              <!-- Google Campaign Manager -->
+              <div class="connector-card border-2 rounded-lg p-4 cursor-pointer transition-all hover:border-blue-300 hover:shadow-md" data-connector="google-campaign-manager">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <input 
+                      type="checkbox" 
+                      id="new-adserver-gcm" 
+                      name="new-adserver" 
+                      value="google-campaign-manager"
+                      class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <div>
+                      <p class="text-sm font-semibold text-gray-900">Google Campaign Manager</p>
+                      <p class="text-xs text-gray-500">Ad serving and campaign management</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-3">
+                    <!-- <span class="connector-status-label text-xs font-medium text-gray-600">Not Connected</span> -->
+                    <span class="px-2 py-1 text-xs font-bold rounded bg-blue-100 text-blue-700">API</span>
+                    <!-- <button type="button" class="new-connector-toggle relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" role="switch" aria-checked="false" data-connector="google-campaign-manager">
+                      <span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
+                    </button> -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div id="newConnectionStep3" class="space-y-4 hidden"></div>
+        </div>
+      </div>
+
+      <!-- Wizard Footer -->
+      <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end space-x-3">
+        <button id="cancelNewConnection" class="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+          Cancel
+        </button>
+        <button id="newConnectionPrevBtn" type="button" class="hidden px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+          Back
+        </button>
+        <button id="connectNewConnection" class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+
+                      <script>
+                        (function() {
+                        const pairs = [
+  // Beacon Fields
+  { span: 'displayBeaconCampaignId', input: 'beaconCampaignId' },
+  { span: 'displayBeaconCampaignName', input: 'beaconCampaignName' },
+  // DSP Fields (these are linked to actual campaign data)
+  { span: 'displayCampaignSeed', input: 'campaignSeed' },
+  { span: 'displayCampaignOrganization', input: 'campaignOrganization' },
+  { span: 'displayCampaignPacing', input: 'campaignPacing' },
+  { span: 'displayCampaignTimezone', input: 'campaignTimezone' },
+  { span: 'displayCampaignStartDate', input: 'campaignStartDate' },
+  { span: 'displayCampaignEndDate', input: 'campaignEndDate' },
+  { span: 'displayCampaignChannel', input: 'campaignChannel' },
+  { span: 'displayCampaignName', input: 'campaignName' },
+  { span: 'displayCampaignBudget', input: 'campaignBudget' },
+  { span: 'displayCampaignKPI', input: 'campaignKPI' },
+  { span: 'displayCampaignKPITarget', input: 'campaignKPITarget' },
+  // Ad Server Fields
+  { span: 'displayAdServerCampaignName', input: 'adServerCampaignName' },
+  { span: 'displayAdServerSchedule', input: 'adServerSchedule' },
+  { span: 'displayAdServerLandingPageName', input: 'adServerLandingPageName' },
+  { span: 'displayAdServerLandingPageURL', input: 'adServerLandingPageURL' }
+];
+
+                        // Fields that are linked to actual campaign data (including Common Data section)
+                        const campaignLinkedFields = [
+  // Beacon Fields (now linked to Beacon field data)
+  'beaconCampaignId',
+  'beaconCampaignName',
+  // DSP Fields
+  'campaignSeed',
+  'campaignOrganization',
+  'campaignPacing',
+  'campaignTimezone',
+  'campaignStartDate',
+  'campaignEndDate',
+  'campaignChannel',
+  'campaignName',
+  'campaignBudget',
+  'campaignKPI',
+  'campaignKPITarget',
+  // Ad Server Fields
+  'adServerCampaignName',
+  'adServerSchedule',
+  'adServerLandingPageName',
+  'adServerLandingPageURL'
+];
+
+
+                        const btnEdit   = document.getElementById('editGeneralBtn');
+                        const btnSave   = document.getElementById('saveGeneralBtn');
+                        const btnCancel = document.getElementById('cancelGeneralBtn');
+
+                        let snapshot = null;
+                        let inlineEditing = false;
+
+                        function showInputs() {
+                          pairs.forEach(p => {
+                          const span = document.getElementById(p.span);
+                          const input = document.getElementById(p.input);
+                          if (!span || !input) return;
+                          input.classList.remove('hidden');
+                          span.classList.add('hidden');
+                          
+                          let value = span.textContent.trim();
+                          
+                          // For number inputs (budget fields), extract numeric value or leave empty
+                          if (input.type === 'number') {
+                            // Remove currency symbols, commas, and extract numbers
+                            const numMatch = value.match(/[\d,]+/);
+                            if (numMatch && value !== 'N/A' && value !== '—') {
+                              value = numMatch[0].replace(/,/g, '');
+                            } else {
+                              value = ''; // Leave empty if N/A or no valid number
+                            }
+                          }
+                          
+                          input.value = value;
+                          });
+                        }
+                        function showSpans() {
+                          pairs.forEach(p => {
+                          const span = document.getElementById(p.span);
+                          const input = document.getElementById(p.input);
+                          if (!span || !input) return;
+                          
+                          // Update span with input value, handling empty values
+                          let displayValue = input.value.trim();
+                          if (!displayValue || displayValue === '') {
+                            displayValue = 'N/A';
+                          }
+                          
+                          // Format currency for budget fields
+                          if (input.type === 'number' && displayValue !== 'N/A') {
+                            const numValue = parseFloat(displayValue);
+                            if (!isNaN(numValue)) {
+                              displayValue = `$${numValue.toLocaleString()}`;
+                            }
+                          }
+                          
+                          span.textContent = displayValue;
+                          input.classList.add('hidden');
+                          span.classList.remove('hidden');
+                          });
+                        }
+
+                        function currentValues() {
+                          const obj = {};
+                          pairs.forEach(p => {
+                          const input = document.getElementById(p.input);
+                          if (input) obj[p.input] = input.value.trim();
+                          });
+                          return obj;
+                        }
+
+                        function currentCampaignValues() {
+                          const obj = {};
+                          campaignLinkedFields.forEach(fieldName => {
+                          const input = document.getElementById(fieldName);
+                          if (input) obj[fieldName] = input.value.trim();
+                          });
+                          return obj;
+                        }
+                        function shallowEqual(a,b){
+                          const ka = Object.keys(a), kb = Object.keys(b);
+                          if (ka.length !== kb.length) return false;
+                          for (const k of ka) if (a[k] !== b[k]) return false;
+                          return true;
+                        }
+
+                        btnEdit?.addEventListener('click', () => {
+                          // Start inline editing for these campaign fields
+                          inlineEditing = true;
+                          snapshot = currentCampaignValues(); // Only snapshot campaign-linked fields
+                          showInputs();
+                          
+                          // Auto-focus the first editable field for immediate editing
+                          const firstInput = document.getElementById('campaignName');
+                          if (firstInput) {
+                            setTimeout(() => firstInput.focus(), 50);
+                          }
+                        });
+
+                        btnCancel?.addEventListener('click', () => {
+                          if (!inlineEditing) return;
+                          // Revert only campaign-linked fields
+                          campaignLinkedFields.forEach(fieldName => {
+                          const input = document.getElementById(fieldName);
+                          if (input && snapshot && snapshot[fieldName] != null) {
+                            input.value = snapshot[fieldName];
+                          }
+                          });
+                          showSpans();
+                          inlineEditing = false;
+                          snapshot = null;
+                        });
+
+                        btnSave?.addEventListener('click', () => {
+                          if (!inlineEditing) return;
+                          const now = currentCampaignValues(); // Only get campaign-linked values
+                          if (snapshot && shallowEqual(snapshot, now)) {
+                          // No change
+                          showSpans();
+                          inlineEditing = false;
+                          snapshot = null;
+                          return;
+                          }
+
+                          // === AUDIT TRACKING ===
+                          // Get campaign ID from URL params
+                          const urlParams = new URLSearchParams(window.location.search);
+                          const campaignId = urlParams.get('campaignId');
+                          
+                          if (campaignId && snapshot && window.audit) {
+                            try {
+                              window.audit.recordEdit({
+                                campaignId: campaignId,
+                                entityType: 'campaign',
+                                entityId: campaignId,
+                                before: snapshot,
+                                after: now
+                              });
+                            } catch (e) {
+                              console.warn('Failed to record audit edit:', e);
+                            }
+                          }
+
+                          // === SAVE CAMPAIGN DATA ===
+                          // Update the actual campaign data in storage
+                          if (campaignId) {
+                            try {
+                              const data = JSON.parse(localStorage.getItem('campaign_tree_groups') || '{}');
+                              let campaignFound = false;
+                              
+                              // Handle both old and new data structures
+                              let campaigns = [];
+                              let groups = [];
+                              
+                              if (Array.isArray(data)) {
+                                // Old structure - data is just an array of groups
+                                groups = data;
+                              } else {
+                                // New structure - data is an object with campaigns and groups arrays
+                                campaigns = Array.isArray(data.campaigns) ? data.campaigns : [];
+                                groups = Array.isArray(data.groups) ? data.groups : [];
+                              }
+
+                              // First check top-level campaigns array
+                              const topLevelCampaign = campaigns.find(c => c.id === campaignId);
+                              if (topLevelCampaign) {
+                                // Map the field values to campaign properties
+                                // DSP Fields - New 11 Field Structure
+                                if (now.campaignSeed !== undefined) topLevelCampaign.seed = now.campaignSeed;
+                                if (now.campaignOrganization !== undefined) topLevelCampaign.organization = now.campaignOrganization;
+                                if (now.campaignPacing !== undefined) topLevelCampaign.pacing = now.campaignPacing;
+                                if (now.campaignTimezone !== undefined) topLevelCampaign.timezone = now.campaignTimezone;
+                                if (now.campaignStartDate !== undefined) topLevelCampaign.startDate = now.campaignStartDate;
+                                if (now.campaignEndDate !== undefined) topLevelCampaign.endDate = now.campaignEndDate;
+                                if (now.campaignChannel !== undefined) topLevelCampaign.channel = now.campaignChannel;
+                                if (now.campaignName !== undefined) topLevelCampaign.name = now.campaignName;
+                                if (now.campaignBudget !== undefined) topLevelCampaign.budget = now.campaignBudget;
+                                if (now.campaignKPI !== undefined) topLevelCampaign.kpi = now.campaignKPI;
+                                if (now.campaignKPITarget !== undefined) topLevelCampaign.kpiTarget = now.campaignKPITarget;
+                                // Beacon Fields mapping
+                                if (now.beaconCampaignId !== undefined) topLevelCampaign.beaconCampaignId = now.beaconCampaignId;
+                                if (now.beaconCampaignName !== undefined) topLevelCampaign.beaconCampaignName = now.beaconCampaignName;
+                                // Ad Server Fields - New 4 Field Structure
+                                if (now.adServerCampaignName !== undefined) topLevelCampaign.adServerCampaignName = now.adServerCampaignName;
+                                if (now.adServerSchedule !== undefined) topLevelCampaign.adServerSchedule = now.adServerSchedule;
+                                if (now.adServerLandingPageName !== undefined) topLevelCampaign.adServerLandingPageName = now.adServerLandingPageName;
+                                if (now.adServerLandingPageURL !== undefined) topLevelCampaign.adServerLandingPageURL = now.adServerLandingPageURL;
+                                
+                                campaignFound = true;
+                              }
+                              
+                              // If not found in top-level, check within groups
+                              if (!campaignFound) {
+                                for (const group of groups) {
+                                  const campaign = group.campaigns.find(c => c.id === campaignId);
+                                  if (campaign) {
+                                    // Map the field values to campaign properties
+                                    // DSP Fields - New 11 Field Structure
+                                    if (now.campaignSeed !== undefined) campaign.seed = now.campaignSeed;
+                                    if (now.campaignOrganization !== undefined) campaign.organization = now.campaignOrganization;
+                                    if (now.campaignPacing !== undefined) campaign.pacing = now.campaignPacing;
+                                    if (now.campaignTimezone !== undefined) campaign.timezone = now.campaignTimezone;
+                                    if (now.campaignStartDate !== undefined) campaign.startDate = now.campaignStartDate;
+                                    if (now.campaignEndDate !== undefined) campaign.endDate = now.campaignEndDate;
+                                    if (now.campaignChannel !== undefined) campaign.channel = now.campaignChannel;
+                                    if (now.campaignName !== undefined) campaign.name = now.campaignName;
+                                    if (now.campaignBudget !== undefined) campaign.budget = now.campaignBudget;
+                                    if (now.campaignKPI !== undefined) campaign.kpi = now.campaignKPI;
+                                    if (now.campaignKPITarget !== undefined) campaign.kpiTarget = now.campaignKPITarget;
+                                    // Beacon Fields mapping
+                                    if (now.beaconCampaignId !== undefined) campaign.beaconCampaignId = now.beaconCampaignId;
+                                    if (now.beaconCampaignName !== undefined) campaign.beaconCampaignName = now.beaconCampaignName;
+                                    // Ad Server Fields - New 4 Field Structure
+                                    if (now.adServerCampaignName !== undefined) campaign.adServerCampaignName = now.adServerCampaignName;
+                                    if (now.adServerSchedule !== undefined) campaign.adServerSchedule = now.adServerSchedule;
+                                    if (now.adServerLandingPageName !== undefined) campaign.adServerLandingPageName = now.adServerLandingPageName;
+                                    if (now.adServerLandingPageURL !== undefined) campaign.adServerLandingPageURL = now.adServerLandingPageURL;
+                                    
+                                    campaignFound = true;
+                                    break;
+                                  }
+                                }
+                              }
+                              
+                              if (campaignFound) {
+                                // Reconstruct the proper data structure for saving
+                                const updatedData = Array.isArray(data) ? groups : { campaigns, groups };
+                                localStorage.setItem('campaign_tree_groups', JSON.stringify(updatedData));
+                                console.log('Campaign data updated successfully');
+                              }
+                            } catch (e) {
+                              console.warn('Failed to update campaign data:', e);
+                            }
+                          }
+
+                          // Commit to spans
+                          showSpans();
+                          inlineEditing = false;
+                          snapshot = null;
+                        });
+                        })();
+                      </script>
+                    </section>
+                  </div>
+                  </div>
+                </div>
+                </main>
+              </div>
+              </div>
+  <!-- Waffle menu toggle -->
+  <script>
+    const menuButton = document.getElementById('menuButton');
+    const menuDropdown = document.getElementById('menuDropdown');
+    if (menuButton && menuDropdown) {
+      menuButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuDropdown.classList.toggle('hidden');
+      });
+      document.addEventListener('click', (event) => {
+        if (!menuButton.contains(event.target) && !menuDropdown.contains(event.target)) {
+          menuDropdown.classList.add('hidden');
+        }
+      });
+    }
+  </script>
+
+  <!-- Details page data-binding -->
+  <script>
+    (function() {
+      const STORAGE_KEY_DATA = 'adv_list_data';
+
+      function loadAdvertisersFromStorage() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY_DATA);
+          return raw ? JSON.parse(raw) : [];
+        } catch { return []; }
+      }
+
+      function bindAll(key, value, fallback = '—') {
+        const nodes = document.querySelectorAll(`[data-bind="${key}"]`);
+        const text = (value != null && String(value).trim() !== '') ? value : fallback;
+        nodes.forEach(el => {
+          if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
+            el.value = text;
+            el.setAttribute('data-original', text);
+          } else {
+            el.textContent = text;
+            if (key === 'adv.account') {
+              const accountDisplay = document.getElementById('accountDisplay');
+              const accountLookupBtn = document.getElementById('accountLookupBtn');
+              if (accountDisplay && accountLookupBtn) {
+                if (text && text !== '—' && text !== 'N/A') {
+                  accountDisplay.classList.remove('hidden');
+                  accountLookupBtn.classList.add('hidden');
+                } else {
+                  accountDisplay.classList.add('hidden');
+                  accountLookupBtn.classList.remove('hidden');
+                }
+              }
+            }
+          }
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        let adv = null;
+        try {
+          const rawObj = localStorage.getItem('adv_selected_data');
+          if (rawObj) adv = JSON.parse(rawObj);
+        } catch {}
+
+        const selectedId = localStorage.getItem('adv_selected_id');
+        if (!adv && selectedId) {
+          const advertisers = loadAdvertisersFromStorage();
+          adv = advertisers.find(a => String(a.id) === String(selectedId)) || null;
+        }
+        if (!adv) {
+          const advertisers = loadAdvertisersFromStorage();
+          adv = (advertisers && advertisers.length) ? advertisers[0] : null;
+        }
+
+        if (adv) {
+          // MIGRATION: Handle both 'status' and 'state' fields for backward compatibility
+          if (adv.status && !adv.state) {
+            adv.state = adv.status;
+          }
+          
+          bindAll('adv.name', adv.name, 'No advertiser found');
+          bindAll('adv.id', adv.id, '');
+          bindAll('adv.account', adv.account, 'N/A');
+          bindAll('adv.state', adv.state, 'N/A');     // ✓ use state field
+          bindAll('adv.website', adv.website, 'N/A');
+        } else {
+          bindAll('adv.name', 'No advertiser found', 'No advertiser found');
+          bindAll('adv.id', '', '');
+          bindAll('adv.account', 'N/A', 'N/A');
+          bindAll('adv.state', 'N/A', 'N/A');
+          bindAll('adv.website', 'N/A', 'N/A');
+        }
+
+        // Expose for other modules if needed
+        window.bindAll = bindAll;
+      });
+    })();
+  </script>
+
+  <!-- Team filter -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const chip = document.getElementById('teamStateChip');
+      const menu = document.getElementById('teamStateMenu');
+      const label = document.getElementById('teamStateChipLabel');
+      const tbody = document.getElementById('teamTableBody');
+      if (!chip || !menu || !label || !tbody) return;
+
+      const closeMenu = () => { menu.classList.add('hidden'); chip.setAttribute('aria-expanded', 'false'); };
+
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = menu.classList.toggle('hidden');
+        chip.setAttribute('aria-expanded', String(!open));
+        if (!open) { menu.setAttribute('tabindex','-1'); menu.focus(); }
+      });
+
+      document.addEventListener('click', closeMenu);
+
+      menu.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { closeMenu(); chip.focus(); }
+      });
+
+      menu.addEventListener('click', (e) => {
+        const btn = e.target.closest('button'); if (!btn) return;
+        const value = btn.dataset.value;
+        label.textContent = value;
+
+        tbody.querySelectorAll('tr').forEach(row => {
+          const rowState = (row.getAttribute('data-state') || '').toLowerCase().trim();
+          let show = true;
+          if (value === 'Active') show = rowState === 'active';
+          else if (value === 'Inactive') show = rowState === 'inactive';
+          else show = true;
+          row.style.display = show ? '' : 'none';
+        });
+
+        closeMenu();
+      });
+
+      // Default view = Active
+      label.textContent = 'Active';
+      tbody.querySelectorAll('tr').forEach(row => {
+        const rowState = (row.getAttribute('data-state') || '').toLowerCase().trim();
+        row.style.display = rowState === 'active' ? '' : 'none';
+      });
+    });
+  </script>
+
+  <!-- Account # display toggle -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const accountDisplay = document.getElementById('accountDisplay');
+      const accountLookupBtn = document.getElementById('accountLookupBtn');
+      if (!accountDisplay || !accountLookupBtn) return;
+
+      function updateAccountDisplay() {
+        const val = (accountDisplay.textContent || '').trim();
+        const has = !!val && val !== '—' && val !== 'N/A';
+        accountDisplay.classList.toggle('hidden', !has);
+        accountLookupBtn.classList.toggle('hidden', has);
+      }
+
+      // initialize after bind
+      setTimeout(updateAccountDisplay, 100);
+      const obs = new MutationObserver(updateAccountDisplay);
+      obs.observe(accountDisplay, { childList: true, subtree: true });
+    });
+  </script>
+
+
+
+  <!-- General Edit/Save/Cancel behavior -->
+  <script>
+    (function () {
+      const STORAGE_KEY_DATA = 'adv_list_data';
+      const SELECTED_ID_KEY  = 'adv_selected_id';
+      const SELECTED_DATA_KEY= 'adv_selected_data';
+
+      const editableSelectors = ['#advertiserState', '#advertiserWebsite'];
+
+      const btnEdit   = document.getElementById('editGeneralBtn');
+      const btnSave   = document.getElementById('saveGeneralBtn');
+      const btnCancel = document.getElementById('cancelGeneralBtn');
+
+      let editing = false;
+      let snapshot = null;
+      let dirty = false;
+
+      function qInputs() {
+        return editableSelectors.map(s => document.querySelector(s)).filter(Boolean);
+      }
+      function getValues() {
+        const map = {};
+        qInputs().forEach(i => { map[i.id] = i.value ?? ''; });
+        return map;
+      }
+      function setValues(vals) {
+        qInputs().forEach(i => { if (vals.hasOwnProperty(i.id)) i.value = vals[i.id]; });
+      }
+      function shallowEqual(a,b){
+        const ka = Object.keys(a), kb = Object.keys(b);
+        if (ka.length !== kb.length) return false;
+        for (const k of ka) if ((a[k] ?? '') !== (b[k] ?? '')) return false;
+        return true;
+      }
+
+      function applyViewStyle(input) {
+        input.readOnly = true;
+        input.setAttribute('aria-readonly','true');
+        input.tabIndex = -1;
+        
+        if (input.tagName === 'SELECT') {
+          // For select elements in read-only mode
+          ['border','rounded','px-3','py-2','focus:outline-none','focus:bg-white','focus:border-blue-300','bg-white','w-full','text-gray-900']
+            .forEach(c => input.classList.remove(c));
+          ['bg-transparent','border-0','p-0','text-gray-700','leading-tight']
+            .forEach(c => input.classList.add(c));
+          input.style.pointerEvents = 'none';
+          input.style.appearance = 'none';
+        } else {
+          // For input elements
+          ['border','rounded','px-3','py-2','focus:outline-none','focus:bg-white','focus:border-blue-300','bg-white','w-full','text-gray-900']
+            .forEach(c => input.classList.remove(c));
+          ['bg-transparent','border-0','p-0','text-gray-700','leading-tight']
+            .forEach(c => input.classList.add(c));
+        }
+      }
+
+      function applyEditStyle(input) {
+        input.readOnly = false;
+        input.removeAttribute('aria-readonly');
+        input.tabIndex = 0;
+        
+        if (input.tagName === 'SELECT') {
+          // For select elements in edit mode
+          ['bg-transparent','border-0','p-0','text-gray-700','leading-tight'].forEach(c => input.classList.remove(c));
+          ['bg-white','border','border-gray-300','rounded','px-3','py-2','text-gray-900','w-full','focus:outline-none','focus:bg-white','focus:border-blue-300'].forEach(c => input.classList.add(c));
+          input.style.pointerEvents = '';
+          input.style.appearance = '';
+        } else {
+          // For input elements
+          ['bg-transparent','border-0','p-0','text-gray-700','leading-tight'].forEach(c => input.classList.remove(c));
+          ['bg-white','border','border-gray-300','rounded','px-3','py-2','text-gray-900','w-full','focus:outline-none','focus:bg-white','focus:border-blue-300'].forEach(c => input.classList.add(c));
+        }
+      }
+
+      function setMode(isEditing) {
+        editing = isEditing;
+        const inputs = qInputs();
+        inputs.forEach(i => isEditing ? applyEditStyle(i) : applyViewStyle(i));
+        btnEdit?.classList.toggle('hidden', isEditing);
+        btnSave?.classList.toggle('hidden', !isEditing);
+        btnCancel?.classList.toggle('hidden', !isEditing);
+
+        if (isEditing) {
+          snapshot = getValues();
+          dirty = false;
+          inputs.forEach(i => i.addEventListener('input', onDirty));
+          inputs.forEach(i => i.addEventListener('change', onDirty)); // For select elements
+          inputs[0]?.focus();
+        } else {
+          snapshot = null;
+          dirty = false;
+          inputs.forEach(i => i.removeEventListener('input', onDirty));
+          inputs.forEach(i => i.removeEventListener('change', onDirty));
+        }
+      }
+
+      function onDirty() {
+        if (!editing || !snapshot) return;
+        dirty = !shallowEqual(snapshot, getValues());
+      }
+
+      function saveAll() {
+        const selectedId = localStorage.getItem(SELECTED_ID_KEY);
+        if (!selectedId) {
+          showToast({ message: 'No advertiser selected.', type: 'error' });
+          return false;
+        }
+        try {
+          const vals = getValues();
+          const advertisers = JSON.parse(localStorage.getItem(STORAGE_KEY_DATA) || '[]');
+          const idx = advertisers.findIndex(a => String(a.id) === String(selectedId));
+          if (idx === -1) {
+            showToast({ message: 'Advertiser not found in storage.', type: 'error' });
+            return false;
+          }
+
+          // Map inputs → adv fields
+          advertisers[idx].state   = vals.advertiserState?.trim() || '';   // ✓ use state field
+          advertisers[idx].website = vals.advertiserWebsite?.trim() || '';
+
+          localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(advertisers));
+          localStorage.setItem(SELECTED_DATA_KEY, JSON.stringify(advertisers[idx]));
+
+          // Rebind view
+          if (typeof window.bindAll === 'function') {
+            bindAll('adv.name', advertisers[idx].name, 'No advertiser found');
+            bindAll('adv.state', advertisers[idx].state, 'N/A');
+            bindAll('adv.website', advertisers[idx].website, 'N/A');
+          }
+
+          return true;
+        } catch (e) {
+          console.error(e);
+          showToast({ message: 'Save failed. Check console.', type: 'error' });
+          return false;
+        }
+      }
+
+      function beforeUnloadHandler(e){
+        if (dirty) {
+          e.preventDefault();
+          e.returnValue = '';
+          return '';
+        }
+      }
+      function navGuard(e){
+        if (!dirty) return;
+        const a = e.target.closest('a,button,[role="link"]');
+        if (!a) return;
+        if (a === btnSave || a === btnCancel || a === btnEdit) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const wantsSave = confirm('You have unsaved changes. Save now?\n\nOK = Save  |  Cancel = Discard');
+        if (wantsSave) {
+          const ok = saveAll();
+          if (ok) {
+            dirty = false;
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+            document.removeEventListener('click', navGuard, true);
+            showToast({ message: 'Saved successfully.', type: 'success' });
+            if (a.tagName === 'A' && a.href) window.location.href = a.href; else a.click?.();
+          }
+        } else {
+          setValues(snapshot || {});
+          dirty = false;
+          window.removeEventListener('beforeunload', beforeUnloadHandler);
+          document.removeEventListener('click', navGuard, true);
+          if (a.tagName === 'A' && a.href) window.location.href = a.href; else a.click?.();
+        }
+      }
+
+      // Simple toast function for compatibility
+      function showToast(options, fallbackType = 'info') {
+        const isObject = typeof options === 'object' && options !== null;
+        const message = typeof options === 'string' ? options : (options && options.message) || 'Notification';
+        const type = isObject ? (options.type || fallbackType) : fallbackType;
+        const duration = isObject ? options.duration : undefined;
+        const title = isObject ? options.title : undefined;
+
+        if (typeof window.showToast === 'function') {
+          window.showToast({ message, type, duration, title });
+        } else {
+          console.log('TOAST:', String(type).toUpperCase(), message);
+        }
+      }
+
+      btnEdit?.addEventListener('click', () => {
+        setMode(true);
+        window.addEventListener('beforeunload', beforeUnloadHandler);
+        document.addEventListener('click', navGuard, true);
+      });
+      btnCancel?.addEventListener('click', () => {
+        if (snapshot) setValues(snapshot);
+        dirty = false;
+        window.removeEventListener('beforeunload', beforeUnloadHandler);
+        document.removeEventListener('click', navGuard, true);
+        setMode(false);
+      });
+      btnSave?.addEventListener('click', () => {
+        if (!dirty) {
+          showToast({ message: 'No changes to save.', type: 'warning' });
+          setMode(false);
+          window.removeEventListener('beforeunload', beforeUnloadHandler);
+          document.removeEventListener('click', navGuard, true);
+          return;
+        }
+        const ok = saveAll();
+        if (ok) {
+          dirty = false;
+          window.removeEventListener('beforeunload', beforeUnloadHandler);
+          document.removeEventListener('click', navGuard, true);
+          setMode(false);
+          showToast({ message: 'Data saved successfully.', type: 'success' });
+        }
+      });
+
+      // Initialize to view mode
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => { qInputs().forEach(applyViewStyle); }, 50);
+      });
+    })();
+  </script>
+
+  <!-- Account Lookup Modal -->
+  <div id="accountLookupModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[80vh] overflow-auto">
+      <div class="flex items-center justify-between p-4 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-900">Account Lookup</h2>
+        <button type="button" id="closeLookupX" class="text-gray-400 hover:text-gray-600 transition-colors" title="Close">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-4">
+        <div class="mb-4">
+          <input type="text" id="lookupSearch" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search by account number or name...">
+        </div>
+        
+        <div class="max-h-96 overflow-y-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 sticky top-0">
+              <tr>
+                <th class="text-left py-2 px-4 font-medium text-gray-700">Account #</th>
+                <th class="text-left py-2 px-4 font-medium text-gray-700">Account Name</th>
+              </tr>
+            </thead>
+            <tbody id="lookupResults" class="divide-y divide-gray-200">
+              <!-- Results populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end space-x-3 p-4 border-t border-gray-200">
+        <button type="button" id="cancelLookupBtn" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+        <button type="button" id="selectAccountBtn" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50" disabled>Select</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Lookup Logic -->
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Sample CRM accounts (same as other pages)
+    const SAMPLE_CRM_ACCOUNTS = [
+      { accountNumber: '12345', accountName: 'Acme Corporation' },
+      { accountNumber: '67890', accountName: 'Global Tech Solutions' },
+      { accountNumber: '11111', accountName: 'Sunrise Marketing' },
+      { accountNumber: '22222', accountName: 'Metro Retail Group' },
+      { accountNumber: '33333', accountName: 'Advanced Systems Inc' }
+    ];
+
+    const accountLookupBtn = document.getElementById('accountLookupBtn');
+    const accountLookupModal = document.getElementById('accountLookupModal');
+    const closeLookupX = document.getElementById('closeLookupX');
+    const cancelLookupBtn = document.getElementById('cancelLookupBtn');
+    const lookupSearch = document.getElementById('lookupSearch');
+    const lookupResults = document.getElementById('lookupResults');
+    const selectAccountBtn = document.getElementById('selectAccountBtn');
+
+    if (!accountLookupBtn || !accountLookupModal) return;
+
+    function closeLookupModal() {
+      accountLookupModal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+      if (lookupSearch) lookupSearch.value = '';
+      if (selectAccountBtn) selectAccountBtn.disabled = true;
+    }
+
+    function renderResults(accounts) {
+      if (!lookupResults) return;
+      lookupResults.innerHTML = '';
+      
+      accounts.forEach(account => {
+        const tr = document.createElement('tr');
+        tr.className = 'cursor-pointer hover:bg-gray-50';
+        tr.dataset.accountNumber = account.accountNumber;
+        tr.dataset.accountName = account.accountName;
+        tr.innerHTML = `
+          <td class="py-2 px-4">${account.accountNumber}</td>
+          <td class="py-2 px-4">${account.accountName}</td>
+        `;
+        
+        tr.addEventListener('click', function() {
+          const prev = lookupResults.querySelector('tr.selected');
+          if (prev) prev.classList.remove('bg-blue-50', 'selected');
+          tr.classList.add('bg-blue-50', 'selected');
+          if (selectAccountBtn) selectAccountBtn.disabled = false;
+        });
+        
+        lookupResults.appendChild(tr);
+      });
+    }
+
+    // Open modal
+    accountLookupBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      accountLookupModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      renderResults(SAMPLE_CRM_ACCOUNTS);
+      if (lookupSearch) lookupSearch.focus();
+    });
+
+    // Close modal handlers
+    if (closeLookupX) closeLookupX.addEventListener('click', closeLookupModal);
+    if (cancelLookupBtn) cancelLookupBtn.addEventListener('click', closeLookupModal);
+
+    // Search functionality
+    if (lookupSearch) {
+      lookupSearch.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        const filtered = SAMPLE_CRM_ACCOUNTS.filter(account => 
+          account.accountNumber.toLowerCase().includes(query) ||
+          account.accountName.toLowerCase().includes(query)
+        );
+        renderResults(filtered);
+      });
+    }
+
+    // Select account
+    if (selectAccountBtn) {
+      selectAccountBtn.addEventListener('click', function() {
+        const selected = lookupResults ? lookupResults.querySelector('tr.selected') : null;
+        if (!selected) return;
+
+        const accountNumber = selected.dataset.accountNumber;
+        const accountName = selected.dataset.accountName;
+
+        // Update the display
+        const accountDisplay = document.getElementById('accountDisplay');
+        if (accountDisplay) {
+          accountDisplay.textContent = accountNumber;
+          accountDisplay.classList.remove('hidden');
+        }
+        
+        if (accountLookupBtn) {
+          accountLookupBtn.classList.add('hidden');
+        }
+
+        // Update the data in localStorage
+        try {
+          const selectedId = localStorage.getItem('adv_selected_id');
+          if (selectedId) {
+            const advertisers = JSON.parse(localStorage.getItem('adv_list_data') || '[]');
+            const advIndex = advertisers.findIndex(a => String(a.id) === String(selectedId));
+            
+            if (advIndex !== -1) {
+              advertisers[advIndex].account = accountNumber;
+              localStorage.setItem('adv_list_data', JSON.stringify(advertisers));
+              localStorage.setItem('adv_selected_data', JSON.stringify(advertisers[advIndex]));
+              
+              // Update data binding if available
+              if (typeof window.bindAll === 'function') {
+                window.bindAll('adv.account', accountNumber, 'N/A');
+              }
+            }
+          }
+        } catch (e) {
+          console.error('Error updating account in storage:', e);
+        }
+
+        closeLookupModal();
+        
+        // Show success toast if available
+        if (window.toast && typeof window.toast.success === 'function') {
+          window.toast.success('Account updated successfully');
+        }
+      });
+    }
+
+    // Close on outside click
+    accountLookupModal.addEventListener('click', function(e) {
+      if (e.target === accountLookupModal) {
+        closeLookupModal();
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !accountLookupModal.classList.contains('hidden')) {
+        closeLookupModal();
+      }
+    });
+  });
+
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.body.style.zoom = '100%';
+  });
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Get current page filename without query params
+    const currentPage = window.location.pathname.split('/').pop().split('?')[0];
+    
+    // Get query parameters to pass along
+    const urlParams = new URLSearchParams(window.location.search);
+    const campaignId = urlParams.get('campaignId');
+    const campaignName = urlParams.get('campaignName');
+    
+    document.querySelectorAll('#sidebar a[data-nav-link]').forEach(link => {
+      // Get href filename without ./ prefix and query params
+      const linkPage = link.getAttribute('href').replace('./', '').split('?')[0];
+      
+      // Add query parameters to sidebar links
+      if (campaignId) {
+        const baseHref = link.getAttribute('href').split('?')[0];
+        let newHref = `${baseHref}?campaignId=${encodeURIComponent(campaignId)}`;
+        if (campaignName) {
+          newHref += `&campaignName=${encodeURIComponent(campaignName)}`;
+        }
+        link.setAttribute('href', newHref);
+      }
+      
+      if (linkPage === currentPage) {
+        link.classList.add('text-blue-700', 'bg-blue-50', 'font-medium');
+      } else {
+        link.classList.remove('text-blue-700', 'bg-blue-50', 'font-medium');
+      }
+    });
+  });
+
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const adGroupId = urlParams.get('id');
+  const campaignId = urlParams.get('campaignId');
+  
+  // Populate breadcrumbs
+  try {
+    const selectedData = localStorage.getItem('adv_selected_data');
+    if (selectedData) {
+      const advertiser = JSON.parse(selectedData);
+      
+      // Update breadcrumb advertiser name and link
+      const breadcrumbAdvertiser = document.getElementById('breadcrumbAdvertiser');
+      if (breadcrumbAdvertiser) {
+        breadcrumbAdvertiser.textContent = `${advertiser.name || 'Unknown'}`;
+        breadcrumbAdvertiser.href = `./WFAdvertiserDetails.html?advertiserId=${advertiser.id}`;
+      }
+      
+      // Update breadcrumb campaigns link
+      const breadcrumbCampaigns = document.getElementById('breadcrumbCampaigns');
+      if (breadcrumbCampaigns) {
+        breadcrumbCampaigns.href = `./AdvertiserCampaigns.html?advertiserId=${advertiser.id}`;
+      }
+    }
+    
+    // Get campaign info from localStorage for breadcrumbs
+    if (campaignId) {
+      const campaignData = JSON.parse(localStorage.getItem('campaign_tree_groups') || '{}');
+      let campaign = null;
+      
+      // Handle both old and new data structures
+      let campaigns = [];
+      let groups = [];
+      
+      if (Array.isArray(campaignData)) {
+        groups = campaignData;
+      } else {
+        campaigns = Array.isArray(campaignData.campaigns) ? campaignData.campaigns : [];
+        groups = Array.isArray(campaignData.groups) ? campaignData.groups : [];
+      }
+
+      // Find the campaign
+      campaign = campaigns.find(c => c.id === campaignId);
+      if (!campaign) {
+        for (const group of groups) {
+          if (group.campaigns) {
+            campaign = group.campaigns.find(c => c.id === campaignId);
+            if (campaign) break;
+          }
+        }
+      }
+      
+      // Update breadcrumb campaign name and link
+      const breadcrumbCampaign = document.getElementById('breadcrumbCampaign');
+      if (breadcrumbCampaign && campaign) {
+        const campaignName = campaign.beaconCampaignName || campaign.name || 'Unknown';
+        breadcrumbCampaign.textContent = `${campaignName}`;
+        breadcrumbCampaign.href = `./CampaignDetails.html?campaignId=${encodeURIComponent(campaignId)}&campaignName=${encodeURIComponent(campaignName)}`;
+      }
+      
+      // Update breadcrumb Ad Groups link
+      const breadcrumbAdGroups = document.getElementById('breadcrumbAdGroups');
+      if (breadcrumbAdGroups && campaign) {
+        const campaignName = campaign.beaconCampaignName || campaign.name || 'Unknown';
+        breadcrumbAdGroups.href = `./CampaignsAdGroup.html?campaignId=${encodeURIComponent(campaignId)}&campaignName=${encodeURIComponent(campaignName)}`;
+      }
+    }
+    
+    // Get ad group info to populate breadcrumbs
+    if (adGroupId) {
+      const adGroups = JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]');
+      const adGroup = adGroups.find(ag => ag.id === adGroupId);
+      
+      if (adGroup) {
+        // Update breadcrumb ad group name and link
+        const breadcrumbAdGroup = document.getElementById('breadcrumbAdGroup');
+        if (breadcrumbAdGroup) {
+          breadcrumbAdGroup.textContent = `${adGroup.name || 'Unknown'}`;
+          breadcrumbAdGroup.href = `./AdGroupDetails.html?id=${encodeURIComponent(adGroupId)}&campaignId=${encodeURIComponent(campaignId)}`;
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to populate breadcrumbs:', e);
+  }
+
+  if (!adGroupId) return;
+
+  // Load ad group data
+  const adGroups = JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]');
+  const adGroup = adGroups.find(ag => ag.id === adGroupId);
+
+  console.log('Loading connections for ad group:', {
+    adGroupId,
+    found: !!adGroup,
+    connectors: adGroup?.connectors,
+    fullAdGroup: adGroup
+  });
+
+  if (!adGroup) return;
+
+  // Display ad group IDs in header (IDs are generated on AdGroupDetails page)
+  const adGroupIdEl = document.getElementById('adGroupIdDisplay');
+  const deliveryIdEl = document.getElementById('adGroupDeliveryId');
+  const reportingIdEl = document.getElementById('adGroupReportingId');
+  if (adGroupIdEl) adGroupIdEl.textContent = adGroup.id || '—';
+  if (deliveryIdEl) deliveryIdEl.textContent = adGroup.deliveryId || '—';
+  if (reportingIdEl) reportingIdEl.textContent = adGroup.reportingId || '—';
+
+  // Load and display ad group connections
+  loadAdGroupConnections(adGroup);
+  
+  // Update sidebar links with query parameters
+  const navLinks = document.querySelectorAll('[data-nav-link]');
+  navLinks.forEach(link => {
+    const url = new URL(link.href, window.location.origin);
+    if (adGroupId) url.searchParams.set('id', adGroupId);
+    if (campaignId) url.searchParams.set('campaignId', campaignId);
+    link.href = url.toString();
+  });
+
+  // Highlight the active tab
+  const currentPage = window.location.pathname.split('/').pop().split('?')[0];
+  navLinks.forEach(link => {
+    const linkPage = link.getAttribute('href').split('?')[0].split('/').pop();
+    if (linkPage === currentPage) {
+      link.classList.remove('text-gray-700', 'hover:bg-blue-50');
+      link.classList.add('bg-blue-100', 'text-blue-700');
+    }
+  });
+});
+
+const PLATFORM_DETAILS = {
+  'trade-desk': { name: 'The Trade Desk', type: 'DSP' },
+  'dv360': { name: 'DV360', type: 'DSP' },
+  'simplifi': { name: 'Simpli.fi', type: 'DSP' },
+  'google-campaign-manager': { name: 'Google Campaign Manager', type: 'Ad Server' }
+};
+
+function getPlatformDetailsByValue(platformValue) {
+  return PLATFORM_DETAILS[platformValue] || null;
+}
+
+function isValidRecordId(value) {
+  const str = String(value || '').trim();
+  return str !== '' && str !== '—';
+}
+
+function extractConnectorValues(rawValue) {
+  if (Array.isArray(rawValue)) return rawValue.filter(Boolean);
+  if (typeof rawValue === 'string') {
+    return rawValue.split(',').map(v => v.trim()).filter(Boolean);
+  }
+  return [];
+}
+
+function entityHasConnectorValue(entity, platformValue) {
+  if (!entity || !entity.connectors) return false;
+  const dsp = extractConnectorValues(entity.connectors.dsp);
+  const adServer = extractConnectorValues(entity.connectors.adServer);
+  return dsp.includes(platformValue) || adServer.includes(platformValue);
+}
+
+function getManualRecordIdForPlatform(entity, platformName) {
+  if (!entity || !entity.manualRecordIds || !platformName) return '';
+  const aliases = [platformName];
+  if (platformName === 'Simpli.fi') aliases.push('Simplifi');
+  if (platformName === 'Simplifi') aliases.push('Simpli.fi');
+  if (platformName === 'DV360') aliases.push('Display & Video 360');
+  if (platformName === 'Display & Video 360') aliases.push('DV360');
+  for (const key of aliases) {
+    const candidate = entity.manualRecordIds[key];
+    if (isValidRecordId(candidate)) return candidate;
+  }
+  return '';
+}
+
+function isConnectorStatusConnected(entity, platformValue) {
+  const raw = String(entity?.connectors?.status?.[platformValue] || '').toLowerCase();
+  return raw === 'connected' || raw === 'enabled';
+}
+
+function entityHasRecordIdForPlatform(entity, platformValue, platformName) {
+  const details = getPlatformDetailsByValue(platformValue);
+  if (!details) return false;
+  if (isValidRecordId(getManualRecordIdForPlatform(entity, platformName || details.name))) {
+    return true;
+  }
+  if (!isConnectorStatusConnected(entity, platformValue)) {
+    return false;
+  }
+  if (details.type === 'DSP') return isValidRecordId(entity?.deliveryId);
+  return isValidRecordId(entity?.reportingId);
+}
+
+function isEntityConnectorSynced(entity, platformValue, platformName) {
+  return entityHasConnectorValue(entity, platformValue) &&
+         entityHasRecordIdForPlatform(entity, platformValue, platformName);
+}
+
+function getCampaignTreeData() {
+  try {
+    let data = JSON.parse(localStorage.getItem('campaign_tree_groups') || '{}') || {};
+    if (Array.isArray(data)) {
+      data = { campaigns: [], groups: data };
+    }
+    if (!Array.isArray(data.campaigns)) data.campaigns = [];
+    if (!Array.isArray(data.groups)) data.groups = [];
+    return data;
+  } catch (e) {
+    console.warn('Failed to parse campaign tree data:', e);
+    return { campaigns: [], groups: [] };
+  }
+}
+
+function getAllCampaignsFromTree(data) {
+  const topCampaigns = Array.isArray(data?.campaigns) ? data.campaigns : [];
+  const groupCampaigns = Array.isArray(data?.groups)
+    ? data.groups.flatMap(group => Array.isArray(group?.campaigns) ? group.campaigns : [])
+    : [];
+  return [...topCampaigns, ...groupCampaigns];
+}
+
+function findCampaignForAdGroup(adGroup) {
+  const treeData = getCampaignTreeData();
+  const campaigns = getAllCampaignsFromTree(treeData);
+  const refs = [adGroup?.campaignId, adGroup?.campaign]
+    .map(v => String(v || '').trim())
+    .filter(Boolean);
+
+  for (const ref of refs) {
+    const byId = campaigns.find(c => String(c?.id || '') === ref);
+    if (byId) return byId;
+  }
+  for (const ref of refs) {
+    const lowered = ref.toLowerCase();
+    const byName = campaigns.find(c =>
+      String(c?.beaconCampaignName || c?.name || '').toLowerCase() === lowered
+    );
+    if (byName) return byName;
+  }
+  return null;
+}
+
+function findAdvertiserForAdGroup(adGroup, campaign) {
+  const targetAdvertiserId = adGroup?.advertiserId || campaign?.advertiserId || localStorage.getItem('adv_selected_id');
+  try {
+    const advertisers = JSON.parse(localStorage.getItem('adv_list_data') || '[]');
+    if (Array.isArray(advertisers)) {
+      const matched = advertisers.find(a => String(a?.id || '') === String(targetAdvertiserId));
+      if (matched) return matched;
+    }
+  } catch (e) {
+    console.warn('Failed to parse adv_list_data:', e);
+  }
+
+  try {
+    const selected = JSON.parse(localStorage.getItem('adv_selected_data') || '{}');
+    if (selected && selected.id) {
+      if (!targetAdvertiserId || String(selected.id) === String(targetAdvertiserId)) {
+        return selected;
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to parse adv_selected_data:', e);
+  }
+
+  return null;
+}
+
+function getAdGroupSyncPrerequisiteErrors(adGroup, connectorValue) {
+  const details = getPlatformDetailsByValue(connectorValue);
+  if (!details) return ['Unknown platform selected.'];
+
+  const errors = [];
+  const campaign = findCampaignForAdGroup(adGroup);
+  const advertiser = findAdvertiserForAdGroup(adGroup, campaign);
+
+  if (!campaign) {
+    errors.push('Parent Campaign not found.');
+  } else if (!entityHasConnectorValue(campaign, connectorValue)) {
+    errors.push(`Campaign missing ${details.name} connection.`);
+  } else if (!isEntityConnectorSynced(campaign, connectorValue, details.name)) {
+    errors.push(`Campaign missing ${details.name} Record ID.`);
+  }
+
+  if (!advertiser) {
+    errors.push('Parent Advertiser not found.');
+  } else if (!entityHasConnectorValue(advertiser, connectorValue)) {
+    errors.push(`Advertiser missing ${details.name} connection.`);
+  } else if (!isEntityConnectorSynced(advertiser, connectorValue, details.name)) {
+    errors.push(`Advertiser missing ${details.name} Record ID.`);
+  }
+
+  return errors;
+}
+
+function showBlockingToast(message) {
+  if (window.toast && typeof window.toast.warning === 'function') {
+    window.toast.warning(message, 10000);
+    return;
+  }
+  if (window.toast && typeof window.toast.error === 'function') {
+    window.toast.error(message, 10000);
+    return;
+  }
+  alert(message);
+}
+
+// Function to load and display ad group connections based on selected connectors
+function loadAdGroupConnections(adGroup) {
+  console.log('loadAdGroupConnections called with:', {
+    adGroup,
+    hasConnectors: !!adGroup.connectors,
+    dsp: adGroup.connectors?.dsp,
+    adServer: adGroup.connectors?.adServer,
+    status: adGroup.connectors?.status
+  });
+  
+  const tableBody = document.getElementById('campaignTableBody');
+  if (!tableBody) return;
+
+  // Clear existing content
+  tableBody.innerHTML = '';
+
+  // Check if ad group has connectors data
+  if (!adGroup.connectors || (!adGroup.connectors.dsp && !adGroup.connectors.adServer)) {
+    // No connectors selected - show empty state
+    const emptyRow = document.createElement('tr');
+    emptyRow.innerHTML = `
+      <td colspan="6" class="px-6 py-8 text-sm text-gray-500 italic text-center">
+        No platform connectors configured for this ad group
+      </td>
+    `;
+    tableBody.appendChild(emptyRow);
+    
+    // Update record count
+    const recordCount = document.getElementById('recordCount');
+    if (recordCount) {
+      recordCount.textContent = '0 of 0 showing';
+    }
+    return;
+  }
+
+  // Platform configuration mapping - using lowercase values as stored in connectors
+  const platformConfig = {
+    'trade-desk': {
+      name: 'The Trade Desk',
+      type: 'DSP',
+      logo: './assets/svgs/TTD.svg'
+    },
+    'dv360': {
+      name: 'DV360',
+      type: 'DSP',
+      logo: './assets/svgs/DV360.svg'
+    },
+    'simplifi': {
+      name: 'Simpli.fi',
+      type: 'DSP',
+      logo: './assets/svgs/Simplifi.svg'
+    },
+    'google-campaign-manager': {
+      name: 'Google Campaign Manager',
+      type: 'Ad Server',
+      logo: './assets/svgs/GCM.svg'
+    }
+  };
+
+  const connectedPlatforms = [];
+  
+  // Collect DSP platforms - handle both string (comma-separated) and array formats
+  if (adGroup.connectors.dsp) {
+    let dspValues = [];
+    if (typeof adGroup.connectors.dsp === 'string') {
+      // Split comma-separated string and trim whitespace
+      dspValues = adGroup.connectors.dsp.split(',').map(v => v.trim()).filter(v => v);
+    } else if (Array.isArray(adGroup.connectors.dsp)) {
+      dspValues = adGroup.connectors.dsp;
+    }
+    
+    dspValues.forEach(dspValue => {
+      if (platformConfig[dspValue]) {
+        // Get connection status - check both connectors.status (new) and connectionStatus (legacy)
+        const connectionStatus = adGroup.connectors?.status?.[dspValue] || adGroup.connectionStatus?.[dspValue] || 'Not Connected';
+        connectedPlatforms.push({
+          value: dspValue,
+          ...platformConfig[dspValue],
+          status: connectionStatus,
+          enabledAt: connectionStatus === 'Connected' ? new Date().toLocaleDateString() : '—',
+          disabledAt: connectionStatus === 'Not Connected' ? new Date().toLocaleDateString() : '—'
+        });
+      }
+    });
+  }
+  
+  // Collect Ad Server platforms - handle both string (comma-separated) and array formats
+  if (adGroup.connectors.adServer) {
+    let adServerValues = [];
+    if (typeof adGroup.connectors.adServer === 'string') {
+      // Split comma-separated string and trim whitespace
+      adServerValues = adGroup.connectors.adServer.split(',').map(v => v.trim()).filter(v => v);
+    } else if (Array.isArray(adGroup.connectors.adServer)) {
+      adServerValues = adGroup.connectors.adServer;
+    }
+    
+    adServerValues.forEach(adServerValue => {
+      if (platformConfig[adServerValue]) {
+        // Get connection status - check both connectors.status (new) and connectionStatus (legacy)
+        const connectionStatus = adGroup.connectors?.status?.[adServerValue] || adGroup.connectionStatus?.[adServerValue] || 'Not Connected';
+        connectedPlatforms.push({
+          value: adServerValue,
+          ...platformConfig[adServerValue],
+          status: connectionStatus,
+          enabledAt: connectionStatus === 'Connected' ? new Date().toLocaleDateString() : '—',
+          disabledAt: connectionStatus === 'Not Connected' ? new Date().toLocaleDateString() : '—'
+        });
+      }
+    });
+  }
+
+  // If no platforms were found, show empty state
+  if (connectedPlatforms.length === 0) {
+    const emptyRow = document.createElement('tr');
+    emptyRow.innerHTML = `
+      <td colspan="6" class="px-6 py-8 text-sm text-gray-500 italic text-center">
+        No platform connectors configured for this ad group
+      </td>
+    `;
+    tableBody.appendChild(emptyRow);
+    
+    // Update record count
+    const recordCount = document.getElementById('recordCount');
+    if (recordCount) {
+      recordCount.textContent = '0 of 0 showing';
+    }
+    return;
+  }
+
+  // Populate table with connected platforms
+  connectedPlatforms.forEach((platform, index) => {
+    const row = document.createElement('tr');
+    row.className = 'border-b border-default hover:bg-gray-50 transition-colors';
+    row.setAttribute('data-platform', platform.value);
+    
+    // Determine Record ID value based on platform type and connection status
+    let recordIdContent = '';
+    
+    // Check for manually entered Record ID (DV360/Simpli.fi flow)
+    const manualId = adGroup.manualRecordIds ? adGroup.manualRecordIds[platform.name] : null;
+    
+    if (manualId) {
+      recordIdContent = `<a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline" data-action="edit-manual-record-id" data-platform="${platform.value}" data-platform-name="${platform.name}" data-platform-type="${platform.type}" data-current-value="${manualId}">${manualId}</a>`;
+    } else if (platform.status === 'Connected') {
+      // Connected via sync - show appropriate ID
+      if (platform.type === 'DSP') {
+        const deliveryId = adGroup.deliveryId || '—';
+        recordIdContent = `<span class="text-sm text-gray-900">${deliveryId}</span>`;
+      } else if (platform.type === 'Ad Server') {
+        const reportingId = adGroup.reportingId || '—';
+        recordIdContent = `<span class="text-sm text-gray-900">${reportingId}</span>`;
+      } else {
+        recordIdContent = `<span class="text-sm text-gray-900">—</span>`;
+      }
+    } else {
+      // Disconnected — check if inline platform
+      const isInlinePlatform = (platform.name === 'DV360' || platform.name === 'Simpli.fi');
+      if (isInlinePlatform) {
+        recordIdContent = `<a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline" data-action="inline-record-id" data-platform="${platform.value}" data-platform-name="${platform.name}" data-platform-type="${platform.type}">Create</a>`;
+      } else {
+        recordIdContent = `<a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline" data-action="create-connection" data-platform="${platform.value}" data-platform-name="${platform.name}" data-platform-type="${platform.type}">Create</a>`;
+      }
+    }
+    
+    row.innerHTML = `
+      <td class="px-6 py-1 text-sm border-r border-default">
+        <div class="flex items-center gap-3">
+          <img src="${platform.logo}" alt="${platform.name}" class="w-8 h-8" onerror="this.style.display='none'">
+          <span class="font-medium text-gray-900">${platform.name}</span>
+        </div>
+      </td>
+      <td class="px-6 py-1 text-sm text-gray-700 border-r border-default">
+        ${platform.type}
+      </td>
+      <td class="px-6 py-1 text-sm border-r border-default" style="position:relative;">
+        ${recordIdContent}
+      </td>
+      <td class="px-6 py-1 text-sm text-gray-700 border-r border-default">
+        ${platform.enabledAt}
+      </td>
+      <td class="px-6 py-1 text-sm text-gray-500 border-r border-default">
+        ${platform.disabledAt}
+      </td>
+      <td class="px-6 py-1 text-sm">
+        <div class="flex items-center space-x-2">
+          <!-- <button data-action="edit" data-platform="${platform.value}" title="Edit" class="p-1 rounded hover:bg-gray-100" type="button" aria-label="Edit">
+            Pencil icon
+            <svg class="w-4 h-4 text-gray-700" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M17.414 2.586a2 2 0 010 2.828l-9.9 9.9a1 1 0 01-.464.263l-4 1a1 1 0 01-1.213-1.213l1-4a1 1 0 01.263-.464l9.9-9.9a2 2 0 012.828 0zM15.121 4.121l.758-.758a1 1 0 10-1.414-1.414l-.758.758 1.414 1.414z"></path>
+            </svg>
+          </button> -->
+          <button data-action="delete" data-platform="${platform.value}" title="Delete" class="p-1 rounded hover:bg-gray-100" type="button" aria-label="Delete">
+            <!-- Trash icon -->
+            <svg class="w-4 h-4 text-red-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M6 3a1 1 0 011-1h6a1 1 0 011 1v1h3a1 1 0 110 2h-1v9a2 2 0 01-2 2H6a2 2 0 01-2-2V6H3a1 1 0 110-2h3V3zm2 3a1 1 0 10-2 0v8a1 1 0 102 0V6zm6 0a1 1 0 10-2 0v8a1 1 0 102 0V6z" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </td>
+    `;
+    
+    tableBody.appendChild(row);
+  });
+
+  // Update record count
+  const recordCount = document.getElementById('recordCount');
+  if (recordCount) {
+    recordCount.textContent = `${connectedPlatforms.length} of ${connectedPlatforms.length} showing`;
+  }
+  
+  // Add event listener for edit/delete actions
+  setupConnectionActions();
+}
+
+// Setup event listeners for edit and delete actions
+function setupConnectionActions() {
+  const tableBody = document.getElementById('campaignTableBody');
+  if (!tableBody) return;
+  
+  // Remove any existing listener to avoid duplicates
+  tableBody.removeEventListener('click', handleConnectionAction);
+  tableBody.addEventListener('click', handleConnectionAction);
+}
+
+// Handle edit and delete actions
+function handleConnectionAction(e) {
+  // Handle anchor click for create-connection
+  const anchor = e.target.closest('a[data-action]');
+  if (anchor) {
+    e.preventDefault();
+    const action = anchor.dataset.action;
+    if (action === 'create-connection') {
+      openNewConnectionModal({
+        platformValue: anchor.dataset.platform || '',
+        lockToPlatform: true
+      });
+    } else if (action === 'inline-record-id' || action === 'edit-manual-record-id') {
+      // DV360 / Simpli.fi — show inline popover
+      const td = anchor.closest('td');
+      if (td) {
+        const currentValue = anchor.dataset.currentValue || '';
+        const platformName = anchor.dataset.platformName || '';
+        const platformValue = anchor.dataset.platform || '';
+        showInlineRecordIdPopover(td, platformName, platformValue, currentValue);
+      }
+    }
+    return;
+  }
+  
+  const btn = e.target.closest('button[data-action]');
+  if (!btn) return;
+  
+  const action = btn.dataset.action;
+  const platformValue = btn.dataset.platform;
+  
+  if (action === 'edit') {
+    handleEditConnection(platformValue);
+  } else if (action === 'delete') {
+    handleDeleteConnection(platformValue);
+  }
+}
+
+// Handle edit connection
+function handleEditConnection(platformValue) {
+  // Platform name mapping - using Title Case values
+  const platformNames = {
+    'Trade Desk': 'The Trade Desk',
+    'DV360': 'DV360',
+    'Simplifi': 'Simpli.fi',
+    'Google Campaign Manager': 'Google Campaign Manager'
+  };
+  
+  const platformName = platformNames[platformValue] || platformValue;
+  
+  // For now, show a toast message. You can expand this to open a modal
+  if (window.toast && typeof window.toast.info === 'function') {
+    window.toast.info(`Edit functionality for ${platformName} coming soon`);
+  } else {
+    alert(`Edit ${platformName}`);
+  }
+}
+
+// Handle delete connection
+function handleDeleteConnection(platformValue) {
+  // Platform name mapping - using Title Case values
+  const platformNames = {
+    'Trade Desk': 'The Trade Desk',
+    'DV360': 'DV360',
+    'Simplifi': 'Simpli.fi',
+    'Google Campaign Manager': 'Google Campaign Manager'
+  };
+  
+  const platformName = platformNames[platformValue] || platformValue;
+  
+  // Confirm deletion
+  if (!confirm(`Are you sure you want to remove ${platformName} from this ad group?`)) {
+    return;
+  }
+  
+  // Get current ad group
+  const urlParams = new URLSearchParams(window.location.search);
+  const adGroupId = urlParams.get('id');
+  
+  if (!adGroupId) {
+    if (window.toast && typeof window.toast.error === 'function') {
+      window.toast.error('Ad Group ID not found');
+    }
+    return;
+  }
+  
+  try {
+    const adGroups = JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]');
+    const adGroup = adGroups.find(ag => ag.id === adGroupId);
+    
+    if (!adGroup || !adGroup.connectors) {
+      if (window.toast && typeof window.toast.error === 'function') {
+        window.toast.error('Ad Group not found');
+      }
+      return;
+    }
+    
+    // Remove the platform from connectors (handle both string and array formats)
+    if (adGroup.connectors.dsp) {
+      if (typeof adGroup.connectors.dsp === 'string') {
+        // Convert to array, filter, and convert back to string
+        const dspArray = adGroup.connectors.dsp.split(',').map(v => v.trim()).filter(v => v);
+        adGroup.connectors.dsp = dspArray.filter(p => p !== platformValue).join(', ');
+      } else if (Array.isArray(adGroup.connectors.dsp)) {
+        adGroup.connectors.dsp = adGroup.connectors.dsp.filter(p => p !== platformValue);
+      }
+    }
+    
+    if (adGroup.connectors.adServer) {
+      if (typeof adGroup.connectors.adServer === 'string') {
+        // Convert to array, filter, and convert back to string
+        const adServerArray = adGroup.connectors.adServer.split(',').map(v => v.trim()).filter(v => v);
+        adGroup.connectors.adServer = adServerArray.filter(p => p !== platformValue).join(', ');
+      } else if (Array.isArray(adGroup.connectors.adServer)) {
+        adGroup.connectors.adServer = adGroup.connectors.adServer.filter(p => p !== platformValue);
+      }
+    }
+    
+    // Save back to localStorage
+    localStorage.setItem('adgroups_data_v1', JSON.stringify(adGroups));
+    
+    // Show success message
+    if (window.toast && typeof window.toast.success === 'function') {
+      window.toast.success(`${platformName} removed successfully`);
+    }
+    
+    // Reload the connections table
+    loadAdGroupConnections(adGroup);
+    
+  } catch (error) {
+    console.error('Error deleting connection:', error);
+    if (window.toast && typeof window.toast.error === 'function') {
+      window.toast.error('Failed to remove connection');
+    }
+  }
+}
+
+// Function to load ad groups associated with the current campaign
+function loadAdGroupsForCampaign(campaignId) {
+  const adGroupsTableBody = document.getElementById('adGroupsTableBody');
+  if (!adGroupsTableBody) return;
+
+  try {
+    const adGroups = JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]');
+    const associatedAdGroups = adGroups.filter(adGroup => 
+      adGroup.campaign === campaignId || adGroup.campaignId === campaignId
+    );
+
+    // Clear existing content
+    adGroupsTableBody.innerHTML = '';
+
+    if (associatedAdGroups.length === 0) {
+      // Show empty state
+      const emptyRow = document.createElement('tr');
+      emptyRow.innerHTML = `
+        <td class="px-6 py-3 text-sm text-gray-500 italic text-center">
+          No ad groups associated with this campaign
+        </td>
+      `;
+      adGroupsTableBody.appendChild(emptyRow);
+    } else {
+      // Populate with ad groups
+      associatedAdGroups.forEach(adGroup => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-default hover:bg-gray-50';
+        row.innerHTML = `
+          <td class="px-6 py-2 text-sm">
+            <a href="./AdGroupDetails.html?id=${encodeURIComponent(adGroup.id)}&campaignId=${encodeURIComponent(campaignId)}" 
+               class="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+               title="View details for ${adGroup.name}">
+              ${adGroup.name || 'Unnamed Ad Group'}
+            </a>
+          </td>
+        `;
+        adGroupsTableBody.appendChild(row);
+      });
+    }
+  } catch (error) {
+    console.error('Error loading ad groups for campaign:', error);
+    adGroupsTableBody.innerHTML = `
+      <tr>
+        <td class="px-6 py-3 text-sm text-red-500 text-center">
+          Error loading ad groups
+        </td>
+      </tr>
+    `;
+  }
+}
+
+// Listen for ad group updates to refresh the table
+window.addEventListener('adGroupsUpdated', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const campaignId = urlParams.get('campaignId');
+  if (campaignId) {
+    loadAdGroupsForCampaign(campaignId);
+  }
+});
+
+// ==================== EDIT CONNECTIONS MODAL ====================
+
+// Open Edit Connections Modal
+// platformTypeFilter: 'DSP', 'Ad Server', or null (show all)
+function openEditConnectionsModal(platformTypeFilter, platformName) {
+  const modal = document.getElementById('editConnectionsModal');
+  if (!modal) return;
+
+  // Reset the modal
+  resetEditConnectionsModal();
+
+  // Populate the read-only platform name field
+  const platformNameEl = document.getElementById('editConnectorPlatformName');
+  if (platformNameEl) {
+    platformNameEl.textContent = platformName || 'Unknown Platform';
+  }
+
+  // Update the section label based on platform type
+  const sectionLabel = document.getElementById('editConnectorSectionLabel');
+  if (sectionLabel) {
+    if (platformTypeFilter === 'DSP') {
+      sectionLabel.textContent = 'DSP (Demand-Side Platform)';
+    } else if (platformTypeFilter === 'Ad Server') {
+      sectionLabel.textContent = 'Ad Server';
+    } else {
+      sectionLabel.textContent = 'Platform';
+    }
+  }
+
+  // Ensure sync checkbox is unchecked
+  const syncCheckbox = document.getElementById('editSyncOnCreation');
+  if (syncCheckbox) {
+    syncCheckbox.checked = false;
+  }
+
+  // Store the platform context on the modal for use during save
+  modal.dataset.platformName = platformName || '';
+  modal.dataset.platformType = platformTypeFilter || '';
+
+  // Show the modal
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+// Reset the Edit Connections Modal to default state
+function resetEditConnectionsModal() {
+  const modal = document.getElementById('editConnectionsModal');
+  if (!modal) return;
+
+  // Reset sync checkbox
+  const syncCheckbox = document.getElementById('editSyncOnCreation');
+  if (syncCheckbox) {
+    syncCheckbox.checked = false;
+  }
+
+  // Clear stored platform context
+  modal.dataset.platformName = '';
+  modal.dataset.platformType = '';
+}
+
+// Update toggle button state
+function updateToggleState(toggle, isEnabled) {
+  const span = toggle.querySelector('span[aria-hidden="true"]');
+  const statusLabel = toggle.closest('.connector-card')?.querySelector('.connector-status-label');
+  
+  if (isEnabled) {
+    toggle.classList.remove('bg-gray-200');
+    toggle.classList.add('bg-blue-600');
+    toggle.setAttribute('aria-checked', 'true');
+    if (span) {
+      span.classList.remove('translate-x-0');
+      span.classList.add('translate-x-5');
+    }
+    if (statusLabel) {
+      statusLabel.textContent = 'Synced';
+      statusLabel.classList.remove('text-gray-600');
+      statusLabel.classList.add('text-green-600');
+    }
+  } else {
+    toggle.classList.remove('bg-blue-600');
+    toggle.classList.add('bg-gray-200');
+    toggle.setAttribute('aria-checked', 'false');
+    if (span) {
+      span.classList.remove('translate-x-5');
+      span.classList.add('translate-x-0');
+    }
+    if (statusLabel) {
+      statusLabel.textContent = 'Not Synced';
+      statusLabel.classList.remove('text-green-600');
+      statusLabel.classList.add('text-gray-600');
+    }
+  }
+}
+
+// Close Edit Connections Modal
+function closeEditConnectionsModal() {
+  const modal = document.getElementById('editConnectionsModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+// Save Edit Connections
+function saveEditConnections() {
+  const modal = document.getElementById('editConnectionsModal');
+  if (!modal) return;
+
+  // Get current ad group
+  const urlParams = new URLSearchParams(window.location.search);
+  const adGroupId = urlParams.get('id');
+  
+  if (!adGroupId) {
+    if (window.toast && typeof window.toast.error === 'function') {
+      window.toast.error('Ad Group ID not found');
+    }
+    return;
+  }
+
+  try {
+    const data = JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]');
+    let adGroup = data.find(ag => ag.id === adGroupId);
+
+    if (!adGroup) {
+      if (window.toast && typeof window.toast.error === 'function') {
+        window.toast.error('Ad Group not found');
+      }
+      return;
+    }
+
+    // Get platform context from modal
+    const platformName = modal.dataset.platformName || '';
+    const platformType = modal.dataset.platformType || '';
+
+    // Check if sync checkbox is checked
+    const syncCheckbox = document.getElementById('editSyncOnCreation');
+    const syncToPlatform = syncCheckbox && syncCheckbox.checked;
+
+    // Map display names to connector values
+    const platformMapping = {
+      'The Trade Desk': 'trade-desk',
+      'DV360': 'dv360',
+      'Simpli.fi': 'simplifi',
+      'Simplifi': 'simplifi',
+      'Google Campaign Manager': 'google-campaign-manager'
+    };
+
+    const connectorValue = platformMapping[platformName];
+    if (!connectorValue) {
+      if (window.toast && typeof window.toast.error === 'function') {
+        window.toast.error('Invalid platform name');
+      }
+      return;
+    }
+
+    if (syncToPlatform) {
+      const syncErrors = getAdGroupSyncPrerequisiteErrors(adGroup, connectorValue);
+      if (syncErrors.length > 0) {
+        showBlockingToast(`Cannot sync ${platformName}. ${syncErrors.join(' ')}`);
+        return;
+      }
+    }
+
+    // Initialize connectors object if it doesn't exist
+    if (!adGroup.connectors) {
+      adGroup.connectors = {
+        dsp: [],
+        adServer: [],
+        status: {}
+      };
+    }
+    if (!adGroup.connectors.dsp) adGroup.connectors.dsp = [];
+    if (!adGroup.connectors.adServer) adGroup.connectors.adServer = [];
+    if (!adGroup.connectors.status) adGroup.connectors.status = {};
+
+    // Add connector to the appropriate array if not already present
+    if (platformType === 'DSP') {
+      if (!adGroup.connectors.dsp.includes(connectorValue)) {
+        adGroup.connectors.dsp.push(connectorValue);
+      }
+    } else if (platformType === 'Ad Server') {
+      if (!adGroup.connectors.adServer.includes(connectorValue)) {
+        adGroup.connectors.adServer.push(connectorValue);
+      }
+    }
+
+    // Update connection status
+    if (syncToPlatform) {
+      adGroup.connectors.status[connectorValue] = 'Connected';
+      
+      // Generate Record ID if syncing
+      const recordId = 'REC-' + Date.now().toString(36).toUpperCase();
+      
+      // Store Record ID based on platform type
+      if (platformType === 'DSP') {
+        adGroup.deliveryId = recordId;
+      } else if (platformType === 'Ad Server') {
+        adGroup.reportingId = recordId;
+      }
+    } else {
+      adGroup.connectors.status[connectorValue] = 'Disconnected';
+    }
+
+    // Save back to localStorage
+    localStorage.setItem('adgroups_data_v1', JSON.stringify(data));
+
+    // Show success message
+    if (window.toast && typeof window.toast.success === 'function') {
+      window.toast.success('Connection updated successfully');
+    }
+
+    // Close the modal
+    closeEditConnectionsModal();
+
+    // Reload the connections table
+    loadAdGroupConnections(adGroup);
+
+  } catch (error) {
+    console.error('Error saving connection:', error);
+    if (window.toast && typeof window.toast.error === 'function') {
+      window.toast.error('Failed to save connection');
+    }
+  }
+}
+
+// Initialize Edit Connections Modal event listeners
+function initEditConnectionsModal() {
+  const modal = document.getElementById('editConnectionsModal');
+  if (!modal) return;
+
+  // Close button
+  const closeBtn = document.getElementById('closeEditConnectionsModal');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeEditConnectionsModal);
+  }
+
+  // Cancel button
+  const cancelBtn = document.getElementById('cancelEditConnections');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', closeEditConnectionsModal);
+  }
+
+  // Save button
+  const saveBtn = document.getElementById('saveEditConnections');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', saveEditConnections);
+  }
+
+  // Close on backdrop click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeEditConnectionsModal();
+    }
+  });
+}
+
+// Initialize Edit Connections modal when DOM is ready
+document.addEventListener('DOMContentLoaded', initEditConnectionsModal);
+
+// ==================== NEW CONNECTION MODAL ====================
+
+const NEW_CONNECTION_TOTAL_STEPS = 3;
+let newConnectionWizardStep = 1;
+let newConnectionWizardReady = false;
+let newConnectionPreset = null;
+
+function getAdGroupContext() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const adGroupId = urlParams.get('id') || urlParams.get('adGroupId');
+  if (!adGroupId) return null;
+
+  const adGroups = JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]');
+  const adGroup = Array.isArray(adGroups) ? adGroups.find(ag => ag.id === adGroupId) : null;
+  if (!adGroup) return null;
+
+  const campaign = findCampaignForAdGroup(adGroup);
+  return { adGroups, adGroup, campaign };
+}
+
+function getSelectedNewConnectors(modal) {
+  const selections = [];
+  const masterConnected = document.getElementById('newConnectorsToggle')?.getAttribute('aria-checked') === 'true';
+  modal.querySelectorAll('.connector-card').forEach(card => {
+    const checkbox = card.querySelector('input[type="checkbox"]');
+    const toggle = card.querySelector('.new-connector-toggle');
+    if (checkbox && checkbox.checked && !checkbox.disabled) {
+      selections.push({
+        connectorType: checkbox.name,
+        connectorValue: checkbox.value,
+        isConnected: toggle ? (toggle.getAttribute('aria-checked') === 'true') : masterConnected
+      });
+    }
+  });
+  return selections;
+}
+
+function ensureNewConnectionWizard(modal) {
+  if (newConnectionWizardReady) return;
+  const step1 = document.getElementById('newConnectionStep1');
+  const step3 = document.getElementById('newConnectionStep3');
+  if (!step1 || !step3) return;
+
+  step1.innerHTML = `
+    <div class="bg-white border border-gray-200 rounded-lg p-4">
+      <h4 class="text-sm font-semibold text-gray-900 mb-3">Step 1: Ad Group Beacon Fields</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Campaign</label>
+          <input id="newBeaconCampaignName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50" readonly>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Ad Group Name <span class="text-red-500">*</span></label>
+          <input id="newBeaconAdGroupName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Ad group name">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Template <span class="text-red-500">*</span></label>
+          <select id="newBeaconTemplate" class="w-full border border-gray-300 rounded-md px-3 py-2">
+            <option value="">-- Select Template --</option>
+            <option value="Programmatic Display">Programmatic Display</option>
+            <option value="Programmatic Video">Programmatic Video</option>
+            <option value="Programmatic Audio">Programmatic Audio</option>
+            <option value="Connected TV">Connected TV</option>
+            <option value="Paid Social">Paid Social</option>
+            <option value="Paid Search">Paid Search</option>
+            <option value="Event Targeting">Event Targeting</option>
+            <option value="Native Video">Native Video</option>
+            <option value="DOOH">DOOH</option>
+            <option value="PLD Display">PLD Display</option>
+            <option value="PLD Video">PLD Video</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tactic <span class="text-red-500">*</span></label>
+          <select id="newBeaconTactic" class="w-full border border-gray-300 rounded-md px-3 py-2">
+            <option value="">-- Select Tactic --</option>
+            <option value="Persona">Persona</option>
+            <option value="Retargeting">Retargeting</option>
+            <option value="Data Onboarding">Data Onboarding</option>
+            <option value="Company Targeting">Company Targeting</option>
+            <option value="IP Targeting">IP Targeting</option>
+            <option value="Addressable">Addressable</option>
+            <option value="Location Targeting">Location Targeting</option>
+            <option value="Frequency Fencing">Frequency Fencing</option>
+            <option value="Contextual">Contextual</option>
+            <option value="Advanced ABM">Advanced ABM</option>
+            <option value="Sector">Sector</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Content Category</label>
+          <input id="newBeaconContentCategory" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50" readonly>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">MV Classification</label>
+          <input id="newBeaconMvClassification" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50" readonly>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Audience</label>
+          <input id="newBeaconAudience" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Geo Target</label>
+          <input id="newBeaconGeoTarget" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="U.S.">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+          <input id="newBeaconStartDate" type="date" class="w-full border border-gray-300 rounded-md px-3 py-2">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+          <input id="newBeaconEndDate" type="date" class="w-full border border-gray-300 rounded-md px-3 py-2">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Impressions</label>
+          <input id="newBeaconImpressions" type="number" min="0" step="1" class="w-full border border-gray-300 rounded-md px-3 py-2">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Landing Page</label>
+          <input id="newBeaconLandingPage" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2">
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">UTM Code</label>
+          <input id="newBeaconUtmCode" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2">
+        </div>
+      </div>
+    </div>
+  `;
+
+  step3.innerHTML = `
+    <div id="newAdGroupNoPlatformFields" class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-900">
+      <p class="font-semibold">Step 3: Platform Configuration</p>
+      <p class="mt-1">No additional platform fields required for selected non-TTD DSPs. Beacon fields are used.</p>
+    </div>
+    <div id="newAdGroupTtdFields" class="hidden bg-white border border-blue-200 rounded-lg p-4">
+      <h4 class="text-sm font-semibold text-blue-900 mb-3">The Trade Desk Fields</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Name <span class="text-red-500">*</span></label><input id="ncAdGroupDspName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Funnel Location</label><input id="ncAdGroupFunnelLocation" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Channel</label><input id="ncAdGroupChannel" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Device Types</label><input id="ncAdGroupDeviceTypes" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Ad Environments</label><input id="ncAdGroupAdEnvironments" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Primary Goal</label><input id="ncAdGroupPrimaryGoal" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Target</label><input id="ncAdGroupTarget" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Audience</label><input id="ncAdGroupAudience" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Frequency</label><input id="ncAdGroupFrequency" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Geos</label><input id="ncAdGroupGeos" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Base Bid</label><input id="ncAdGroupBaseBid" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Max Bid</label><input id="ncAdGroupMaxBid" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+      </div>
+    </div>
+    <div id="newAdGroupGcmFields" class="hidden bg-white border border-green-200 rounded-lg p-4">
+      <h4 class="text-sm font-semibold text-green-900 mb-3">Google Campaign Manager Fields</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Name <span class="text-red-500">*</span></label><input id="ncAdGroupAdServerName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Status</label><input id="ncAdGroupAdServerStatus" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Compatibility</label><input id="ncAdGroupAdServerCompatibility" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Dimensions</label><input id="ncAdGroupAdServerDimensions" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Testing Starts</label><input id="ncAdGroupAdServerTestingStarts" type="date" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label><input id="ncAdGroupAdServerStartDate" type="date" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">End Date</label><input id="ncAdGroupAdServerEndDate" type="date" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Cost Structure</label><input id="ncAdGroupAdServerCostStructure" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-1">Cap Cost</label><input id="ncAdGroupAdServerCapCost" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('newBeaconTactic')?.addEventListener('change', (e) => {
+    const target = document.getElementById('newBeaconContentCategory');
+    if (target) target.value = e.target.value || '';
+  });
+  document.getElementById('newBeaconTemplate')?.addEventListener('change', (e) => {
+    const target = document.getElementById('newBeaconMvClassification');
+    if (target) target.value = e.target.value || '';
+  });
+
+  newConnectionWizardReady = true;
+}
+
+function updateAdGroupStepThreeVisibility(modal) {
+  const selected = getSelectedNewConnectors(modal);
+  const hasTradeDesk = selected.some(s => s.connectorValue === 'trade-desk');
+  const hasGcm = selected.some(s => s.connectorValue === 'google-campaign-manager');
+
+  document.getElementById('newAdGroupTtdFields')?.classList.toggle('hidden', !hasTradeDesk);
+  document.getElementById('newAdGroupGcmFields')?.classList.toggle('hidden', !hasGcm);
+  document.getElementById('newAdGroupNoPlatformFields')?.classList.toggle('hidden', hasTradeDesk || hasGcm);
+}
+
+function setNewConnectionStep(step, modal) {
+  const nextBtn = document.getElementById('connectNewConnection');
+  const prevBtn = document.getElementById('newConnectionPrevBtn');
+  const titleEl = modal.querySelector('.mb-6 h3');
+  const subtitleEl = modal.querySelector('.mb-6 p');
+  const step1 = document.getElementById('newConnectionStep1');
+  const step2 = document.getElementById('newConnectionStep2');
+  const step3 = document.getElementById('newConnectionStep3');
+  if (!step1 || !step2 || !step3 || !nextBtn || !prevBtn) return;
+
+  newConnectionWizardStep = Math.min(NEW_CONNECTION_TOTAL_STEPS, Math.max(1, step));
+  step1.classList.toggle('hidden', newConnectionWizardStep !== 1);
+  step2.classList.toggle('hidden', newConnectionWizardStep !== 2);
+  step3.classList.toggle('hidden', newConnectionWizardStep !== 3);
+  prevBtn.classList.toggle('hidden', newConnectionWizardStep === 1);
+  nextBtn.textContent = newConnectionWizardStep === NEW_CONNECTION_TOTAL_STEPS ? 'Connect' : 'Next';
+
+  if (titleEl && subtitleEl) {
+    if (newConnectionWizardStep === 1) {
+      titleEl.textContent = 'Ad Group Beacon Fields';
+      subtitleEl.textContent = 'Confirm Ad Group Beacon values before choosing connectors';
+    } else if (newConnectionWizardStep === 2) {
+      titleEl.textContent = 'Platform Connectors';
+      subtitleEl.textContent = 'Select connectors inherited from the parent campaign';
+    } else {
+      titleEl.textContent = 'Platform Configuration';
+      subtitleEl.textContent = 'Fill fields for The Trade Desk and/or Google Campaign Manager';
+    }
+  }
+}
+
+function validateNewConnectionStep(modal, step) {
+  if (step === 1) {
+    const name = document.getElementById('newBeaconAdGroupName')?.value?.trim();
+    const template = document.getElementById('newBeaconTemplate')?.value?.trim();
+    const tactic = document.getElementById('newBeaconTactic')?.value?.trim();
+    if (!name || !template || !tactic) {
+      window.toast?.error?.('Ad Group Name, Template, and Tactic are required.');
+      return false;
+    }
+    return true;
+  }
+
+  if (step === 2) {
+    const selected = getSelectedNewConnectors(modal);
+    if (!selected.length) {
+      window.toast?.error?.('Select at least one connector.');
+      return false;
+    }
+    const selectedDsp = selected.filter(s => s.connectorType === 'new-dsp');
+    if (selectedDsp.length > 1) {
+      window.toast?.error?.('Ad Group can only use one DSP connector.');
+      return false;
+    }
+    return true;
+  }
+
+  if (step === 3) {
+    const selected = getSelectedNewConnectors(modal);
+    const hasTradeDesk = selected.some(s => s.connectorValue === 'trade-desk');
+    const hasGcm = selected.some(s => s.connectorValue === 'google-campaign-manager');
+    if (hasTradeDesk && !document.getElementById('ncAdGroupDspName')?.value?.trim()) {
+      window.toast?.error?.('The Trade Desk Name is required.');
+      return false;
+    }
+    if (hasGcm && !document.getElementById('ncAdGroupAdServerName')?.value?.trim()) {
+      window.toast?.error?.('GCM Name is required.');
+      return false;
+    }
+    return true;
+  }
+
+  return true;
+}
+
+function prefillAdGroupWizardFields(context) {
+  const adGroup = context?.adGroup || {};
+  const campaign = context?.campaign || {};
+  const setValue = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.value = value || '';
+  };
+
+  setValue('newBeaconCampaignName', campaign.beaconCampaignName || campaign.name || adGroup.campaign);
+  setValue('newBeaconAdGroupName', adGroup.name);
+  setValue('newBeaconTemplate', adGroup.template || campaign.beaconTemplate || campaign.template);
+  setValue('newBeaconTactic', adGroup.multiviewTactic);
+  setValue('newBeaconContentCategory', adGroup.contentCategory || adGroup.multiviewTactic);
+  setValue('newBeaconMvClassification', adGroup.multiviewClassification || adGroup.template || campaign.beaconTemplate || campaign.template);
+  setValue('newBeaconAudience', adGroup.beaconAudience);
+  setValue('newBeaconGeoTarget', adGroup.geoTarget || adGroup.geos || 'U.S.');
+  setValue('newBeaconStartDate', adGroup.startDate || adGroup.adServerStartDate);
+  setValue('newBeaconEndDate', adGroup.endDate || adGroup.adServerEndDate);
+  setValue('newBeaconImpressions', adGroup.impressions);
+  setValue('newBeaconLandingPage', adGroup.landingPage);
+  setValue('newBeaconUtmCode', adGroup.utmCode);
+
+  setValue('ncAdGroupDspName', adGroup.dspName);
+  setValue('ncAdGroupFunnelLocation', adGroup.funnelLocation);
+  setValue('ncAdGroupChannel', adGroup.channel);
+  setValue('ncAdGroupDeviceTypes', adGroup.deviceTypes);
+  setValue('ncAdGroupAdEnvironments', adGroup.adEnvironments);
+  setValue('ncAdGroupPrimaryGoal', adGroup.primaryGoal);
+  setValue('ncAdGroupTarget', adGroup.target);
+  setValue('ncAdGroupAudience', adGroup.dspAudience);
+  setValue('ncAdGroupFrequency', adGroup.frequency);
+  setValue('ncAdGroupGeos', adGroup.geos);
+  setValue('ncAdGroupBaseBid', adGroup.baseBid);
+  setValue('ncAdGroupMaxBid', adGroup.maxBid);
+
+  setValue('ncAdGroupAdServerName', adGroup.adServerName);
+  setValue('ncAdGroupAdServerStatus', adGroup.adServerStatus);
+  setValue('ncAdGroupAdServerCompatibility', adGroup.adServerCompatibility);
+  setValue('ncAdGroupAdServerDimensions', adGroup.adServerDimensions);
+  setValue('ncAdGroupAdServerTestingStarts', adGroup.adServerTestingStarts);
+  setValue('ncAdGroupAdServerStartDate', adGroup.adServerStartDate);
+  setValue('ncAdGroupAdServerEndDate', adGroup.adServerEndDate);
+  setValue('ncAdGroupAdServerCostStructure', adGroup.adServerCostStructure);
+  setValue('ncAdGroupAdServerCapCost', adGroup.adServerCapCost);
+}
+
+function applyAdGroupConnectorConstraints(modal, context) {
+  const campaign = context?.campaign;
+  const allowed = new Set([
+    ...extractConnectorValues(campaign?.connectors?.dsp),
+    ...extractConnectorValues(campaign?.connectors?.adServer)
+  ]);
+
+  modal.querySelectorAll('.connector-card input[type="checkbox"]').forEach(cb => {
+    let allow = allowed.has(cb.value);
+    if (newConnectionPreset?.platformValue) {
+      allow = allow && cb.value === newConnectionPreset.platformValue;
+    }
+    cb.disabled = !allow;
+    if (!allow) cb.checked = false;
+    const card = cb.closest('.connector-card');
+    if (card) {
+      card.classList.toggle('opacity-50', !allow);
+      if (!allow) {
+        card.classList.remove('selected', 'border-blue-500', 'bg-blue-50');
+      }
+    }
+  });
+}
+
+// Open New Connection Modal
+function openNewConnectionModal(options = null) {
+  const modal = document.getElementById('newConnectionModal');
+  if (!modal) return;
+  newConnectionPreset = options;
+
+  ensureNewConnectionWizard(modal);
+  // Reset all checkboxes and toggles first
+  resetNewConnectionModal();
+  const context = getAdGroupContext();
+  if (context) {
+    prefillAdGroupWizardFields(context);
+    applyAdGroupConnectorConstraints(modal, context);
+  }
+
+  if (newConnectionPreset?.platformValue) {
+    const target = modal.querySelector(`input[type="checkbox"][value="${newConnectionPreset.platformValue}"]`);
+    if (target && !target.disabled) {
+      target.checked = true;
+      target.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
+
+  setNewConnectionStep(1, modal);
+  updateAdGroupStepThreeVisibility(modal);
+
+  // Show the modal
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+// Reset the New Connection Modal to default state
+function resetNewConnectionModal() {
+  const modal = document.getElementById('newConnectionModal');
+  if (!modal) return;
+
+  // Reset all checkboxes
+  modal.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.checked = false;
+  });
+
+  // Reset all connector cards
+  modal.querySelectorAll('.connector-card').forEach(card => {
+    card.classList.remove('selected', 'border-blue-500', 'bg-blue-50');
+  });
+
+  // Reset all toggles
+  modal.querySelectorAll('.new-connector-toggle').forEach(toggle => {
+    updateToggleState(toggle, false);
+  });
+
+  // Reset master toggle
+  const masterToggle = document.getElementById('newConnectorsToggle');
+  if (masterToggle) {
+    updateToggleState(masterToggle, false);
+  }
+
+  modal.querySelectorAll('#newConnectionStep1 input, #newConnectionStep1 select, #newConnectionStep3 input, #newConnectionStep3 select').forEach(input => {
+    if (input.hasAttribute('readonly')) return;
+    if (input.tagName === 'SELECT') {
+      input.selectedIndex = 0;
+    } else {
+      input.value = '';
+    }
+  });
+}
+
+// Close New Connection Modal
+function closeNewConnectionModal() {
+  const modal = document.getElementById('newConnectionModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+// Connect (Save) New Connections
+function connectNewConnections() {
+  const modal = document.getElementById('newConnectionModal');
+  if (!modal) return;
+
+  if (newConnectionWizardStep < NEW_CONNECTION_TOTAL_STEPS) {
+    if (!validateNewConnectionStep(modal, newConnectionWizardStep)) return;
+    setNewConnectionStep(newConnectionWizardStep + 1, modal);
+    updateAdGroupStepThreeVisibility(modal);
+    return;
+  }
+
+  if (!validateNewConnectionStep(modal, 3)) return;
+
+  const context = getAdGroupContext();
+  if (!context) {
+    if (window.toast && typeof window.toast.error === 'function') {
+      window.toast.error('Ad Group not found');
+    }
+    return;
+  }
+
+  try {
+    const data = context.adGroups;
+    const adGroup = context.adGroup;
+    const campaign = context.campaign;
+
+    // Initialize connectors if not exists
+    if (!adGroup.connectors) {
+      adGroup.connectors = { dsp: [], adServer: [], status: {} };
+    }
+    if (!adGroup.connectors.dsp) adGroup.connectors.dsp = [];
+    if (!adGroup.connectors.adServer) adGroup.connectors.adServer = [];
+    if (!adGroup.connectors.status) adGroup.connectors.status = {};
+
+    const selectedConnectors = getSelectedNewConnectors(modal);
+
+    if (selectedConnectors.length === 0) {
+      if (window.toast && typeof window.toast.info === 'function') {
+        window.toast.info('No new connections selected');
+      }
+      return;
+    }
+
+    const selectedDsp = selectedConnectors
+      .filter(selection => selection.connectorType === 'new-dsp')
+      .map(selection => selection.connectorValue);
+    if (selectedDsp.length > 1) {
+      window.toast?.error?.('Ad Group can only have one DSP connector.');
+      return;
+    }
+
+    const campaignAllowed = new Set([
+      ...extractConnectorValues(campaign?.connectors?.dsp),
+      ...extractConnectorValues(campaign?.connectors?.adServer)
+    ]);
+    const invalidSelection = selectedConnectors.find(selection => !campaignAllowed.has(selection.connectorValue));
+    if (invalidSelection) {
+      window.toast?.error?.('Ad Group connectors must match parent campaign connectors.');
+      return;
+    }
+
+    const syncValidationErrors = [];
+    selectedConnectors.forEach(selection => {
+      if (!selection.isConnected) return;
+      const details = getPlatformDetailsByValue(selection.connectorValue);
+      const syncErrors = getAdGroupSyncPrerequisiteErrors(adGroup, selection.connectorValue);
+      syncErrors.forEach(err => {
+        const platformLabel = details?.name || selection.connectorValue;
+        syncValidationErrors.push(`${platformLabel}: ${err}`);
+      });
+    });
+
+    if (syncValidationErrors.length > 0) {
+      showBlockingToast(`Cannot sync selected connector(s). ${syncValidationErrors.join(' ')}`);
+      return;
+    }
+
+    // Apply selected connectors and statuses
+    let newConnectionsAdded = 0;
+    if (selectedDsp.length === 1) {
+      if (adGroup.connectors.dsp[0] !== selectedDsp[0]) newConnectionsAdded++;
+      adGroup.connectors.dsp = [selectedDsp[0]];
+    } else if (adGroup.connectors.dsp.length > 1) {
+      adGroup.connectors.dsp = [adGroup.connectors.dsp[0]];
+    }
+
+    selectedConnectors
+      .filter(selection => selection.connectorType === 'new-adserver')
+      .forEach(selection => {
+        if (!adGroup.connectors.adServer.includes(selection.connectorValue)) {
+          adGroup.connectors.adServer.push(selection.connectorValue);
+          newConnectionsAdded++;
+        }
+      });
+
+    selectedConnectors.forEach(selection => {
+      adGroup.connectors.status[selection.connectorValue] = selection.isConnected ? 'Connected' : 'Disconnected';
+      if (selection.isConnected && selection.connectorValue === 'trade-desk' && !adGroup.deliveryId) {
+        adGroup.deliveryId = 'DLV-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+      }
+      if (selection.isConnected && selection.connectorValue === 'google-campaign-manager' && !adGroup.reportingId) {
+        adGroup.reportingId = 'RPT-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+      }
+    });
+
+    const setIfValue = (target, key, value) => {
+      if (value !== undefined && value !== null && String(value).trim() !== '') {
+        target[key] = value;
+      }
+    };
+
+    setIfValue(adGroup, 'name', document.getElementById('newBeaconAdGroupName')?.value);
+    setIfValue(adGroup, 'campaign', campaign?.id || campaign?.beaconCampaignName || campaign?.name);
+    setIfValue(adGroup, 'campaignId', campaign?.id);
+    setIfValue(adGroup, 'template', document.getElementById('newBeaconTemplate')?.value);
+    setIfValue(adGroup, 'multiviewClassification', document.getElementById('newBeaconMvClassification')?.value);
+    setIfValue(adGroup, 'multiviewTactic', document.getElementById('newBeaconTactic')?.value);
+    setIfValue(adGroup, 'contentCategory', document.getElementById('newBeaconContentCategory')?.value);
+    setIfValue(adGroup, 'beaconAudience', document.getElementById('newBeaconAudience')?.value);
+    setIfValue(adGroup, 'geoTarget', document.getElementById('newBeaconGeoTarget')?.value);
+    setIfValue(adGroup, 'startDate', document.getElementById('newBeaconStartDate')?.value);
+    setIfValue(adGroup, 'endDate', document.getElementById('newBeaconEndDate')?.value);
+    setIfValue(adGroup, 'impressions', document.getElementById('newBeaconImpressions')?.value);
+    setIfValue(adGroup, 'landingPage', document.getElementById('newBeaconLandingPage')?.value);
+    setIfValue(adGroup, 'utmCode', document.getElementById('newBeaconUtmCode')?.value);
+    if (adGroup.geoTarget) adGroup.geos = adGroup.geoTarget;
+    if (adGroup.startDate) adGroup.adServerStartDate = adGroup.startDate;
+    if (adGroup.endDate) adGroup.adServerEndDate = adGroup.endDate;
+
+    if (selectedDsp.includes('trade-desk')) {
+      setIfValue(adGroup, 'dspName', document.getElementById('ncAdGroupDspName')?.value);
+      setIfValue(adGroup, 'funnelLocation', document.getElementById('ncAdGroupFunnelLocation')?.value);
+      setIfValue(adGroup, 'channel', document.getElementById('ncAdGroupChannel')?.value);
+      setIfValue(adGroup, 'deviceTypes', document.getElementById('ncAdGroupDeviceTypes')?.value);
+      setIfValue(adGroup, 'adEnvironments', document.getElementById('ncAdGroupAdEnvironments')?.value);
+      setIfValue(adGroup, 'primaryGoal', document.getElementById('ncAdGroupPrimaryGoal')?.value);
+      setIfValue(adGroup, 'target', document.getElementById('ncAdGroupTarget')?.value);
+      setIfValue(adGroup, 'dspAudience', document.getElementById('ncAdGroupAudience')?.value);
+      setIfValue(adGroup, 'frequency', document.getElementById('ncAdGroupFrequency')?.value);
+      setIfValue(adGroup, 'geos', document.getElementById('ncAdGroupGeos')?.value);
+      setIfValue(adGroup, 'baseBid', document.getElementById('ncAdGroupBaseBid')?.value);
+      setIfValue(adGroup, 'maxBid', document.getElementById('ncAdGroupMaxBid')?.value);
+    }
+
+    if (selectedConnectors.some(selection => selection.connectorValue === 'google-campaign-manager')) {
+      setIfValue(adGroup, 'adServerName', document.getElementById('ncAdGroupAdServerName')?.value);
+      setIfValue(adGroup, 'adServerStatus', document.getElementById('ncAdGroupAdServerStatus')?.value);
+      setIfValue(adGroup, 'adServerCompatibility', document.getElementById('ncAdGroupAdServerCompatibility')?.value);
+      setIfValue(adGroup, 'adServerDimensions', document.getElementById('ncAdGroupAdServerDimensions')?.value);
+      setIfValue(adGroup, 'adServerTestingStarts', document.getElementById('ncAdGroupAdServerTestingStarts')?.value);
+      setIfValue(adGroup, 'adServerStartDate', document.getElementById('ncAdGroupAdServerStartDate')?.value);
+      setIfValue(adGroup, 'adServerEndDate', document.getElementById('ncAdGroupAdServerEndDate')?.value);
+      setIfValue(adGroup, 'adServerCostStructure', document.getElementById('ncAdGroupAdServerCostStructure')?.value);
+      setIfValue(adGroup, 'adServerCapCost', document.getElementById('ncAdGroupAdServerCapCost')?.value);
+    }
+
+    // Save back to localStorage
+    localStorage.setItem('adgroups_data_v1', JSON.stringify(data));
+
+    // Show success message
+    if (window.toast && typeof window.toast.success === 'function') {
+      const successMessage = newConnectionsAdded > 0
+        ? `${newConnectionsAdded} connection(s) added successfully`
+        : 'Connection settings saved';
+      window.toast.success(successMessage);
+    }
+
+    // Close the modal
+    closeNewConnectionModal();
+
+    // Reload the connections table
+    loadAdGroupConnections(adGroup);
+
+  } catch (error) {
+    console.error('Error adding connections:', error);
+    if (window.toast && typeof window.toast.error === 'function') {
+      window.toast.error('Failed to add connections');
+    }
+  }
+}
+
+// Initialize New Connection Modal event listeners
+function initNewConnectionModal() {
+  const modal = document.getElementById('newConnectionModal');
+  if (!modal) return;
+  ensureNewConnectionWizard(modal);
+
+  // Close button
+  const closeBtn = document.getElementById('closeNewConnectionModal');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeNewConnectionModal);
+  }
+
+  // Cancel button
+  const cancelBtn = document.getElementById('cancelNewConnection');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', closeNewConnectionModal);
+  }
+
+  const prevBtn = document.getElementById('newConnectionPrevBtn');
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      setNewConnectionStep(newConnectionWizardStep - 1, modal);
+      updateAdGroupStepThreeVisibility(modal);
+    });
+  }
+
+  // Connect button
+  const connectBtn = document.getElementById('connectNewConnection');
+  if (connectBtn) {
+    connectBtn.addEventListener('click', connectNewConnections);
+  }
+
+  // Close on backdrop click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeNewConnectionModal();
+    }
+  });
+
+  // Connector card click handling (toggle checkbox)
+  modal.querySelectorAll('.connector-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Don't toggle if clicking on the checkbox, toggle button, or their children
+      if (e.target.closest('input[type="checkbox"]') || e.target.closest('.new-connector-toggle')) {
+        return;
+      }
+      
+      const checkbox = card.querySelector('input[type="checkbox"]');
+      if (checkbox) {
+        checkbox.checked = !checkbox.checked;
+        
+        // Update card styling
+        if (checkbox.checked) {
+          card.classList.add('selected', 'border-blue-500', 'bg-blue-50');
+        } else {
+          card.classList.remove('selected', 'border-blue-500', 'bg-blue-50');
+        }
+      }
+      updateAdGroupStepThreeVisibility(modal);
+    });
+  });
+
+  // Checkbox change handler
+  modal.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+    checkbox.addEventListener('change', (e) => {
+      const card = checkbox.closest('.connector-card');
+      if (card) {
+        if (checkbox.name === 'new-dsp' && checkbox.checked) {
+          modal.querySelectorAll('input[name="new-dsp"]').forEach(other => {
+            if (other !== checkbox) {
+              other.checked = false;
+              other.closest('.connector-card')?.classList.remove('selected', 'border-blue-500', 'bg-blue-50');
+            }
+          });
+        }
+        if (checkbox.checked) {
+          card.classList.add('selected', 'border-blue-500', 'bg-blue-50');
+        } else {
+          card.classList.remove('selected', 'border-blue-500', 'bg-blue-50');
+        }
+      }
+      updateAdGroupStepThreeVisibility(modal);
+    });
+  });
+
+  // Individual connector toggle handling
+  modal.querySelectorAll('.new-connector-toggle').forEach(toggle => {
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isCurrentlyEnabled = toggle.getAttribute('aria-checked') === 'true';
+      updateToggleState(toggle, !isCurrentlyEnabled);
+    });
+  });
+
+  // Master toggle handling
+  const masterToggle = document.getElementById('newConnectorsToggle');
+  if (masterToggle) {
+    masterToggle.addEventListener('click', () => {
+      const isCurrentlyEnabled = masterToggle.getAttribute('aria-checked') === 'true';
+      const newState = !isCurrentlyEnabled;
+      
+      // Update master toggle
+      updateToggleState(masterToggle, newState);
+      
+      // Update all checked connector toggles
+      modal.querySelectorAll('.connector-card').forEach(card => {
+        const checkbox = card.querySelector('input[type="checkbox"]');
+        const toggle = card.querySelector('.new-connector-toggle');
+        
+        if (checkbox && checkbox.checked && toggle) {
+          updateToggleState(toggle, newState);
+        }
+      });
+    });
+  }
+
+  // Wire up the "New Connection" button in the toolbar if it exists
+  const createBtn = document.getElementById('createBtn');
+  if (createBtn) {
+    createBtn.addEventListener('click', openNewConnectionModal);
+  }
+
+  setNewConnectionStep(1, modal);
+  updateAdGroupStepThreeVisibility(modal);
+}
+
+// Initialize New Connection modal when DOM is ready
+document.addEventListener('DOMContentLoaded', initNewConnectionModal);
+
+// ==================== INLINE RECORD ID POPOVER (DV360 / Simpli.fi) ====================
+
+function showInlineRecordIdPopover(tdElement, platformName, platformValue, currentValue) {
+  closeInlineRecordIdPopover();
+
+  // Get position of the td element
+  const rect = tdElement.getBoundingClientRect();
+
+  const popover = document.createElement('div');
+  popover.className = 'inline-record-id-popover';
+  popover.id = 'inlineRecordIdPopover';
+  popover.dataset.platformName = platformName;
+  popover.dataset.platformValue = platformValue;
+
+  // Position the popover using fixed positioning relative to viewport
+  popover.style.left = rect.left + 'px';
+  popover.style.top = (rect.bottom + 4) + 'px';
+
+  popover.innerHTML = `
+    <input type="text" id="inlineRecordIdInput" placeholder="Enter Record ID" value="${currentValue || ''}" autocomplete="off" />
+    <button type="button" class="popover-btn" id="inlineRecordIdSave" title="Save">
+      <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+    </button>
+    <button type="button" class="popover-btn" id="inlineRecordIdCancel" title="Cancel">
+      <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+  `;
+
+  document.body.appendChild(popover);
+
+  const input = popover.querySelector('#inlineRecordIdInput');
+  if (input) { input.focus(); input.select(); }
+
+  popover.querySelector('#inlineRecordIdSave').addEventListener('click', function() {
+    const value = input.value.trim();
+    if (!value) { input.focus(); return; }
+    saveInlineRecordId(platformName, platformValue, value);
+  });
+
+  popover.querySelector('#inlineRecordIdCancel').addEventListener('click', function() {
+    closeInlineRecordIdPopover();
+  });
+
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const value = input.value.trim();
+      if (value) saveInlineRecordId(platformName, platformValue, value);
+    } else if (e.key === 'Escape') {
+      closeInlineRecordIdPopover();
+    }
+  });
+
+  setTimeout(() => { document.addEventListener('click', handleOutsideClickPopover); }, 0);
+}
+
+function handleOutsideClickPopover(e) {
+  const popover = document.getElementById('inlineRecordIdPopover');
+  if (popover && !popover.contains(e.target)) closeInlineRecordIdPopover();
+}
+
+function closeInlineRecordIdPopover() {
+  const popover = document.getElementById('inlineRecordIdPopover');
+  if (popover) popover.remove();
+  document.removeEventListener('click', handleOutsideClickPopover);
+}
+
+function saveInlineRecordId(platformName, platformValue, recordIdValue) {
+  try {
+    // Get ad group ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const adGroupId = urlParams.get('id');
+    if (!adGroupId) {
+      if (window.toast && typeof window.toast.error === 'function') window.toast.error('Ad Group ID not found');
+      return;
+    }
+
+    // Load ad group data
+    const data = JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]');
+    let adGroup = data.find(ag => ag.id === adGroupId);
+
+    if (!adGroup) {
+      if (window.toast && typeof window.toast.error === 'function') window.toast.error('Ad Group not found');
+      return;
+    }
+
+    // Store manual Record ID on the ad group
+    if (!adGroup.manualRecordIds) adGroup.manualRecordIds = {};
+    adGroup.manualRecordIds[platformName] = recordIdValue;
+
+    // Save back to localStorage
+    localStorage.setItem('adgroups_data_v1', JSON.stringify(data));
+
+    // Close popover
+    closeInlineRecordIdPopover();
+
+    // Reload the table
+    loadAdGroupConnections(adGroup);
+
+    // Toast
+    if (window.toast && typeof window.toast.success === 'function') {
+      window.toast.success('Record ID saved');
+    }
+  } catch (error) {
+    console.error('Error saving inline Record ID:', error);
+    if (window.toast && typeof window.toast.error === 'function') window.toast.error('Failed to save Record ID');
+  }
+}
+
+
+  </script>
+  <script src="./assets/sidebar.js" defer></script>
+  <script src="./assets/phase1-core.js" defer></script>
+</body>
+</html>
