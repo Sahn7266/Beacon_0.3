@@ -40,7 +40,6 @@
   function applyCoreNavFilter() {
     const blockedHrefs = [
       'ChangeOrder',
-      'Connections',
       'AdvertiserSalesOrder',
       'CAD.html',
       'CADv1.html',
@@ -477,11 +476,7 @@
       entityLabel: 'advertiser',
       reviewFields: [
         { id: 'accountNumber', label: 'Account Number', fallback: function () { return document.getElementById('noCrmAccount')?.checked ? 'No CRM Account' : ''; } },
-        { id: 'advertiserName', label: 'Account Name' },
-        { id: 'totalInvoiceImpressions', label: 'Total Invoice Impressions' },
-        { id: 'totalInvoiceBudget', label: 'Total Invoice Budget' },
-        { id: 'totalImpressions', label: 'Total Impressions' },
-        { id: 'totalBudget', label: 'Total Budget' }
+        { id: 'advertiserName', label: 'Account Name' }
       ],
       validateStep1: function () {
         const name = (document.getElementById('advertiserName')?.value || '').trim();
@@ -530,7 +525,9 @@
         { id: 'beaconCampaignName', label: 'Campaign Name' },
         { id: 'beaconTemplate', label: 'Template' },
         { id: 'beaconCampaignDspSelected', label: 'DSP Selected' },
+        { id: 'beaconCampaignDspName', label: 'DSP Name' },
         { id: 'beaconCampaignAdServerSelected', label: 'Ad Server Selected' },
+        { id: 'beaconCampaignAdServerName', label: 'Ad Server Name' },
         { id: 'beaconDspImpressions', label: 'DSP Impressions' },
         { id: 'beaconStartDate', label: 'Start Date' },
         { id: 'beaconEndDate', label: 'End Date' }

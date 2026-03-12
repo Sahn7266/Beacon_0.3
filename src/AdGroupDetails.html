@@ -226,6 +226,12 @@
         <span data-link-label>Overview</span>
       </a>
     </li>
+    <li>
+      <a href="./AdGroupsConnections.html" data-nav-link class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
+        <img src="./assets/svgs/Blueprint.svg" alt="Connections" class="w-6 h-6 mr-2" />
+        <span data-link-label>Connections</span>
+      </a>
+    </li>
   </ul>
 </nav>
 
@@ -2158,7 +2164,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
   // Map platform values to display names
   function getPlatformDisplayName(value) {
-    if (!value) return 'N/A';
+    if (!value) return '-- Not Selected --';
     const platformMap = {
       'trade-desk': 'The Trade Desk',
       'dv360': 'DV360',

@@ -301,6 +301,12 @@
         <span data-link-label>Ad Groups</span>
       </a>
     </li>
+    <li>
+      <a href="./WFAdvertiserConnections.html" data-nav-link class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
+        <img src="./assets/svgs/Blueprint.svg" alt="Connections" class="w-6 h-6 mr-2" />
+        <span data-link-label>Connections</span>
+      </a>
+    </li>
   </ul>
 </nav>
 
@@ -311,7 +317,7 @@
           <div class="rounded-t-lg p-4" style="background-color: #004E8B;">
             <div class="flex items-center justify-between">
               <h1 data-bind="adv.name" class="text-2xl font-bold text-white">Loading…</h1>
-              <span data-bind="adv.id" class="text-sm text-white font-medium">ID: —</span>
+              <!-- <span data-bind="adv.id" class="text-sm text-white font-medium">ID: —</span> -->
             </div>
           </div>
           <div class="p-4">
@@ -398,7 +404,7 @@
                             </td>
                           </tr>
                           <!-- State -->
-                          <tr class="border-b border-default">
+                          <!-- <tr class="border-b border-default">
                             <td class="px-3 py-1 text-sm font-medium border-r border-default">State</td>
                             <td class="px-6 py-1 text-sm">
                               <span id="displayState" data-bind="adv.state" class="text-gray-800 break-words">—</span>
@@ -407,7 +413,7 @@
                                 <option value="Inactive">Inactive</option>
                               </select>
                             </td>
-                          </tr>
+                          </tr> -->
                           <!-- DSP -->
                           <tr class="border-b border-default">
                             <td class="px-3 py-1 text-sm font-medium border-r border-default">DSP</td>
@@ -438,7 +444,7 @@
                   </section>
 
                   <!-- Additional Fields Table -->
-                  <section class="space-y-2">
+                  <!-- <section class="space-y-2">
                     <div class="overflow-x-auto border border-default rounded-md">
                       <table class="w-full tbl tbl-row-hover table-fixed adgroup-details-table">
                         <colgroup>
@@ -452,33 +458,33 @@
                             </th>
                           </tr>
                         </thead>
-                        <tbody class="divide-y border-default">
+                        <tbody class="divide-y border-default"> -->
                           <!-- Total Invoice Budget -->
-                          <tr class="border-b border-default">
+                          <!-- <tr class="border-b border-default">
                             <td class="px-3 py-1 text-sm font-medium border-r border-default">Total Invoice Budget</td>
                             <td class="px-6 py-1 text-sm">
                               <span id="displayTotalInvoiceBudget" data-bind="adv.totalInvoiceBudget" class="text-gray-800 break-words">—</span>
                               <input id="inputTotalInvoiceBudget" type="text" data-bind="adv.totalInvoiceBudget" class="hidden adgroup-details-input" aria-label="Total Invoice Budget" title="Total Invoice Budget">
                             </td>
-                          </tr>
+                          </tr> -->
                           <!-- Total Budget -->
-                          <tr class="border-b border-default">
+                          <!-- <tr class="border-b border-default">
                             <td class="px-3 py-1 text-sm font-medium border-r border-default">Total Budget</td>
                             <td class="px-6 py-1 text-sm">
                               <span id="displayTotalBudget" data-bind="adv.totalBudget" class="text-gray-800 break-words">—</span>
                               <input id="inputTotalBudget" type="text" data-bind="adv.totalBudget" class="hidden adgroup-details-input" aria-label="Total Budget" title="Total Budget">
                             </td>
-                          </tr>
+                          </tr> -->
                           <!-- Total Invoice Impressions -->
-                          <tr class="border-b border-default">
+                          <!-- <tr class="border-b border-default">
                             <td class="px-3 py-1 text-sm font-medium border-r border-default">Total Invoice Impressions</td>
                             <td class="px-6 py-1 text-sm">
                               <span id="displayTotalInvoiceImpressions" data-bind="adv.totalInvoiceImpressions" class="text-gray-800 break-words">—</span>
                               <input id="inputTotalInvoiceImpressions" type="text" data-bind="adv.totalInvoiceImpressions" class="hidden adgroup-details-input" aria-label="Total Invoice Impressions" title="Total Invoice Impressions">
                             </td>
-                          </tr>
+                          </tr> -->
                           <!-- Total Impressions -->
-                          <tr class="border-b border-default">
+                          <!-- <tr class="border-b border-default">
                             <td class="px-3 py-1 text-sm font-medium border-r border-default">Total Impressions</td>
                             <td class="px-6 py-1 text-sm">
                               <span id="displayTotalImpressions" data-bind="adv.totalImpressions" class="text-gray-800 break-words">—</span>
@@ -488,7 +494,7 @@
                         </tbody>
                       </table>
                     </div>
-                  </section>
+                  </section> -->
 
                 </div>
 
@@ -704,7 +710,7 @@
               'simplifi': 'Simpli.fi',
               'google-campaign-manager': 'Google Campaign Manager'
             };
-            return platformMap[value] || value || '—';
+            return platformMap[value] || value || '-- Not Selected --';
           };
           
           // Bind Beacon fields
@@ -1069,13 +1075,12 @@
           
           // Update span with input value
           let displayValue = input.value.trim();
-          if (!displayValue || displayValue === '') {
-            displayValue = '—';
-          }
           
           // Apply platform name mapping for DSP and Ad Server fields
           if (p.span === 'displayDsp' || p.span === 'displayAdServer') {
             displayValue = getPlatformDisplayName(displayValue);
+          } else if (!displayValue || displayValue === '') {
+            displayValue = '—';
           }
           
           span.textContent = displayValue;
@@ -1095,7 +1100,7 @@
           
           // Set input/select value from span
           let value = span.textContent.trim();
-          if (value === '—' || value === 'N/A') {
+          if (value === '—' || value === 'N/A' || value === '-- Not Selected --') {
             value = '';
           }
           

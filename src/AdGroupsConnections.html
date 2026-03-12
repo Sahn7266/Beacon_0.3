@@ -397,8 +397,7 @@
             <div class="flex items-start justify-between gap-4 mb-3">
               <!-- Left Column: Advertiser Name & Account # -->
               <div>
-                <h1 data-bind="adv.name" class="text-xl md:text-2xl font-semibold text-gray-900">Loading…</h1>
-                <h3 class="text-sm font-semibold text-gray-600">Account #: <span data-bind="adv.account" class="text-sm text-gray-500">—</span></h3>
+                <h1 class="text-2xl font-semibold text-gray-900 mx-2">AD GROUP CONNECTIONS</h1>
               </div>
               <!-- Right Column: Ad Group IDs -->
               <div class="text-right">
@@ -420,13 +419,13 @@
           </div>
 
           <!-- Page Header-->
-          <div class="px-4 pt-5">
+          <!-- <div class="px-4 pt-5">
             <section class="space-y-2">
               <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-semibold text-gray-900 mx-2">CONNECTIONS</h1>
               </div>
             </section>
-          </div>
+          </div> -->
 
           <!-- Toolbar -->
           <div class="px-6 py-3">
@@ -1877,6 +1876,13 @@ window.addEventListener('DOMContentLoaded', () => {
   const adGroups = JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]');
   const adGroup = adGroups.find(ag => ag.id === adGroupId);
 
+  console.log('Loading connections for ad group:', {
+    adGroupId,
+    found: !!adGroup,
+    connectors: adGroup?.connectors,
+    fullAdGroup: adGroup
+  });
+
   if (!adGroup) return;
 
   // Display ad group IDs in header (IDs are generated on AdGroupDetails page)
@@ -2089,6 +2095,14 @@ function showBlockingToast(message) {
 
 // Function to load and display ad group connections based on selected connectors
 function loadAdGroupConnections(adGroup) {
+  console.log('loadAdGroupConnections called with:', {
+    adGroup,
+    hasConnectors: !!adGroup.connectors,
+    dsp: adGroup.connectors?.dsp,
+    adServer: adGroup.connectors?.adServer,
+    status: adGroup.connectors?.status
+  });
+  
   const tableBody = document.getElementById('campaignTableBody');
   if (!tableBody) return;
 

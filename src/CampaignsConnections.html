@@ -404,18 +404,20 @@
         <span data-link-label>Overview</span>
       </a>
     </li>
-    <li>
-      <a href="./CampaignsConnections.html" data-nav-link class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
-        <img src="./assets/svgs/Blueprint.svg" alt="Connections" class="w-6 h-6 mr-2" />
-        <span data-link-label>Connections</span>
-      </a>
-    </li>
-    <li>
+     <li>
       <a href="./CampaignsAdGroup.html" data-nav-link class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
         <img src="./assets/svgs/AdGroups.svg" class="w-6 h-6 mr-2" alt="Ad Groups">
         <span data-link-label>Ad Groups</span>
       </a>
     </li>
+   <li>
+            <a href="./CampaignsConnections.html" data-nav-link
+               class="flex items-center px-1 py-2 text-sm font-medium text-blue-700 bg-blue-50 rounded-md">
+              <img src="./assets/svgs/Blueprint.svg" alt="Connections" class="w-6 h-6 mr-2" />
+              <span data-link-label>Connections</span>
+            </a>
+          </li>
+   
   </ul>
 </nav>
 
@@ -427,8 +429,7 @@
             <div class="flex items-start justify-between gap-4 mb-3">
               <!-- Left Column: Advertiser Name & Account # -->
               <div>
-                <h1 data-bind="adv.name" class="text-xl md:text-2xl font-semibold text-gray-900">Loading…</h1>
-                <h3 class="text-sm font-semibold text-gray-600">Account #: <span data-bind="adv.account" class="text-sm text-gray-500">—</span></h3>
+                <h1 class="text-2xl font-semibold text-gray-900 mx-2">CAMPAIGN CONNECTIONS</h1>
               </div>
               <!-- Right Column: Campaign IDs -->
               <div class="text-right">
@@ -441,8 +442,8 @@
                   <a id="campaignReportingId" href="https://campaignmanager.google.com/" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline w-40 text-left">—</a> -->
                 </div>
                 <div class="flex justify-end gap-2">
-                  <span class="text-sm font-semibold text-gray-600">ID:</span>
-                  <span id="campaignIdDisplay" class="text-sm text-gray-500 w-40 text-left">—</span>
+                  <!-- <span class="text-sm font-semibold text-gray-600">ID:</span>
+                  <span id="campaignIdDisplay" class="text-sm text-gray-500 w-40 text-left">—</span> -->
                 </div>
               </div>
             </div>
@@ -450,13 +451,12 @@
           </div>
 
           <!-- Page Header-->
-          <div class="px-4 pt-5">
+          <!-- <div class="px-4 pt-5">
             <section class="space-y-2">
-              <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-semibold text-gray-900 mx-2">CONNECTIONS</h1>
+              <div class="flex items-center justify-between">CAMPAIGN CONNECTIONS</h1>
               </div>
             </section>
-          </div>
+          </div> -->
 
           <!-- Toolbar -->
           <div class="px-6 py-3">

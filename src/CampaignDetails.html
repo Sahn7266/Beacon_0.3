@@ -231,6 +231,13 @@
         <span data-link-label>Ad Groups</span>
       </a>
     </li>
+    <li>
+            <a href="./CampaignsConnections.html" data-nav-link
+               class="flex items-center px-1 py-2 text-sm font-medium text-blue-700 bg-blue-50 rounded-md">
+              <img src="./assets/svgs/Blueprint.svg" alt="Connections" class="w-6 h-6 mr-2" />
+              <span data-link-label>Connections</span>
+            </a>
+          </li>
   </ul>
 </nav>
 
@@ -355,7 +362,7 @@
                           </tr>
                           <!-- DSP Selected -->
                           <tr class="border-b border-default">
-                            <td class="px-3 py-1 text-sm font-medium border-r border-default">DSP Selected</td>
+                            <td class="px-3 py-1 text-sm font-medium border-r border-default">DSP</td>
                             <td class="px-6 py-1 text-sm">
                               <span id="displayDspSelected" class="text-gray-800 break-words">N/A</span>
                               <select id="beaconCampaignDspSelected" class="hidden campaign-details-input" aria-label="DSP Selected" title="DSP Selected">
@@ -366,15 +373,31 @@
                               </select>
                             </td>
                           </tr>
+                          <!-- DSP Name -->
+                          <tr class="border-b border-default">
+                            <td class="px-3 py-1 text-sm font-medium border-r border-default">DSP Campaign Name</td>
+                            <td class="px-6 py-1 text-sm">
+                              <span id="displayBeaconCampaignDspName" class="text-gray-800 break-words">N/A</span>
+                              <input id="beaconCampaignDspName" type="text" class="hidden campaign-details-input" aria-label="DSP Name" title="DSP Name" />
+                            </td>
+                          </tr>
                           <!-- Ad Server Selected -->
                           <tr class="border-b border-default">
-                            <td class="px-3 py-1 text-sm font-medium border-r border-default">Ad Server Selected</td>
+                            <td class="px-3 py-1 text-sm font-medium border-r border-default">Ad Server</td>
                             <td class="px-6 py-1 text-sm">
                               <span id="displayAdServerSelected" class="text-gray-800 break-words">N/A</span>
                               <select id="beaconCampaignAdServerSelected" class="hidden campaign-details-input" aria-label="Ad Server Selected" title="Ad Server Selected">
                                 <option value="">-- Select Ad Server --</option>
                                 <option value="Google Campaign Manager">Google Campaign Manager</option>
                               </select>
+                            </td>
+                          </tr>
+                          <!-- Ad Server Name -->
+                          <tr class="border-b border-default">
+                            <td class="px-3 py-1 text-sm font-medium border-r border-default">Ad Server Campaign Name</td>
+                            <td class="px-6 py-1 text-sm">
+                              <span id="displayBeaconCampaignAdServerName" class="text-gray-800 break-words">N/A</span>
+                              <input id="beaconCampaignAdServerName" type="text" class="hidden campaign-details-input" aria-label="Ad Server Name" title="Ad Server Name" />
                             </td>
                           </tr>
                         </tbody>
@@ -646,7 +669,9 @@
   { span: 'displayBeaconStartDate', input: 'beaconStartDate' },
   { span: 'displayBeaconEndDate', input: 'beaconEndDate' },
   { span: 'displayDspSelected', input: 'beaconCampaignDspSelected' },
+  { span: 'displayBeaconCampaignDspName', input: 'beaconCampaignDspName' },
   { span: 'displayAdServerSelected', input: 'beaconCampaignAdServerSelected' },
+  { span: 'displayBeaconCampaignAdServerName', input: 'beaconCampaignAdServerName' },
   // DSP Fields (these are linked to actual campaign data)
   { span: 'displayCampaignSeed', input: 'campaignSeed' },
   { span: 'displayCampaignOrganization', input: 'campaignOrganization' },
@@ -879,7 +904,9 @@
                                 if (now.beaconTemplate !== undefined) topLevelCampaign.template = now.beaconTemplate;
                                 if (now.beaconDspImpressions !== undefined) topLevelCampaign.dspImpressions = now.beaconDspImpressions;
                                 if (now.beaconCampaignDspSelected !== undefined) topLevelCampaign.beaconCampaignDspSelected = now.beaconCampaignDspSelected;
+                                if (now.beaconCampaignDspName !== undefined) topLevelCampaign.beaconCampaignDspName = now.beaconCampaignDspName;
                                 if (now.beaconCampaignAdServerSelected !== undefined) topLevelCampaign.beaconCampaignAdServerSelected = now.beaconCampaignAdServerSelected;
+                                if (now.beaconCampaignAdServerName !== undefined) topLevelCampaign.beaconCampaignAdServerName = now.beaconCampaignAdServerName;
                                 // Ad Server Fields - New 4 Field Structure
                                 if (now.adServerCampaignName !== undefined) topLevelCampaign.adServerCampaignName = now.adServerCampaignName;
                                 if (now.adServerSchedule !== undefined) topLevelCampaign.adServerSchedule = now.adServerSchedule;
@@ -915,7 +942,9 @@
                                     if (now.beaconTemplate !== undefined) campaign.template = now.beaconTemplate;
                                     if (now.beaconDspImpressions !== undefined) campaign.dspImpressions = now.beaconDspImpressions;
                                     if (now.beaconCampaignDspSelected !== undefined) campaign.beaconCampaignDspSelected = now.beaconCampaignDspSelected;
+                                    if (now.beaconCampaignDspName !== undefined) campaign.beaconCampaignDspName = now.beaconCampaignDspName;
                                     if (now.beaconCampaignAdServerSelected !== undefined) campaign.beaconCampaignAdServerSelected = now.beaconCampaignAdServerSelected;
+                                    if (now.beaconCampaignAdServerName !== undefined) campaign.beaconCampaignAdServerName = now.beaconCampaignAdServerName;
                                     // Ad Server Fields - New 4 Field Structure
                                     if (now.adServerCampaignName !== undefined) campaign.adServerCampaignName = now.adServerCampaignName;
                                     if (now.adServerSchedule !== undefined) campaign.adServerSchedule = now.adServerSchedule;
@@ -1684,6 +1713,17 @@ window.addEventListener('DOMContentLoaded', () => {
   if (deliveryIdEl) deliveryIdEl.textContent = campaign.deliveryId || '—';
   if (reportingIdEl) reportingIdEl.textContent = campaign.reportingId || '—';
 
+  function getPlatformDisplayName(value) {
+    if (!value) return '-- Not Selected --';
+    const platformMap = {
+      'trade-desk': 'The Trade Desk',
+      'dv360': 'DV360',
+      'simplifi': 'Simpli.fi',
+      'google-campaign-manager': 'Google Campaign Manager'
+    };
+    return platformMap[value] || value;
+  }
+
   const safeSet = (id, value, format = 'none') => {
     const el = document.getElementById(id);
     if (el) {
@@ -1727,8 +1767,10 @@ window.addEventListener('DOMContentLoaded', () => {
   safeSet('displayBeaconDspImpressions', campaign.beaconDspImpressions || campaign.dspImpressions);
   safeSet('displayBeaconStartDate', campaign.beaconStartDate, 'date');
   safeSet('displayBeaconEndDate', campaign.beaconEndDate, 'date');
-  safeSet('displayDspSelected', campaign.beaconCampaignDspSelected);
-  safeSet('displayAdServerSelected', campaign.beaconCampaignAdServerSelected);
+  safeSet('displayDspSelected', getPlatformDisplayName(campaign.beaconCampaignDspSelected));
+  safeSet('displayBeaconCampaignDspName', campaign.beaconCampaignDspName);
+  safeSet('displayAdServerSelected', getPlatformDisplayName(campaign.beaconCampaignAdServerSelected));
+  safeSet('displayBeaconCampaignAdServerName', campaign.beaconCampaignAdServerName);
   
   // Update header with campaign name and ID
   safeSet('campaignHeaderName', campaign.beaconCampaignName || campaign.name);

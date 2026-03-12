@@ -443,6 +443,13 @@
         <span data-link-label>Ad Groups</span>
       </a>
     </li>
+    <li>
+            <a href="./CampaignsConnections.html" data-nav-link
+               class="flex items-center px-1 py-2 text-sm font-medium text-blue-700 bg-blue-50 rounded-md">
+              <img src="./assets/svgs/Blueprint.svg" alt="Connections" class="w-6 h-6 mr-2" />
+              <span data-link-label>Connections</span>
+            </a>
+          </li>
   </ul>
 </nav>
 
@@ -454,8 +461,7 @@
             <div class="flex items-start justify-between gap-4 mb-3">
               <!-- Left Column: Advertiser Name & Account # -->
               <div>
-                <h1 data-bind="adv.name" class="text-xl md:text-2xl font-semibold text-gray-900">Loading…</h1>
-                <h3 class="text-sm font-semibold text-gray-600">Account #: <span data-bind="adv.account" class="text-sm text-gray-500">—</span></h3>
+                <h1 class="text-2xl font-semibold text-gray-900 mx-2">AD GROUPS</h1>
               </div>
               <!-- Right Column: Campaign IDs -->
               <div class="text-right">
@@ -468,8 +474,8 @@
                   <a id="campaignReportingId" href="https://campaignmanager.google.com/" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline w-40 text-left">—</a> -->
                 </div>
                 <div class="flex justify-end gap-2">
-                  <span class="text-sm font-semibold text-gray-600">ID:</span>
-                  <span id="campaignIdDisplay" class="text-sm text-gray-500 w-40 text-left">—</span>
+                  <!-- <span class="text-sm font-semibold text-gray-600">ID:</span>
+                  <span id="campaignIdDisplay" class="text-sm text-gray-500 w-40 text-left">—</span> -->
                 </div>
               </div>
             </div>
@@ -477,13 +483,13 @@
           </div>
 
           <!-- Page Header-->
-          <div class="px-4 pt-5">
+          <!-- <div class="px-4 pt-5">
             <section class="space-y-2">
               <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-semibold text-gray-900 mx-2">AD GROUPS</h1>
               </div>
             </section>
-          </div>
+          </div> -->
           
           <!-- Toolbar -->
           <div class="px-6 py-3">
@@ -2845,6 +2851,33 @@ function updateWizardUI() {
     createBtn.classList.add('hidden');
   }
 
+  // Sync Step 1 dropdowns to Step 2 when moving to Step 2 or 3
+  console.log('updateWizardUI called, currentStep:', currentStep);
+  
+  if (currentStep >= 2) {
+    const dspStep1 = document.getElementById('dspDropdown_step1');
+    const adServerStep1 = document.getElementById('adServerDropdown_step1');
+    const dspStep2 = document.getElementById('dspDropdown');
+    const adServerStep2 = document.getElementById('adServerDropdown');
+    
+    console.log('Syncing Step 1 to Step 2:', {
+      dspStep1Value: dspStep1?.value,
+      adServerStep1Value: adServerStep1?.value
+    });
+    
+    if (dspStep1 && dspStep2) {
+      dspStep2.value = dspStep1.value;
+    }
+    if (adServerStep1 && adServerStep2) {
+      adServerStep2.value = adServerStep1.value;
+    }
+    
+    console.log('Step 2 values after sync:', {
+      dspStep2Value: dspStep2?.value,
+      adServerStep2Value: adServerStep2?.value
+    });
+  }
+
   // Show/hide platform config sections based on selections
   if (currentStep === 3) {
     updatePlatformConfigVisibility();
@@ -3058,6 +3091,7 @@ function initCustomDropdown(containerId, triggerId, menuId, hiddenInputId, syncC
       
       // Update hidden input
       hiddenInput.value = value;
+      console.log(`Dropdown ${hiddenInputId} selected:`, value);
       
       // Update trigger text
       const valueSpan = trigger.querySelector('.platform-select-value');
@@ -3566,11 +3600,16 @@ form?.addEventListener('submit', (e) => {
 // Create Ad Group function
 function handleAdGroupCreation() {
   try {
-    // Get selected connectors from dropdowns
-    const dspDropdownValue = document.getElementById('dspDropdown')?.value || '';
-    const adServerDropdownValue = document.getElementById('adServerDropdown')?.value || '';
+    // Get selected connectors from Step 1 dropdowns (not Step 2)
+    const dspDropdownValue = document.getElementById('dspDropdown_step1')?.value || '';
+    const adServerDropdownValue = document.getElementById('adServerDropdown_step1')?.value || '';
     
-    // Get sync checkbox states
+    console.log('Creating ad group with connectors:', {
+      dspDropdownValue,
+      adServerDropdownValue
+    });
+    
+    // Get sync checkbox states from Step 2
     const dspSyncChecked = document.getElementById('dspSyncCheckbox')?.checked || false;
     const adServerSyncChecked = document.getElementById('adServerSyncCheckbox')?.checked || false;
     
@@ -3720,6 +3759,17 @@ function handleAdGroupCreation() {
         status: connectorStatus
       }
     };
+
+    console.log('Ad Group connectors object:', {
+      selectedDsp,
+      selectedAdServer,
+      connectorStatus,
+      fullConnectors: {
+        dsp: selectedDsp,
+        adServer: selectedAdServer,
+        status: connectorStatus
+      }
+    });
 
     console.log('Creating ad group:', adGroup);
 
