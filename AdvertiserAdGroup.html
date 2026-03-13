@@ -421,44 +421,24 @@
 
       <!-- Main Content -->
       <main class="flex-1 overflow-y-auto p-6">
-        <div class="app-card rounded-lg shadow-lg overflow-hidden">
-          <!-- Advertiser Header -->
-          <div class="px-4 pt-4">
-            <div class="flex items-start justify-between gap-4 mb-3">
-              <!-- Left Column: Advertiser Name & Account # -->
-              <div>
-               <h1 class="text-2xl font-semibold text-gray-900 mx-2">AD GROUPS</h1>
-              </div>
-              <!-- Right Column: IDs -->
-              <div class="text-right">
-                <div class="flex justify-end gap-2">
-                  <!-- <span class="text-sm font-semibold text-gray-600">Delivery ID:</span>
-                  <a href="https://www.thetradedesk.com/" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline w-28 text-left" data-bind="adv.deliveryId">—</a> -->
-                </div>
-                <div class="flex justify-end gap-2">
-                  <!-- <span class="text-sm font-semibold text-gray-600">Reporting ID:</span>
-                  <a href="https://campaignmanager.google.com/" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline w-28 text-left" data-bind="adv.reportingId">—</a> -->
-                </div>
-                <div class="flex justify-end gap-2">
-                  <!-- <span class="text-sm font-semibold text-gray-600">ID:</span>
-                  <span data-bind="adv.id" class="text-sm text-gray-500 w-28 text-left">—</span> -->
-                </div>
-              </div>
+        <div class="bg-white rounded-lg shadow-sm">
+          <!-- Blue Banner Header with Advertiser Name and Account Number -->
+          <div class="rounded-t-lg p-4" style="background-color: #004E8B;">
+            <div class="flex items-center justify-between">
+              <h1 data-bind="adv.name" class="text-2xl font-bold text-white">Loading…</h1>
+              <span class="text-sm text-white font-medium">Account: <span data-bind="adv.account">—</span></span>
             </div>
-            <hr class="app-divider mp-4">
           </div>
+          <div class="p-4">
 
-          <!-- Page Header
-          <div class="px-4 pt-5">
-            <section class="space-y-2">
-              <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-semibold text-gray-900 mx-2">AD GROUPS</h1>
+            <!-- Advertiser Details Section -->
+            <section>
+              <div class="flex items-center justify-between mb-3">
+                <h2 class="text-lg font-semibold text-gray-900 mx-2">AD GROUPS</h2>
               </div>
-            </section>
-          </div> -->
-          
+
           <!-- Toolbar -->
-          <div class="px-6 py-3">
+          <div class="px-2 py-3">
             <div class="mb-4">
               <div class="flex items-center space-x-3  bg-[var(--tbl-head-bg)] border border-gray-300 rounded-md">
                 <!-- New Ad Group Button -->

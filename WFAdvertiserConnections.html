@@ -337,44 +337,24 @@
 
       <!-- Main Content -->
       <main class="flex-1 overflow-y-auto p-6">
-       <div class="app-card rounded-lg shadow-lg overflow-hidden">
-          <!-- Advertiser Header -->
-          <div class="px-4 pt-4">
-            <div class="flex items-start justify-between gap-4 mb-3">
-              <!-- Left Column: Advertiser Name & Account # -->
-              <div>
-              <h1 class="text-2xl font-semibold text-gray-900 mx-2">ADVERTISER CONNECTIONS</h1>
-              </div>
-              <!-- Right Column: IDs -->
-              <div class="text-right">
-                <div class="flex justify-end gap-2">
-                  <!-- <span class="text-sm font-semibold text-gray-600">Delivery ID:</span>
-                  <a href="https://www.thetradedesk.com/" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline w-28 text-left" data-bind="adv.deliveryId">—</a> -->
-                </div>
-                <div class="flex justify-end gap-2">
-                  <!-- <span class="text-sm font-semibold text-gray-600">Reporting ID:</span>
-                  <a href="https://campaignmanager.google.com/" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline w-28 text-left" data-bind="adv.reportingId">—</a> -->
-                </div>
-                <div class="flex justify-end gap-2">
-                  <!-- <span class="text-sm font-semibold text-gray-600">ID:</span>
-                  <span data-bind="adv.id" class="text-sm text-gray-500 w-28 text-left">—</span> -->
-                </div>
-              </div>
+        <div class="bg-white rounded-lg shadow-sm">
+          <!-- Blue Banner Header with Advertiser Name and Account Number -->
+          <div class="rounded-t-lg p-4" style="background-color: #004E8B;">
+            <div class="flex items-center justify-between">
+              <h1 data-bind="adv.name" class="text-2xl font-bold text-white">Loading…</h1>
+              <span class="text-sm text-white font-medium">Account: <span data-bind="adv.account">—</span></span>
             </div>
-            <hr class="app-divider mp-4">
           </div>
+          <div class="p-4">
 
-          <!-- Page Header-->
-          <!-- <div class="px-4 pt-5">
-            <section class="space-y-2">
-              <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-semibold text-gray-900 mx-2">CONNECTIONS</h1>
+            <!-- Advertiser Details Section -->
+            <section>
+              <div class="flex items-center justify-between mb-3">
+                <h2 class="text-lg font-semibold text-gray-900 mx-2">CONNECTIONS</h2>
               </div>
-            </section>
-          </div> -->
 
           <!-- Toolbar -->
-          <div class="px-6 py-3">
+          <div class="px-2 py-3">
             <div class="mb-4">
               <div class="flex items-center space-x-3  bg-[var(--tbl-head-bg)] border border-gray-300 rounded-md">
                 <!-- New Ad Group Button -->
@@ -506,101 +486,6 @@
 
   <!-- Toast Container -->
   <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
-
-  <!-- Edit Connections Modal -->
-  <div id="editConnectionsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-6xl max-h-[90vh] relative mx-4 overflow-hidden">
-      
-      <!-- Wizard Header -->
-      <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <h2 class="text-2xl font-semibold text-white">Edit Connections</h2>
-          </div>
-          <button id="closeEditConnectionsModal" class="text-white hover:text-blue-200 transition-colors" aria-label="Close modal">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Wizard Body -->
-      <div class="flex max-h-[calc(90vh-180px)]">
-        
-        <!-- Left Sidebar - Steps Navigation -->
-        <div class="w-64 bg-gray-50 border-r border-gray-200 p-6 overflow-y-auto">
-          <nav class="space-y-2">
-            
-            <!-- Step 1 (Only Step) -->
-            <div class="wizard-step active" data-step="1">
-              <div class="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all">
-                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold step-number">
-                  1
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 step-title">Platform Connectors</p>
-                  <p class="text-xs text-gray-500 step-subtitle">Select DSPs & Ad Servers</p>
-                </div>
-              </div>
-            </div>
-
-          </nav>
-        </div>
-
-        <!-- Right Content Area -->
-        <div class="flex-1 p-6 overflow-y-auto">
-          <div class="mb-6 flex items-start justify-between">
-            <div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-2">Platform Connectors</h3>
-              <p class="text-sm text-gray-600">Select which DSPs and Ad Servers to connect</p>
-            </div>
-            <div class="flex items-center space-x-2">
-              <label for="editReportingId" class="text-sm font-medium text-gray-700 whitespace-nowrap">Reporting ID</label>
-              <input type="text" id="editReportingId" class="w-40 px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter ID" />
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            <!-- DSP Section Header -->
-            <div class="pt-2">
-              <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
-                </svg>
-                <span id="editConnectorSectionLabel">DSP (Demand-Side Platform)</span>
-              </h4>
-            </div>
-
-            <!-- Read-only platform field -->
-            <div class="border border-gray-300 rounded-md px-4 py-2.5 bg-gray-50">
-              <span id="editConnectorPlatformName" class="text-sm text-gray-900">The Trade Desk</span>
-            </div>
-
-            <!-- Sync to platform on creation checkbox -->
-            <div class="flex items-center mt-3">
-              <input 
-                type="checkbox" 
-                id="editSyncOnCreation" 
-                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-                <label for="editSyncOnCreation" class="ml-2 text-sm text-gray-700">Sync to platform</label>
-              </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Wizard Footer -->
-      <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end space-x-3">
-        <button id="cancelEditConnections" class="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
-          Cancel
-        </button>
-        <button id="saveEditConnections" class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
-          Save
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- New Connection Modal -->
   <div id="newConnectionModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -1426,7 +1311,7 @@
             self.applyFiltersAndRender();
           });
 
-          // Row action delegation (Edit / Delete / Create Connection / Inline Record ID)
+          // Row action delegation (Edit / Delete / Inline Record ID)
           this.elements.campaignTableBody?.addEventListener('click', function(e) {
             // Handle anchor click actions
             const anchor = e.target.closest('a[data-action]');
@@ -1434,22 +1319,8 @@
               e.preventDefault();
               const action = anchor.dataset.action;
               
-              if (action === 'create-connection') {
-                const platformMap = {
-                  'The Trade Desk': 'trade-desk',
-                  'DV360': 'dv360',
-                  'Display & Video 360': 'dv360',
-                  'Simpli.fi': 'simplifi',
-                  'Simplifi': 'simplifi',
-                  'Google Campaign Manager': 'google-campaign-manager'
-                };
-                const platformValue = platformMap[anchor.dataset.platform || ''] || anchor.dataset.platform || '';
-                openNewConnectionModal({
-                  platformValue,
-                  lockToPlatform: true
-                });
-              } else if (action === 'inline-record-id' || action === 'edit-manual-record-id') {
-                // DV360 / Simpli.fi — show inline popover
+              if (action === 'inline-record-id') {
+                // Show inline popover for all platforms
                 const td = anchor.closest('td');
                 if (td) {
                   const currentValue = anchor.dataset.currentValue || '';
@@ -1597,10 +1468,10 @@
             // Determine Record ID value based on platform type and connection status
             let recordIdContent = '';
             
-            // Check for manually entered Record ID (DV360/Simpli.fi flow)
+            // Check for manually entered Record ID
             if (row.manualRecordId) {
               // Show the manually entered Record ID as editable text
-              recordIdContent = `<a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline" data-action="edit-manual-record-id" data-platform="${row.platform || ''}" data-platform-type="${row.platformType || ''}" data-current-value="${row.manualRecordId}">${row.manualRecordId}</a>`;
+              recordIdContent = `<a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline" data-action="inline-record-id" data-platform="${row.platform || ''}" data-platform-type="${row.platformType || ''}" data-current-value="${row.manualRecordId}">${row.manualRecordId}</a>`;
             } else if (row.status === 'ENABLED') {
               // Connected via sync - show appropriate ID based on platform type
               if (row.platformType === 'DSP') {
@@ -1613,13 +1484,8 @@
                 recordIdContent = `<span class="text-sm text-gray-900">—</span>`;
               }
             } else {
-              // Disconnected — check if this is a DV360/Simpli.fi platform (inline input) or other (modal)
-              const isInlinePlatform = (row.platform === 'DV360' || row.platform === 'Simpli.fi');
-              if (isInlinePlatform) {
-                recordIdContent = `<a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline" data-action="inline-record-id" data-platform="${row.platform || ''}" data-platform-type="${row.platformType || ''}">Create</a>`;
-              } else {
-                recordIdContent = `<a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline" data-action="create-connection" data-platform="${row.platform || ''}" data-platform-type="${row.platformType || ''}">Create</a>`;
-              }
+              // Disconnected — all platforms use inline Record ID popover
+              recordIdContent = `<a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline" data-action="inline-record-id" data-platform="${row.platform || ''}" data-platform-type="${row.platformType || ''}">Create</a>`;
             }
 
             const deleteLockReason = this.getDeleteLockReason(row.platform);
@@ -1731,258 +1597,6 @@
         console.warn('Failed to load advertiser data:', e);
       }
     });
-
-    // ==================== EDIT CONNECTIONS MODAL ====================
-
-    // Open Edit Connections Modal
-    function openEditConnectionsModal(platformTypeFilter, platformName) {
-      const modal = document.getElementById('editConnectionsModal');
-      if (!modal) return;
-
-      // Reset the modal
-      resetEditConnectionsModal();
-
-      // Populate the read-only platform name field
-      const platformNameEl = document.getElementById('editConnectorPlatformName');
-      if (platformNameEl) {
-        platformNameEl.textContent = platformName || 'Unknown Platform';
-      }
-
-      // Update the section label based on platform type
-      const sectionLabel = document.getElementById('editConnectorSectionLabel');
-      if (sectionLabel) {
-        if (platformTypeFilter === 'DSP') {
-          sectionLabel.textContent = 'DSP (Demand-Side Platform)';
-        } else if (platformTypeFilter === 'Ad Server') {
-          sectionLabel.textContent = 'Ad Server';
-        } else {
-          sectionLabel.textContent = 'Platform';
-        }
-      }
-
-      // Ensure sync checkbox is unchecked
-      const syncCheckbox = document.getElementById('editSyncOnCreation');
-      if (syncCheckbox) {
-        syncCheckbox.checked = false;
-      }
-
-      // Store the platform context on the modal for use during save
-      modal.dataset.platformName = platformName || '';
-      modal.dataset.platformType = platformTypeFilter || '';
-
-      // Show the modal
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    // Reset the Edit Connections Modal to default state
-    function resetEditConnectionsModal() {
-      const modal = document.getElementById('editConnectionsModal');
-      if (!modal) return;
-
-      // Reset sync checkbox
-      const syncCheckbox = document.getElementById('editSyncOnCreation');
-      if (syncCheckbox) {
-        syncCheckbox.checked = false;
-      }
-
-      // Clear stored platform context
-      modal.dataset.platformName = '';
-      modal.dataset.platformType = '';
-    }
-
-    // Update toggle button state
-    function updateToggleState(toggle, isEnabled) {
-      const span = toggle.querySelector('span[aria-hidden="true"]');
-      const statusLabel = toggle.closest('.connector-card')?.querySelector('.connector-status-label');
-      
-      if (isEnabled) {
-        toggle.classList.remove('bg-gray-200');
-        toggle.classList.add('bg-blue-600');
-        toggle.setAttribute('aria-checked', 'true');
-        if (span) {
-          span.classList.remove('translate-x-0');
-          span.classList.add('translate-x-5');
-        }
-        if (statusLabel) {
-          statusLabel.textContent = 'Synced';
-          statusLabel.classList.remove('text-gray-600');
-          statusLabel.classList.add('text-green-600');
-        }
-      } else {
-        toggle.classList.remove('bg-blue-600');
-        toggle.classList.add('bg-gray-200');
-        toggle.setAttribute('aria-checked', 'false');
-        if (span) {
-          span.classList.remove('translate-x-5');
-          span.classList.add('translate-x-0');
-        }
-        if (statusLabel) {
-          statusLabel.textContent = 'Not Synced';
-          statusLabel.classList.remove('text-green-600');
-          statusLabel.classList.add('text-gray-600');
-        }
-      }
-    }
-
-    // Close Edit Connections Modal
-    function closeEditConnectionsModal() {
-      const modal = document.getElementById('editConnectionsModal');
-      if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      }
-    }
-
-    // Save Edit Connections
-    function saveEditConnections() {
-      const modal = document.getElementById('editConnectionsModal');
-      if (!modal) return;
-
-      try {
-        // Get advertiser data
-        let advertiser = JSON.parse(localStorage.getItem('adv_selected_data') || '{}');
-        
-        if (!advertiser.id) {
-          if (window.toast && typeof window.toast.error === 'function') {
-            window.toast.error('Advertiser data not found');
-          }
-          return;
-        }
-
-        const platformName = modal.dataset.platformName || '';
-        const platformType = modal.dataset.platformType || '';
-        const syncOnCreation = document.getElementById('editSyncOnCreation')?.checked || false;
-
-        // Map platform name to connector value
-        const platformMap = {
-          'The Trade Desk': 'trade-desk',
-          'DV360': 'dv360',
-          'Display & Video 360': 'dv360',
-          'Simpli.fi': 'simplifi',
-          'Simplifi': 'simplifi',
-          'Google Campaign Manager': 'google-campaign-manager'
-        };
-        const connectorValue = platformMap[platformName];
-
-        if (!connectorValue) {
-          if (window.toast && typeof window.toast.error === 'function') {
-            window.toast.error('Unknown platform');
-          }
-          return;
-        }
-
-        // Initialize connectors if not exists
-        if (!advertiser.connectors) {
-          advertiser.connectors = { dsp: [], adServer: [], status: {} };
-        }
-        if (!advertiser.connectors.dsp) advertiser.connectors.dsp = [];
-        if (!advertiser.connectors.adServer) advertiser.connectors.adServer = [];
-        if (!advertiser.connectors.status) advertiser.connectors.status = {};
-
-        // Add platform to the appropriate array if not already present
-        if (platformType === 'DSP') {
-          if (!advertiser.connectors.dsp.includes(connectorValue)) {
-            advertiser.connectors.dsp.push(connectorValue);
-          }
-        } else if (platformType === 'Ad Server') {
-          if (!advertiser.connectors.adServer.includes(connectorValue)) {
-            advertiser.connectors.adServer.push(connectorValue);
-          }
-        }
-
-        // If "Sync to platform on creation" is checked, mark as Connected
-        // and generate a Record ID
-        if (syncOnCreation) {
-          advertiser.connectors.status[connectorValue] = 'Connected';
-
-          // Generate a Record ID for this platform
-          // For DSPs, set a deliveryId; for Ad Servers, set a reportingId
-          const generatedId = 'REC-' + Date.now().toString(36).toUpperCase();
-          
-          if (platformType === 'DSP') {
-            if (!advertiser.deliveryId || advertiser.deliveryId === '—') {
-              advertiser.deliveryId = generatedId;
-            }
-          } else if (platformType === 'Ad Server') {
-            if (!advertiser.reportingId || advertiser.reportingId === '—') {
-              advertiser.reportingId = generatedId;
-            }
-          }
-
-          // Also store the Reporting ID from the modal input if provided
-          const reportingIdInput = document.getElementById('editReportingId');
-          if (reportingIdInput && reportingIdInput.value.trim()) {
-            if (platformType === 'Ad Server') {
-              advertiser.reportingId = reportingIdInput.value.trim();
-            } else if (platformType === 'DSP') {
-              advertiser.deliveryId = reportingIdInput.value.trim();
-            }
-          }
-        } else {
-          // Not synced — mark as Disconnected (platform is selected but not synced)
-          advertiser.connectors.status[connectorValue] = 'Disconnected';
-        }
-
-        // Save back to localStorage
-        localStorage.setItem('adv_selected_data', JSON.stringify(advertiser));
-
-        // Rebuild the connections table
-        if (app) {
-          app.adgroups = app.buildPlatformsFromConnectors(advertiser);
-          app.saveAdGroups();
-          app.applyFiltersAndRender();
-        }
-
-        // Show success message
-        if (window.toast && typeof window.toast.success === 'function') {
-          const msg = syncOnCreation 
-            ? 'Connection created and synced to platform' 
-            : 'Connection saved';
-          window.toast.success(msg);
-        }
-
-        // Close the modal
-        closeEditConnectionsModal();
-
-      } catch (error) {
-        console.error('Error saving connection:', error);
-        if (window.toast && typeof window.toast.error === 'function') {
-          window.toast.error('Failed to save connection');
-        }
-      }
-    }
-
-    // Initialize Edit Connections Modal event listeners
-    function initEditConnectionsModal() {
-      const modal = document.getElementById('editConnectionsModal');
-      if (!modal) return;
-
-      // Close button
-      const closeBtn = document.getElementById('closeEditConnectionsModal');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', closeEditConnectionsModal);
-      }
-
-      // Cancel button
-      const cancelBtn = document.getElementById('cancelEditConnections');
-      if (cancelBtn) {
-        cancelBtn.addEventListener('click', closeEditConnectionsModal);
-      }
-
-      // Save button
-      const saveBtn = document.getElementById('saveEditConnections');
-      if (saveBtn) {
-        saveBtn.addEventListener('click', saveEditConnections);
-      }
-
-      // Close on backdrop click
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          closeEditConnectionsModal();
-        }
-      });
-    }
 
     // ==================== NEW CONNECTION MODAL ====================
     const NEW_CONNECTION_TOTAL_STEPS = 3;
@@ -2692,7 +2306,6 @@
 
     // Initialize modals when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
-      initEditConnectionsModal();
       initNewConnectionModal();
     });
 
