@@ -607,50 +607,6 @@
 
       <!-- Wizard Body -->
       <div class="flex max-h-[calc(90vh-180px)]">
-        
-        <!-- Left Sidebar - Steps Navigation -->
-        <div class="w-64 bg-gray-50 border-r border-gray-200 p-6 overflow-y-auto">
-          <nav class="space-y-2">
-            
-            <!-- Step 1 -->
-            <div class="wizard-step active" data-step="1">
-              <div class="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all">
-                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold step-number">
-                  1
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 step-title">Advertiser Details</p>
-                  <p class="text-xs text-gray-500 step-subtitle">Basic information</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Step 2 -->
-            <div class="wizard-step" data-step="2">
-              <div class="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all">
-                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-semibold step-number">
-                  2
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-600 step-title">Review & Create</p>
-                  <p class="text-xs text-gray-500 step-subtitle">Confirm and submit</p>
-                </div>
-              </div>
-            </div>
-
-          </nav>
-
-          <!-- Progress Indicator -->
-          <div class="mt-8 pt-6 border-t border-gray-200">
-            <div class="flex items-center justify-between text-xs text-gray-600 mb-2">
-              <span>Progress</span>
-              <span id="wizardProgressText">33%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-              <div id="wizardProgressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 33%"></div>
-            </div>
-          </div>
-        </div>
 
         <!-- Right Content Area -->
         <div class="flex-1 p-4 overflow-y-auto">
@@ -660,7 +616,7 @@
             <div class="wizard-content active" data-content="1">
               <div class="mb-4">
                 <h3 class="text-lg font-semibold text-gray-900 mb-1">Advertiser Details</h3>
-                <p class="text-xs text-gray-600">Complete Beacon fields in Step 1, then review and create in Step 2.</p>
+                <p class="text-xs text-gray-600">Enter the basic information for the new advertiser.</p>
               </div>
 
               <div class="space-y-3">
@@ -668,7 +624,7 @@
                 <!-- DSP and Ad Server (Two Column) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <!-- DSP -->
-                  <div>
+                  <!-- <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                       <span class="flex items-center">
                         <svg class="w-4 h-4 mr-1 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
@@ -709,10 +665,10 @@
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> -->
 
                   <!-- Ad Server -->
-                  <div>
+                  <!-- <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                       <span class="flex items-center">
                         <svg class="w-4 h-4 mr-1 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
@@ -741,19 +697,19 @@
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
 
                 <!-- ID Field -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Advertiser ID</label>
-                  <input 
+                  <!-- <label class="block text-sm font-medium text-gray-700 mb-1">Advertiser ID</label> -->
+                  <!-- <input 
                     type="text" 
                     id="advertiserId" 
                     class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
                     placeholder="System-generated ID"
                     readonly
-                  />
+                  /> -->
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1162,23 +1118,7 @@
       </div>
 
       <!-- Wizard Footer - Navigation Buttons -->
-      <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 flex items-center justify-between">
-        <button 
-          type="button" 
-          id="wizardPrevBtn"
-          class="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled
-        >
-          <svg class="inline-block w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-          </svg>
-          Previous
-        </button>
-
-        <div class="text-sm text-gray-600">
-          Step <span id="wizardCurrentStep">1</span> of 2
-        </div>
-
+      <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 flex items-center justify-end">
         <div class="space-x-3">
           <button 
             type="button" 
@@ -1187,23 +1127,11 @@
           >
             Cancel
           </button>
-          
-          <button 
-            type="button" 
-            id="wizardNextBtn"
-            class="hidden px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Next
-            <svg class="inline-block w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </button>
 
           <button 
             type="submit" 
             id="createAdvertiserBtn"
-            class="hidden px-6 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-            disabled
+            class="px-6 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
             <svg class="inline-block w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -2942,12 +2870,18 @@ nextStep: function() {
               }
             });
 
-            // Update navigation buttons
+            // Update navigation buttons - MODIFIED FOR SINGLE-PAGE MODAL
             const prevBtn = document.getElementById('wizardPrevBtn');
             const nextBtn = document.getElementById('wizardNextBtn');
             const createBtn = document.getElementById('createAdvertiserBtn');
             const currentStepSpan = document.getElementById('wizardCurrentStep');
 
+            // Always show Create Advertiser button since we're using single-page modal
+            if (createBtn) {
+              createBtn.classList.remove('hidden');
+            }
+
+            /* ORIGINAL WIZARD LOGIC - COMMENTED OUT
             if (prevBtn) prevBtn.disabled = this.currentStep === 1;
             
             if (this.currentStep === this.totalSteps) {
@@ -2969,6 +2903,7 @@ nextStep: function() {
             }
 
             if (currentStepSpan) currentStepSpan.textContent = this.currentStep;
+            */
 
             // Update progress bar
             const progress = (this.currentStep / this.totalSteps) * 100;
