@@ -562,16 +562,14 @@
         </div>
       </main>
 
-    <!-- New Connection Modal -->
+    <!-- New Connection Modal (Simple) -->
     <div id="newConnectionModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-      <div class="bg-white rounded-lg shadow-lg w-full max-w-6xl max-h-[90vh] relative mx-4 overflow-hidden">
-        
-        <!-- Wizard Header -->
+      <div class="bg-white rounded-lg shadow-lg w-full max-w-md relative mx-4 overflow-hidden">
+
+        <!-- Modal Header -->
         <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
           <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-2xl font-semibold text-white">New Connection</h2>
-            </div>
+            <h2 class="text-xl font-semibold text-white">New Connection</h2>
             <button id="closeNewConnectionModal" class="text-white hover:text-blue-200 transition-colors" aria-label="Close modal">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -580,206 +578,37 @@
           </div>
         </div>
 
-        <!-- Wizard Body -->
-        <div class="flex max-h-[calc(90vh-180px)]">
-          
-          <!-- Left Sidebar - Steps Navigation -->
-          <div class="w-64 bg-gray-50 border-r border-gray-200 p-6 overflow-y-auto">
-            <nav class="space-y-2">
-              
-              <!-- Step 1 (Only Step) -->
-              <div class="wizard-step active" data-step="1">
-                <div class="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all">
-                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold step-number">
-                    1
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 step-title">Platform Connectors</p>
-                    <p class="text-xs text-gray-500 step-subtitle">Select DSPs & Ad Servers</p>
-                  </div>
-                </div>
-              </div>
-
-            </nav>
-
-            <!-- Progress Indicator -->
-            <div class="mt-8 pt-6 border-t border-gray-200">
-              <div class="flex items-center justify-between text-xs text-gray-600 mb-2">
-                <span>Progress</span>
-                <span>100%</span>
-              </div>
-              <div class="w-full bg-gray-200 rounded-full h-2">
-                <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 100%"></div>
-              </div>
-            </div>
+        <!-- Modal Body -->
+        <div class="p-6 space-y-5">
+          <div>
+            <label for="newConnPlatformType" class="block text-sm font-medium text-gray-700 mb-1">Select Platform Type <span class="text-red-500">*</span></label>
+            <select id="newConnPlatformType" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">-- Select Type --</option>
+              <option value="DSP">DSP</option>
+              <option value="Ad Server">Ad Server</option>
+            </select>
           </div>
 
-          <!-- Right Content Area -->
-          <div class="flex-1 p-6 overflow-y-auto">
-            <div class="mb-6">
-              <h3 class="text-xl font-semibold text-gray-900 mb-2">Platform Connectors</h3>
-              <p class="text-sm text-gray-600">Select which DSPs and Ad Servers to connect</p>
-            </div>
-
-            <div id="newConnectionStep1" class="space-y-4"></div>
-
-            <div id="newConnectionStep2" class="space-y-4 hidden">
-              
-              <!-- Toggle All Connectors -->
-              <div class="flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Enable Platform Connectors</p>
-                  <p class="text-xs text-gray-600 mt-1">Toggle to mark selected platforms as Connected</p>
-                </div>
-                <button type="button" id="newConnectorsToggle" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" role="switch" aria-checked="false">
-                  <span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
-                </button>
-              </div>
-
-              <!-- Connectors Content -->
-              <div id="newConnectorsContent" class="space-y-4">
-                
-                <!-- DSP Section Header -->
-                <div class="pt-2">
-                  <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
-                    </svg>
-                    DSP (Demand-Side Platform)
-                  </h4>
-                </div>
-
-                <!-- The Trade Desk -->
-                <div class="connector-card border-2 rounded-lg p-4 cursor-pointer transition-all hover:border-blue-300 hover:shadow-md" data-connector="trade-desk">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                      <input 
-                        type="checkbox" 
-                        id="new-dsp-trade-desk" 
-                        name="new-dsp" 
-                        value="trade-desk"
-                        class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <div>
-                        <p class="text-sm font-semibold text-gray-900">The Trade Desk</p>
-                        <p class="text-xs text-gray-500">Programmatic advertising platform</p>
-                      </div>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                      <!-- <span class="connector-status-label text-xs font-medium text-gray-600">Not Connected</span> -->
-                      <span class="px-2 py-1 text-xs font-bold rounded bg-blue-100 text-blue-700">API</span>
-                      <!-- <button type="button" class="new-connector-toggle relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" role="switch" aria-checked="false" data-connector="trade-desk">
-                        <span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
-                      </button> -->
-                    </div>
-                  </div>
-                </div>
-
-                <!-- DV360 -->
-                <div class="connector-card border-2 rounded-lg p-4 cursor-pointer transition-all hover:border-blue-300 hover:shadow-md" data-connector="dv360">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                      <input 
-                        type="checkbox" 
-                        id="new-dsp-dv360" 
-                        name="new-dsp" 
-                        value="dv360"
-                        class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <div>
-                        <p class="text-sm font-semibold text-gray-900">DV360</p>
-                        <p class="text-xs text-gray-500">Google Display & Video 360</p>
-                      </div>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                      <!-- <span class="connector-status-label text-xs font-medium text-gray-600">Not Connected</span> -->
-                      <span class="px-2 py-1 text-xs font-bold rounded bg-yellow-100 text-yellow-700">PDF</span>
-                      <!-- <button type="button" class="new-connector-toggle relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" role="switch" aria-checked="false" data-connector="dv360">
-                        <span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
-                      </button> -->
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Simpli.fi -->
-                <div class="connector-card border-2 rounded-lg p-4 cursor-pointer transition-all hover:border-blue-300 hover:shadow-md" data-connector="simplifi">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                      <input 
-                        type="checkbox" 
-                        id="new-dsp-simplifi" 
-                        name="new-dsp" 
-                        value="simplifi"
-                        class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <div>
-                        <p class="text-sm font-semibold text-gray-900">Simpli.fi</p>
-                        <p class="text-xs text-gray-500">Local advertising platform</p>
-                      </div>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                      <!-- <span class="connector-status-label text-xs font-medium text-gray-600">Not Connected</span> -->
-                      <span class="px-2 py-1 text-xs font-bold rounded bg-yellow-100 text-yellow-700">PDF</span>
-                      <!-- <button type="button" class="new-connector-toggle relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" role="switch" aria-checked="false" data-connector="simplifi">
-                        <span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
-                      </button> -->
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Ad Server Section Header -->
-                <div class="pt-4">
-                  <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
-                    </svg>
-                    Ad Server
-                  </h4>
-                </div>
-
-                <!-- Google Campaign Manager -->
-                <div class="connector-card border-2 rounded-lg p-4 cursor-pointer transition-all hover:border-blue-300 hover:shadow-md" data-connector="google-campaign-manager">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                      <input 
-                        type="checkbox" 
-                        id="new-adserver-gcm" 
-                        name="new-adserver" 
-                        value="google-campaign-manager"
-                        class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <div>
-                        <p class="text-sm font-semibold text-gray-900">Google Campaign Manager</p>
-                        <p class="text-xs text-gray-500">Ad serving and campaign management</p>
-                      </div>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                      <!-- <span class="connector-status-label text-xs font-medium text-gray-600">Not Connected</span> -->
-                      <span class="px-2 py-1 text-xs font-bold rounded bg-blue-100 text-blue-700">API</span>
-                      <!-- <button type="button" class="new-connector-toggle relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" role="switch" aria-checked="false" data-connector="google-campaign-manager">
-                        <span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
-                      </button> -->
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            <div id="newConnectionStep3" class="space-y-4 hidden"></div>
+          <div id="newConnPlatformGroup" class="hidden">
+            <label for="newConnPlatform" class="block text-sm font-medium text-gray-700 mb-1">
+              <span id="newConnPlatformLabel">Select Platform</span> <span class="text-red-500">*</span>
+            </label>
+            <select id="newConnPlatform" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">-- Select Platform --</option>
+            </select>
+            <p id="newConnDuplicateError" class="mt-1 text-sm text-red-600 hidden" role="alert">
+              This platform is already connected to this campaign.
+            </p>
           </div>
         </div>
 
-        <!-- Wizard Footer -->
+        <!-- Modal Footer -->
         <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end space-x-3">
-          <button id="cancelNewConnection" class="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+          <button id="cancelNewConnection" class="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
             Cancel
           </button>
-          <button id="newConnectionPrevBtn" type="button" class="hidden px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
-            Back
-          </button>
-          <button id="connectNewConnection" class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
-            Next
+          <button id="connectNewConnection" class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed" disabled>
+            Connect
           </button>
         </div>
       </div>
@@ -2242,10 +2071,23 @@ function updateToggleState(toggle, isEnabled) {
 
 // ==================== NEW CONNECTION MODAL ====================
 
-const NEW_CONNECTION_TOTAL_STEPS = 3;
-let newConnectionWizardStep = 1;
-let newConnectionWizardReady = false;
 let newConnectionPreset = null;
+const NEW_CONN_PLATFORMS = {
+  DSP: [
+    { value: 'trade-desk', label: 'The Trade Desk', displayName: 'The Trade Desk' },
+    { value: 'dv360', label: 'DV360', displayName: 'DV360' },
+    { value: 'simplifi', label: 'Simpli.fi', displayName: 'Simpli.fi' }
+  ],
+  'Ad Server': [
+    { value: 'google-campaign-manager', label: 'Google Campaign Manager', displayName: 'Google Campaign Manager' }
+  ]
+};
+
+function getPlatformTypeByValue(platformValue) {
+  const allPlatforms = [...NEW_CONN_PLATFORMS.DSP, ...NEW_CONN_PLATFORMS['Ad Server']];
+  const matched = allPlatforms.find(p => p.value === platformValue);
+  return matched ? (NEW_CONN_PLATFORMS.DSP.some(p => p.value === platformValue) ? 'DSP' : 'Ad Server') : '';
+}
 
 function getCampaignContext() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -2269,373 +2111,143 @@ function getCampaignContext() {
   return campaign ? { campaignId, data, campaign } : null;
 }
 
-function getSelectedNewConnectors(modal) {
-  const selections = [];
-  const masterConnected = document.getElementById('newConnectorsToggle')?.getAttribute('aria-checked') === 'true';
-  modal.querySelectorAll('.connector-card').forEach(card => {
-    const checkbox = card.querySelector('input[type="checkbox"]');
-    const toggle = card.querySelector('.new-connector-toggle');
-    if (checkbox && checkbox.checked && !checkbox.disabled) {
-      selections.push({
-        connectorType: checkbox.name,
-        connectorValue: checkbox.value,
-        isConnected: toggle ? (toggle.getAttribute('aria-checked') === 'true') : masterConnected
-      });
+function getExistingCampaignConnectorValues(campaign) {
+  const dsp = Array.isArray(campaign?.connectors?.dsp)
+    ? campaign.connectors.dsp
+    : extractConnectorValues(campaign?.connectors?.dsp);
+  const adServer = Array.isArray(campaign?.connectors?.adServer)
+    ? campaign.connectors.adServer
+    : extractConnectorValues(campaign?.connectors?.adServer);
+  return new Set([...dsp, ...adServer]);
+}
+
+
+function populateNewConnectionPlatforms() {
+  const typeValue = document.getElementById('newConnPlatformType')?.value || '';
+  const platformGroup = document.getElementById('newConnPlatformGroup');
+  const platformSelect = document.getElementById('newConnPlatform');
+  const platformLabel = document.getElementById('newConnPlatformLabel');
+  const connectBtn = document.getElementById('connectNewConnection');
+  const dupeError = document.getElementById('newConnDuplicateError');
+
+  if (!platformSelect) return;
+
+  platformSelect.innerHTML = '<option value="">-- Select Platform --</option>';
+  if (connectBtn) connectBtn.disabled = true;
+  if (dupeError) dupeError.classList.add('hidden');
+
+  if (!typeValue) {
+    platformGroup?.classList.add('hidden');
+    return;
+  }
+
+  const context = getCampaignContext();
+  const existing = getExistingCampaignConnectorValues(context?.campaign || {});
+
+  if (platformLabel) {
+    platformLabel.textContent = typeValue === 'DSP' ? 'Select DSP' : 'Select Ad Server';
+  }
+
+  const options = NEW_CONN_PLATFORMS[typeValue] || [];
+  options.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.value;
+    opt.textContent = p.label;
+    if (existing.has(p.value) && p.value !== newConnectionPreset?.platformValue) {
+      opt.disabled = true;
+      opt.textContent = `${p.label} (Already connected)`;
     }
+    platformSelect.appendChild(opt);
   });
-  return selections;
+
+  platformGroup?.classList.remove('hidden');
 }
 
-function ensureNewConnectionWizard(modal) {
-  if (newConnectionWizardReady) return;
+function handleCampaignPlatformSelectionChange() {
+  const platformValue = document.getElementById('newConnPlatform')?.value || '';
+  const connectBtn = document.getElementById('connectNewConnection');
+  const dupeError = document.getElementById('newConnDuplicateError');
+  const typeValue = document.getElementById('newConnPlatformType')?.value || '';
+  const context = getCampaignContext();
+  const campaign = context?.campaign;
 
-  const step1 = document.getElementById('newConnectionStep1');
-  const step3 = document.getElementById('newConnectionStep3');
-  if (!step1 || !step3) return;
-
-  step1.innerHTML = `
-    <div class="bg-white border border-gray-200 rounded-lg p-4">
-      <h4 class="text-sm font-semibold text-gray-900 mb-3">Step 1: Campaign Beacon Fields</h4>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
-          <input id="newCampaignAccountNumber" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50" readonly>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Account Name</label>
-          <input id="newCampaignAccountName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-50" readonly>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Name <span class="text-red-500">*</span></label>
-          <input id="newBeaconCampaignName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Enter campaign name">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Template <span class="text-red-500">*</span></label>
-          <select id="newBeaconTemplate" class="w-full border border-gray-300 rounded-md px-3 py-2">
-            <option value="">-- Select Template --</option>
-            <option value="Programmatic Display">Programmatic Display</option>
-            <option value="Programmatic Video">Programmatic Video</option>
-            <option value="Programmatic Audio">Programmatic Audio</option>
-            <option value="Connected TV">Connected TV</option>
-            <option value="Paid Social">Paid Social</option>
-            <option value="Paid Search">Paid Search</option>
-            <option value="Event Targeting">Event Targeting</option>
-            <option value="Native Video">Native Video</option>
-            <option value="DOOH">DOOH</option>
-            <option value="PLD Display">PLD Display</option>
-            <option value="PLD Video">PLD Video</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">DSP Impressions</label>
-          <input id="newBeaconDspImpressions" type="number" min="0" step="1" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="1600000">
-        </div>
-      </div>
-    </div>
-  `;
-
-  step3.innerHTML = `
-    <div id="newCampaignNoPlatformFields" class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-900">
-      <p class="font-semibold">Step 3: Platform Configuration</p>
-      <p class="mt-1">No additional platform fields required for selected non-TTD DSPs. Beacon fields are used.</p>
-    </div>
-    <div id="newCampaignTtdFields" class="hidden bg-white border border-blue-200 rounded-lg p-4">
-      <h4 class="text-sm font-semibold text-blue-900 mb-3">The Trade Desk Fields</h4>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Seed <span class="text-red-500">*</span></label>
-          <input id="ncCampaignSeed" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Default Seed List">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Organization <span class="text-red-500">*</span></label>
-          <input id="ncCampaignOrganization" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Campaign organization">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Pacing</label>
-          <input id="ncCampaignPacing" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Pace Ahead">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
-          <input id="ncCampaignTimezone" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="CST">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-          <input id="ncCampaignStartDate" type="date" class="w-full border border-gray-300 rounded-md px-3 py-2">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-          <input id="ncCampaignEndDate" type="date" class="w-full border border-gray-300 rounded-md px-3 py-2">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Channel</label>
-          <input id="ncCampaignChannel" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Display">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Name <span class="text-red-500">*</span></label>
-          <input id="ncCampaignName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="TTD campaign name">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Budget</label>
-          <input id="ncCampaignBudget" type="number" min="0" step="0.01" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="0.00">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">KPI</label>
-          <input id="ncCampaignKPI" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="CTR">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">KPI Target</label>
-          <input id="ncCampaignKPITarget" type="number" min="0" step="0.01" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="0.00">
-        </div>
-      </div>
-    </div>
-    <div id="newCampaignGcmFields" class="hidden bg-white border border-green-200 rounded-lg p-4">
-      <h4 class="text-sm font-semibold text-green-900 mb-3">Google Campaign Manager Fields</h4>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Name <span class="text-red-500">*</span></label>
-          <input id="ncAdServerCampaignName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="GCM campaign name">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Schedule</label>
-          <input id="ncAdServerSchedule" type="date" class="w-full border border-gray-300 rounded-md px-3 py-2">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Landing Page Name</label>
-          <input id="ncAdServerLandingPageName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Landing page name">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Landing Page URL</label>
-          <input id="ncAdServerLandingPageURL" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="https://example.com">
-        </div>
-      </div>
-    </div>
-  `;
-
-  newConnectionWizardReady = true;
-}
-
-function updateCampaignStepThreeVisibility(modal) {
-  const selected = getSelectedNewConnectors(modal);
-  const selectedDsp = selected.filter(s => s.connectorType === 'new-dsp').map(s => s.connectorValue);
-  const selectedAdServer = selected.filter(s => s.connectorType === 'new-adserver').map(s => s.connectorValue);
-  const hasTradeDesk = selectedDsp.includes('trade-desk');
-  const hasGcm = selectedAdServer.includes('google-campaign-manager');
-
-  const noPlatform = document.getElementById('newCampaignNoPlatformFields');
-  const ttdSection = document.getElementById('newCampaignTtdFields');
-  const gcmSection = document.getElementById('newCampaignGcmFields');
-
-  if (ttdSection) ttdSection.classList.toggle('hidden', !hasTradeDesk);
-  if (gcmSection) gcmSection.classList.toggle('hidden', !hasGcm);
-  if (noPlatform) {
-    const showMessage = !hasTradeDesk && !hasGcm;
-    noPlatform.classList.toggle('hidden', !showMessage);
-    if (showMessage) {
-      noPlatform.innerHTML = `
-        <p class="font-semibold">Step 3: Platform Configuration</p>
-        <p class="mt-1">No additional platform fields required for selected non-TTD DSPs. Beacon fields are used.</p>
-      `;
-    }
+  if (!platformValue || !campaign) {
+    if (connectBtn) connectBtn.disabled = true;
+    if (dupeError) dupeError.classList.add('hidden');
+    return;
   }
-}
 
-function setNewConnectionStep(step, modal) {
-  const nextBtn = document.getElementById('connectNewConnection');
-  const prevBtn = document.getElementById('newConnectionPrevBtn');
-  const titleEl = modal.querySelector('.mb-6 h3');
-  const subtitleEl = modal.querySelector('.mb-6 p');
-  const step1 = document.getElementById('newConnectionStep1');
-  const step2 = document.getElementById('newConnectionStep2');
-  const step3 = document.getElementById('newConnectionStep3');
-  if (!step1 || !step2 || !step3 || !nextBtn || !prevBtn) return;
+  const existing = getExistingCampaignConnectorValues(campaign);
+  const isDuplicate = existing.has(platformValue);
 
-  newConnectionWizardStep = Math.min(NEW_CONNECTION_TOTAL_STEPS, Math.max(1, step));
-  step1.classList.toggle('hidden', newConnectionWizardStep !== 1);
-  step2.classList.toggle('hidden', newConnectionWizardStep !== 2);
-  step3.classList.toggle('hidden', newConnectionWizardStep !== 3);
-  prevBtn.classList.toggle('hidden', newConnectionWizardStep === 1);
-  nextBtn.textContent = newConnectionWizardStep === NEW_CONNECTION_TOTAL_STEPS ? 'Connect' : 'Next';
+  // Campaign supports a single DSP connector.
+  let hasConflictingDsp = false;
+  if (typeValue === 'DSP') {
+    const existingDsp = Array.isArray(campaign?.connectors?.dsp)
+      ? campaign.connectors.dsp
+      : extractConnectorValues(campaign?.connectors?.dsp);
+    hasConflictingDsp = existingDsp.length > 0 && !existingDsp.includes(platformValue);
+  }
 
-  if (titleEl && subtitleEl) {
-    if (newConnectionWizardStep === 1) {
-      titleEl.textContent = 'Campaign Beacon Fields';
-      subtitleEl.textContent = 'Confirm the parent account and campaign Beacon values';
-    } else if (newConnectionWizardStep === 2) {
-      titleEl.textContent = 'Platform Connectors';
-      subtitleEl.textContent = 'Select one DSP and one or more Ad Servers to connect';
+  if (dupeError) {
+    if (hasConflictingDsp) {
+      dupeError.textContent = 'Only one DSP can be connected at a time. Remove the existing DSP first.';
+      dupeError.classList.remove('hidden');
     } else {
-      titleEl.textContent = 'Platform Configuration';
-      subtitleEl.textContent = 'Fill platform fields for The Trade Desk and/or Google Campaign Manager';
+      dupeError.textContent = 'This platform is already connected to this campaign.';
+      dupeError.classList.toggle('hidden', !isDuplicate);
     }
+  }
+
+  if (connectBtn) {
+    connectBtn.disabled = isDuplicate || hasConflictingDsp;
   }
 }
 
-function validateNewConnectionStep(modal, step) {
-  if (step === 1) {
-    const name = document.getElementById('newBeaconCampaignName')?.value?.trim();
-    const template = document.getElementById('newBeaconTemplate')?.value?.trim();
-    if (!name || !template) {
-      window.toast?.error?.('Campaign Name and Template are required.');
-      return false;
-    }
-    return true;
-  }
-
-  if (step === 2) {
-    const selected = getSelectedNewConnectors(modal);
-    if (!selected.length) {
-      window.toast?.error?.('Select at least one connector.');
-      return false;
-    }
-    const selectedDsp = selected.filter(s => s.connectorType === 'new-dsp');
-    if (selectedDsp.length > 1) {
-      window.toast?.error?.('Campaign can have only one DSP connector.');
-      return false;
-    }
-    return true;
-  }
-
-  if (step === 3) {
-    const selected = getSelectedNewConnectors(modal);
-    const hasTradeDesk = selected.some(s => s.connectorValue === 'trade-desk');
-    const hasGcm = selected.some(s => s.connectorValue === 'google-campaign-manager');
-
-    if (hasTradeDesk) {
-      const requiredTtd = ['ncCampaignSeed', 'ncCampaignOrganization', 'ncCampaignName'];
-      const missing = requiredTtd.filter(id => !document.getElementById(id)?.value?.trim());
-      if (missing.length) {
-        window.toast?.error?.('Complete required The Trade Desk fields.');
-        return false;
-      }
-    }
-
-    if (hasGcm) {
-      if (!document.getElementById('ncAdServerCampaignName')?.value?.trim()) {
-        window.toast?.error?.('GCM Campaign Name is required.');
-        return false;
-      }
-    }
-    return true;
-  }
-
-  return true;
-}
-
-function prefillCampaignWizardFields(context) {
-  const campaign = context?.campaign || {};
-  let advertiser = {};
-  try {
-    advertiser = JSON.parse(localStorage.getItem('adv_selected_data') || '{}') || {};
-  } catch (e) {
-    advertiser = {};
-  }
-
-  const setValue = (id, value) => {
-    const el = document.getElementById(id);
-    if (el) el.value = value || '';
-  };
-
-  setValue('newCampaignAccountNumber', advertiser.account);
-  setValue('newCampaignAccountName', advertiser.name);
-  setValue('newBeaconCampaignName', campaign.beaconCampaignName || campaign.name);
-  setValue('newBeaconTemplate', campaign.beaconTemplate || campaign.template);
-  setValue('newBeaconDspImpressions', campaign.beaconDspImpressions || campaign.dspImpressions);
-
-  setValue('ncCampaignSeed', campaign.seed);
-  setValue('ncCampaignOrganization', campaign.organization);
-  setValue('ncCampaignPacing', campaign.pacing);
-  setValue('ncCampaignTimezone', campaign.timezone);
-  setValue('ncCampaignStartDate', campaign.startDate);
-  setValue('ncCampaignEndDate', campaign.endDate);
-  setValue('ncCampaignChannel', campaign.channel);
-  setValue('ncCampaignName', campaign.name);
-  setValue('ncCampaignBudget', campaign.budget);
-  setValue('ncCampaignKPI', campaign.kpi);
-  setValue('ncCampaignKPITarget', campaign.kpiTarget);
-
-  setValue('ncAdServerCampaignName', campaign.adServerCampaignName);
-  setValue('ncAdServerSchedule', campaign.adServerSchedule);
-  setValue('ncAdServerLandingPageName', campaign.adServerLandingPageName);
-  setValue('ncAdServerLandingPageURL', campaign.adServerLandingPageURL);
-}
-
-// Open New Connection Modal
 function openNewConnectionModal(options = null) {
   const modal = document.getElementById('newConnectionModal');
   if (!modal) return;
 
   newConnectionPreset = options;
-  ensureNewConnectionWizard(modal);
-  // Reset all checkboxes and toggles first
-  resetNewConnectionModal();
-  const context = getCampaignContext();
-  if (context) prefillCampaignWizardFields(context);
 
-  if (newConnectionPreset?.platformValue) {
-    const target = modal.querySelector(`input[type="checkbox"][value="${newConnectionPreset.platformValue}"]`);
-    if (target) {
-      target.checked = true;
-      target.dispatchEvent(new Event('change', { bubbles: true }));
+  const typeSelect = document.getElementById('newConnPlatformType');
+  const platformSelect = document.getElementById('newConnPlatform');
+  const platformGroup = document.getElementById('newConnPlatformGroup');
+  const connectBtn = document.getElementById('connectNewConnection');
+  const dupeError = document.getElementById('newConnDuplicateError');
+
+  if (typeSelect) {
+    typeSelect.value = '';
+    typeSelect.disabled = false;
+  }
+  if (platformSelect) {
+    platformSelect.innerHTML = '<option value="">-- Select Platform --</option>';
+    platformSelect.disabled = false;
+  }
+  platformGroup?.classList.add('hidden');
+  if (connectBtn) connectBtn.disabled = true;
+  dupeError?.classList.add('hidden');
+
+  if (options?.platformValue) {
+    const type = getPlatformTypeByValue(options.platformValue);
+    if (typeSelect && type) {
+      typeSelect.value = type;
+      populateNewConnectionPlatforms();
+      if (platformSelect) {
+        platformSelect.value = options.platformValue;
+      }
+      handleCampaignPlatformSelectionChange();
+      if (options?.lockToPlatform) {
+        typeSelect.disabled = true;
+        platformSelect.disabled = true;
+      }
     }
-    if (newConnectionPreset?.lockToPlatform) {
-      modal.querySelectorAll('.connector-card input[type="checkbox"]').forEach(cb => {
-        const shouldLock = cb.value !== newConnectionPreset.platformValue;
-        cb.disabled = shouldLock;
-        cb.closest('.connector-card')?.classList.toggle('opacity-50', shouldLock);
-      });
-    }
-  } else {
-    modal.querySelectorAll('.connector-card input[type="checkbox"]').forEach(cb => {
-      cb.disabled = false;
-      cb.closest('.connector-card')?.classList.remove('opacity-50');
-    });
   }
 
-  setNewConnectionStep(1, modal);
-  updateCampaignStepThreeVisibility(modal);
-
-  // Show the modal
   modal.classList.remove('hidden');
   modal.classList.add('flex');
 }
 
-// Reset the New Connection Modal to default state
-function resetNewConnectionModal() {
-  const modal = document.getElementById('newConnectionModal');
-  if (!modal) return;
-
-  // Reset all checkboxes
-  modal.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-    cb.checked = false;
-  });
-
-  // Reset all connector cards
-  modal.querySelectorAll('.connector-card').forEach(card => {
-    card.classList.remove('selected', 'border-blue-500', 'bg-blue-50');
-  });
-
-  // Reset all toggles
-  modal.querySelectorAll('.new-connector-toggle').forEach(toggle => {
-    updateToggleState(toggle, false);
-  });
-
-  // Reset master toggle
-  const masterToggle = document.getElementById('newConnectorsToggle');
-  if (masterToggle) {
-    updateToggleState(masterToggle, false);
-  }
-
-  modal.querySelectorAll('#newConnectionStep1 input, #newConnectionStep1 select, #newConnectionStep3 input, #newConnectionStep3 select').forEach(input => {
-    if (input.hasAttribute('readonly')) return;
-    if (input.tagName === 'SELECT') {
-      input.selectedIndex = 0;
-    } else {
-      input.value = '';
-    }
-  });
-}
-
-// Close New Connection Modal
 function closeNewConnectionModal() {
   const modal = document.getElementById('newConnectionModal');
   if (modal) {
@@ -2644,263 +2256,93 @@ function closeNewConnectionModal() {
   }
 }
 
-// Connect (Save) New Connections
-function connectNewConnections() {
-  const modal = document.getElementById('newConnectionModal');
-  if (!modal) return;
+function connectNewConnection() {
+  const typeValue = document.getElementById('newConnPlatformType')?.value || '';
+  const platformValue = document.getElementById('newConnPlatform')?.value || '';
 
-  if (newConnectionWizardStep < NEW_CONNECTION_TOTAL_STEPS) {
-    if (!validateNewConnectionStep(modal, newConnectionWizardStep)) return;
-    setNewConnectionStep(newConnectionWizardStep + 1, modal);
-    updateCampaignStepThreeVisibility(modal);
-    return;
-  }
-
-  if (!validateNewConnectionStep(modal, 3)) return;
+  if (!typeValue || !platformValue) return;
 
   const context = getCampaignContext();
   if (!context) {
-    if (window.toast && typeof window.toast.error === 'function') {
-      window.toast.error('Campaign not found');
-    }
+    window.toast?.error?.('Campaign not found');
     return;
   }
 
   try {
     const { data, campaign } = context;
-
-    // Initialize connectors if not exists
-    if (!campaign.connectors) {
-      campaign.connectors = { dsp: [], adServer: [], status: {} };
+    if (!campaign.connectors) campaign.connectors = { dsp: [], adServer: [], status: {} };
+    campaign.connectors.dsp = Array.isArray(campaign.connectors.dsp)
+      ? campaign.connectors.dsp
+      : extractConnectorValues(campaign.connectors.dsp);
+    campaign.connectors.adServer = Array.isArray(campaign.connectors.adServer)
+      ? campaign.connectors.adServer
+      : extractConnectorValues(campaign.connectors.adServer);
+    if (!campaign.connectors.status || typeof campaign.connectors.status !== 'object') {
+      campaign.connectors.status = {};
     }
-    if (!campaign.connectors.dsp) campaign.connectors.dsp = [];
-    if (!campaign.connectors.adServer) campaign.connectors.adServer = [];
-    if (!campaign.connectors.status) campaign.connectors.status = {};
 
-    const selectedConnectors = getSelectedNewConnectors(modal);
-    const selectedDsp = selectedConnectors
-      .filter(selection => selection.connectorType === 'new-dsp')
-      .map(selection => selection.connectorValue);
-    const selectedAdServers = selectedConnectors
-      .filter(selection => selection.connectorType === 'new-adserver')
-      .map(selection => selection.connectorValue);
-
-    if (selectedDsp.length > 1) {
-      window.toast?.error?.('Campaign can only have one DSP connection.');
+    const existing = getExistingCampaignConnectorValues(campaign);
+    if (existing.has(platformValue)) {
+      document.getElementById('newConnDuplicateError')?.classList.remove('hidden');
       return;
     }
 
-    let newConnectionsAdded = 0;
-    if (selectedDsp.length === 1) {
-      const desiredDsp = selectedDsp[0];
-      if (campaign.connectors.dsp[0] !== desiredDsp) {
-        newConnectionsAdded++;
+    if (typeValue === 'DSP') {
+      if (campaign.connectors.dsp.length > 0 && !campaign.connectors.dsp.includes(platformValue)) {
+        window.toast?.error?.('Only one DSP can be connected at a time. Remove the existing DSP first.');
+        return;
       }
-      campaign.connectors.dsp = [desiredDsp];
-    } else if (campaign.connectors.dsp.length > 1) {
-      campaign.connectors.dsp = [campaign.connectors.dsp[0]];
+      campaign.connectors.dsp = [platformValue];
+    } else if (typeValue === 'Ad Server') {
+      campaign.connectors.adServer.push(platformValue);
     }
 
-    selectedAdServers.forEach(connectorValue => {
-      if (!campaign.connectors.adServer.includes(connectorValue)) {
-        campaign.connectors.adServer.push(connectorValue);
-        newConnectionsAdded++;
-      }
-    });
-
-    selectedConnectors.forEach(selection => {
-      campaign.connectors.status[selection.connectorValue] = selection.isConnected ? 'Connected' : 'Disconnected';
-      if (selection.isConnected && selection.connectorValue === 'trade-desk' && !campaign.deliveryId) {
-        campaign.deliveryId = 'DLV-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-      }
-      if (selection.isConnected && selection.connectorValue === 'google-campaign-manager' && !campaign.reportingId) {
-        campaign.reportingId = 'RPT-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-      }
-    });
-
-    const setIfValue = (target, key, value) => {
-      if (value !== undefined && value !== null && String(value).trim() !== '') {
-        target[key] = value;
-      }
-    };
-
-    const beaconCampaignName = document.getElementById('newBeaconCampaignName')?.value?.trim() || '';
-    const beaconTemplate = document.getElementById('newBeaconTemplate')?.value || '';
-    const beaconDspImpressions = document.getElementById('newBeaconDspImpressions')?.value || '';
-    setIfValue(campaign, 'beaconCampaignName', beaconCampaignName);
-    setIfValue(campaign, 'name', beaconCampaignName);
-    setIfValue(campaign, 'beaconTemplate', beaconTemplate);
-    setIfValue(campaign, 'template', beaconTemplate);
-    setIfValue(campaign, 'beaconDspImpressions', beaconDspImpressions);
-    setIfValue(campaign, 'dspImpressions', beaconDspImpressions);
-
-    if (selectedDsp.includes('trade-desk')) {
-      setIfValue(campaign, 'seed', document.getElementById('ncCampaignSeed')?.value);
-      setIfValue(campaign, 'organization', document.getElementById('ncCampaignOrganization')?.value);
-      setIfValue(campaign, 'pacing', document.getElementById('ncCampaignPacing')?.value);
-      setIfValue(campaign, 'timezone', document.getElementById('ncCampaignTimezone')?.value);
-      setIfValue(campaign, 'startDate', document.getElementById('ncCampaignStartDate')?.value);
-      setIfValue(campaign, 'endDate', document.getElementById('ncCampaignEndDate')?.value);
-      setIfValue(campaign, 'channel', document.getElementById('ncCampaignChannel')?.value);
-      setIfValue(campaign, 'name', document.getElementById('ncCampaignName')?.value);
-      setIfValue(campaign, 'budget', document.getElementById('ncCampaignBudget')?.value);
-      setIfValue(campaign, 'kpi', document.getElementById('ncCampaignKPI')?.value);
-      setIfValue(campaign, 'kpiTarget', document.getElementById('ncCampaignKPITarget')?.value);
+    campaign.connectors.status[platformValue] = 'Connected';
+    if (platformValue === 'trade-desk' && !campaign.deliveryId) {
+      campaign.deliveryId = 'DLV-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+    }
+    if (platformValue === 'google-campaign-manager' && !campaign.reportingId) {
+      campaign.reportingId = 'RPT-' + Math.random().toString(36).substr(2, 8).toUpperCase();
     }
 
-    if (selectedAdServers.includes('google-campaign-manager')) {
-      setIfValue(campaign, 'adServerCampaignName', document.getElementById('ncAdServerCampaignName')?.value);
-      setIfValue(campaign, 'adServerSchedule', document.getElementById('ncAdServerSchedule')?.value);
-      setIfValue(campaign, 'adServerLandingPageName', document.getElementById('ncAdServerLandingPageName')?.value);
-      setIfValue(campaign, 'adServerLandingPageURL', document.getElementById('ncAdServerLandingPageURL')?.value);
-    }
-
-    // Save back to localStorage
     localStorage.setItem('campaign_tree_groups', JSON.stringify(data));
 
-    // Show success message
-    if (window.toast && typeof window.toast.success === 'function') {
-      const successMessage = newConnectionsAdded > 0
-        ? `${newConnectionsAdded} connection(s) added successfully`
-        : 'Connection settings saved';
-      window.toast.success(successMessage);
-    }
+    const allPlatforms = [...NEW_CONN_PLATFORMS.DSP, ...NEW_CONN_PLATFORMS['Ad Server']];
+    const matched = allPlatforms.find(p => p.value === platformValue);
+    const displayName = matched ? matched.displayName : platformValue;
+    window.toast?.success?.(`${displayName} connected successfully`);
 
-    // Close the modal
     closeNewConnectionModal();
-
-    // Reload the connections table
     loadCampaignConnections(campaign);
-
   } catch (error) {
-    console.error('Error adding connections:', error);
-    if (window.toast && typeof window.toast.error === 'function') {
-      window.toast.error('Failed to add connections');
-    }
+    console.error('Error adding connection:', error);
+    window.toast?.error?.('Failed to add connection');
   }
 }
 
-// Initialize New Connection Modal event listeners
 function initNewConnectionModal() {
   const modal = document.getElementById('newConnectionModal');
   if (!modal) return;
-  ensureNewConnectionWizard(modal);
 
-  // Close button
-  const closeBtn = document.getElementById('closeNewConnectionModal');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', closeNewConnectionModal);
-  }
+  document.getElementById('createBtn')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openNewConnectionModal();
+  });
+  document.getElementById('closeNewConnectionModal')?.addEventListener('click', closeNewConnectionModal);
+  document.getElementById('cancelNewConnection')?.addEventListener('click', closeNewConnectionModal);
+  document.getElementById('newConnPlatformType')?.addEventListener('change', populateNewConnectionPlatforms);
+  document.getElementById('newConnPlatform')?.addEventListener('change', handleCampaignPlatformSelectionChange);
+  document.getElementById('connectNewConnection')?.addEventListener('click', connectNewConnection);
 
-  // Cancel button
-  const cancelBtn = document.getElementById('cancelNewConnection');
-  if (cancelBtn) {
-    cancelBtn.addEventListener('click', closeNewConnectionModal);
-  }
-
-  const prevBtn = document.getElementById('newConnectionPrevBtn');
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      setNewConnectionStep(newConnectionWizardStep - 1, modal);
-      updateCampaignStepThreeVisibility(modal);
-    });
-  }
-
-  // Connect button
-  const connectBtn = document.getElementById('connectNewConnection');
-  if (connectBtn) {
-    connectBtn.addEventListener('click', connectNewConnections);
-  }
-
-  // Close on backdrop click
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      closeNewConnectionModal();
-    }
+    if (e.target === modal) closeNewConnectionModal();
   });
 
-  // Connector card click handling (toggle checkbox)
-  modal.querySelectorAll('.connector-card').forEach(card => {
-    card.addEventListener('click', (e) => {
-      // Don't toggle if clicking on the checkbox, toggle button, or their children
-      if (e.target.closest('input[type="checkbox"]') || e.target.closest('.new-connector-toggle')) {
-        return;
-      }
-      
-      const checkbox = card.querySelector('input[type="checkbox"]');
-      if (checkbox) {
-        checkbox.checked = !checkbox.checked;
-        
-        // Update card styling
-        if (checkbox.checked) {
-          card.classList.add('selected', 'border-blue-500', 'bg-blue-50');
-        } else {
-          card.classList.remove('selected', 'border-blue-500', 'bg-blue-50');
-        }
-      }
-      updateCampaignStepThreeVisibility(modal);
-    });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeNewConnectionModal();
   });
-
-  // Checkbox change handler
-  modal.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-    checkbox.addEventListener('change', (e) => {
-      const card = checkbox.closest('.connector-card');
-      if (card) {
-        if (checkbox.name === 'new-dsp' && checkbox.checked) {
-          modal.querySelectorAll('input[name="new-dsp"]').forEach(other => {
-            if (other !== checkbox) {
-              other.checked = false;
-              other.closest('.connector-card')?.classList.remove('selected', 'border-blue-500', 'bg-blue-50');
-            }
-          });
-        }
-        if (checkbox.checked) {
-          card.classList.add('selected', 'border-blue-500', 'bg-blue-50');
-        } else {
-          card.classList.remove('selected', 'border-blue-500', 'bg-blue-50');
-        }
-      }
-      updateCampaignStepThreeVisibility(modal);
-    });
-  });
-
-  // Individual connector toggle handling
-  modal.querySelectorAll('.new-connector-toggle').forEach(toggle => {
-    toggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isCurrentlyEnabled = toggle.getAttribute('aria-checked') === 'true';
-      updateToggleState(toggle, !isCurrentlyEnabled);
-    });
-  });
-
-  // Master toggle handling
-  const masterToggle = document.getElementById('newConnectorsToggle');
-  if (masterToggle) {
-    masterToggle.addEventListener('click', () => {
-      const isCurrentlyEnabled = masterToggle.getAttribute('aria-checked') === 'true';
-      const newState = !isCurrentlyEnabled;
-      
-      // Update master toggle
-      updateToggleState(masterToggle, newState);
-      
-      // Update all checked connector toggles
-      modal.querySelectorAll('.connector-card').forEach(card => {
-        const checkbox = card.querySelector('input[type="checkbox"]');
-        const toggle = card.querySelector('.new-connector-toggle');
-        
-        if (checkbox && checkbox.checked && toggle) {
-          updateToggleState(toggle, newState);
-        }
-      });
-    });
-  }
-
-  setNewConnectionStep(1, modal);
-  updateCampaignStepThreeVisibility(modal);
 }
 
-// Initialize New Connection modal when DOM is ready
 document.addEventListener('DOMContentLoaded', initNewConnectionModal);
 
 // Handle delete connection

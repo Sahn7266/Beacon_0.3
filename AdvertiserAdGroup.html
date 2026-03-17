@@ -442,39 +442,39 @@
             <div class="mb-4">
               <div class="flex items-center space-x-3  bg-[var(--tbl-head-bg)] border border-gray-300 rounded-md">
                 <!-- New Ad Group Button -->
-                <button id="createBtn" class="flex items-center h-10 px-3 rounded-md hover:bg-gray-50 transition" title="Create New Ad Group">
+                <!-- <button id="createBtn" class="flex items-center h-10 px-3 rounded-md hover:bg-gray-50 transition" title="Create New Ad Group">
                   <span class="w-6 h-6 flex items-center justify-center rounded-full bg-white border border-gray-400 mr-2">
                     <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
                   </span>
                   <span class="text-sm font-medium text-gray-700">New Ad Group</span>
-                </button>
+                </button> -->
 
                 <div class="h-6 border-l border-gray-300 mx-1"></div>
 
                 <!-- Filters -->
                 <div id="filtersGroup" class="flex items-center space-x-2">
                   <div class="flex items-center px-2 h-10 rounded-md">
-                    <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01.293.707l-6.707 8.707V21l-4-2v-4.586L2.707 6.707A1 1 0 013 6V4z"></path>
-                    </svg>
+                    </svg> -->
 
                     <!-- Classification Filter -->
                     <div class="relative">
-                      <button id="classChip" class="flex items-center h-8 px-3 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap" data-filter="classification" title="Classification filter">
+                      <!-- <button id="classChip" class="flex items-center h-8 px-3 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap" data-filter="classification" title="Classification filter">
                         <span id="classChipLabel">All</span>
                         <svg class="w-4 h-4 text-gray-500 ml-2" viewBox="0 0 20 20" fill="currentColor">
                           <path d="M5.23 7.21a.75.75 0 011.06 0L10 10.92l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.27a.75.75 0 010-1.06z"/>
                         </svg>
-                      </button>
-                      <div id="classMenu" class="hidden absolute mt-2 left-0 bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-56 overflow-auto min-w-max">
+                      </button> -->
+                      <!-- <div id="classMenu" class="hidden absolute mt-2 left-0 bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-56 overflow-auto min-w-max">
                         <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="All">All</button>
                         <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="Prospecting">Prospecting</button>
                         <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="Retargeting">Retargeting</button>
                         <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="Brand">Brand</button>
                         <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="Loyalty">Loyalty</button>
-                      </div>
+                      </div> -->
                     </div>
 
                     <!-- DSP Filter -->
@@ -495,12 +495,12 @@
 
                     <!-- Campaign Filter -->
                     <div class="relative">
-                      <button id="campaignChip" class="flex items-center h-8 px-3 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap" data-filter="campaign" title="Campaign filter">
+                      <!-- <button id="campaignChip" class="flex items-center h-8 px-3 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap" data-filter="campaign" title="Campaign filter">
                         <span id="campaignChipLabel">All</span>
                         <svg class="w-4 h-4 text-gray-500 ml-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                           <path d="M5.23 7.21a.75.75 0 011.06 0L10 10.92l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.27a.75.75 0 010-1.06z"/>
                         </svg>
-                      </button>
+                      </button> -->
                       <div id="campaignMenu" class="hidden absolute mt-2 left-0 bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-56 overflow-auto min-w-max">
                         <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="All">All</button>
                         <!-- Campaign options will be populated dynamically by JavaScript -->
@@ -553,6 +553,16 @@
                       </button>
                     </th>
                     <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">
+                      <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="campaign">
+                        <span>Campaign</span>
+                      </button>
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">
+                      <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="classification">
+                        <span>Classification</span>
+                      </button>
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">
                       <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="dsp">
                         <span>DSP</span>
                       </button>
@@ -563,13 +573,13 @@
                       </button>
                     </th>
                     <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">
-                      <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="classification">
-                        <span>Classification</span>
+                      <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="impressions">
+                        <span>Impressions</span>
                       </button>
                     </th>
                     <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider">
-                      <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="campaign">
-                        <span>Campaign</span>
+                      <button type="button" class="sort-btn flex w-full items-center px-6 py-2 space-x-2" data-sort-key="runDates">
+                        <span>Run Dates</span>
                       </button>
                     </th>
 <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">
@@ -1518,6 +1528,39 @@
       { id: 'AG012', name: 'Prospecting – Contextual', dsp: 'DV360', classification: 'Prospecting', campaign: 'Product Launch' }
     ];
 
+    // Format run dates as MM/DD/YYYY – MM/DD/YYYY
+    function formatRunDates(startDate, endDate) {
+      if (!startDate && !endDate) return '';
+
+      function toMMDDYYYY(dateStr) {
+        if (!dateStr) return '';
+        if (dateStr.includes('/')) return dateStr;
+
+        let d;
+        if (dateStr.includes('-')) {
+          const parts = dateStr.split('-');
+          d = new Date(parts[0], parts[1] - 1, parts[2]);
+        } else {
+          d = new Date(dateStr);
+        }
+
+        if (isNaN(d.getTime())) return dateStr;
+
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const yyyy = d.getFullYear();
+        return `${mm}/${dd}/${yyyy}`;
+      }
+
+      const start = toMMDDYYYY(startDate);
+      const end = toMMDDYYYY(endDate);
+
+      if (start && end) return `${start} – ${end}`;
+      if (start) return start;
+      if (end) return end;
+      return '';
+    }
+
     // === MAIN APPLICATION ===
     let app = null;
 
@@ -1873,7 +1916,7 @@
 
           if (data.length === 0) {
             const tr = document.createElement('tr');
-            tr.innerHTML = '<td colspan="8" class="px-6 py-4 text-center text-gray-500">No ad groups found</td>';
+            tr.innerHTML = '<td colspan="10" class="px-6 py-4 text-center text-gray-500">No ad groups found</td>';
             tbody.appendChild(tr);
             return;
           }
@@ -1891,10 +1934,12 @@
   ${ag.name || ''}
 </a>
 </td>
+              <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${ag.campaign || ''}</td>
+              <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${ag.classification || ag.multiviewClassification || ''}</td>
               <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${(ag.connectors && ag.connectors.dsp) || ''}</td>
               <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${(ag.connectors && ag.connectors.adServer) || ''}</td>
-              <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${ag.classification || ag.multiviewClassification || ''}</td>
-             <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${ag.campaign || ''}</td>
+              <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${ag.impressions ? Number(ag.impressions).toLocaleString() : ''}</td>
+              <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900 border-r border-gray-200">${formatRunDates(ag.startDate, ag.endDate)}</td>
 <td class="px-6 py-1 whitespace-nowrap text-sm text-center border-r border-gray-200">
   <button class="text-red-600 hover:underline" onclick="deleteAdGroup('${ag.id}')"
 >Delete</button>
