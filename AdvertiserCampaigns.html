@@ -272,6 +272,130 @@
     .chain-link-icon.disconnected {
       color: #9ca3af;
     }
+
+    /* Ellipsis dropdown for Campaign Group Details */
+    .ellipsis-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .ellipsis-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      background-color: white;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .ellipsis-btn:hover {
+      background-color: #f3f4f6;
+    }
+
+    .ellipsis-menu {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 4px;
+      min-width: 120px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.375rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      z-index: 50;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+    }
+
+    .ellipsis-menu.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .ellipsis-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 14px;
+      text-align: left;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+    }
+
+    .ellipsis-menu-item:first-child {
+      border-radius: 0.375rem 0.375rem 0 0;
+    }
+
+    .ellipsis-menu-item:last-child {
+      border-radius: 0 0 0.375rem 0.375rem;
+    }
+
+    .ellipsis-menu-item:hover {
+      background-color: #f3f4f6;
+    }
+
+    .ellipsis-menu-item.delete-item {
+      color: #dc2626;
+    }
+
+    .ellipsis-menu-item.delete-item:hover {
+      background-color: #fef2f2;
+    }
+
+    /* Inline Record ID popover */
+    .inline-record-id-popover {
+      position: fixed;
+      z-index: 9999;
+      background: rgba(70, 70, 70, 0.95);
+      border-radius: 6px;
+      padding: 6px 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      white-space: nowrap;
+    }
+    .inline-record-id-popover input {
+      width: 180px;
+      padding: 4px 10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      outline: none;
+      background: white;
+      color: #333;
+    }
+    .inline-record-id-popover input::placeholder {
+      color: #999;
+    }
+    .inline-record-id-popover .popover-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .inline-record-id-popover .popover-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: #1a1a1a;
+    }
+    .inline-record-id-popover .popover-btn:hover svg {
+      fill: #000;
+    }
   </style>
 
 <script src="./assets/audit.js" defer></script>
@@ -376,7 +500,7 @@
 
     <!-- Breadcrumb Bar -->
     <div class="bg-white border-b border-gray-200 px-6 py-2">
-      <nav class="flex items-center text-sm text-gray-600">
+      <nav id="breadcrumbNav" class="flex items-center text-sm text-gray-600">
         <a href="./index.html" class="hover:text-blue-600 transition-colors">Advertisers</a>
         <svg class="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -385,7 +509,12 @@
         <svg class="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
         </svg>
-        <span class="font-semibold text-gray-900">Campaigns</span>
+        <span id="breadcrumbCampaignsLabel" class="font-semibold text-gray-900">Campaigns</span>
+        <a href="#" id="breadcrumbCampaignsLink" class="hover:text-blue-600 transition-colors hidden">Campaigns</a>
+        <svg id="breadcrumbGroupChevron" class="w-4 h-4 mx-2 text-gray-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+        <span id="breadcrumbGroupName" class="font-semibold text-gray-900 hidden">—</span>
       </nav>
     </div>
 
@@ -445,7 +574,7 @@
 
       <!-- Main Content -->
       <main class="flex-1 overflow-y-auto p-6">
-        <div class="bg-white rounded-lg shadow-sm">
+        <div id="campaignListContainer" class="bg-white rounded-lg shadow-sm">
           <!-- Blue Banner Header with Advertiser Name and Account Number -->
           <div class="rounded-t-lg p-4" style="background-color: #004E8B;">
             <div class="flex items-center justify-between">
@@ -600,8 +729,8 @@
                     </th>
 
                     <th scope="col" class="text-sm font-medium text-gray-700 uppercase tracking-wider">
-  <span class="px-6 py-2 block">Actions</span>
-</th>
+                      <span class="px-6 py-2 block">Actions</span>
+                                </th>
 
                   </tr>
                 </thead>
@@ -617,6 +746,159 @@
               <div id="pagination" class="flex space-x-2">
                 <!-- Pagination buttons will be populated by JavaScript -->
               </div>
+            </div>
+          </div>
+        </div>
+        </div> <!-- closes campaignListContainer -->
+
+        <!-- Campaign Group Detail/Connections View -->
+        <div id="groupDetailContainer" class="bg-white rounded-lg shadow-sm hidden">
+          <div class="rounded-t-lg p-4" style="background-color: #004E8B;">
+            <div class="flex items-center justify-between">
+              <h1 id="groupDetailBannerName" class="text-2xl font-bold text-white">Loading...</h1>
+              <span id="groupDetailBannerGroupId" class="text-sm text-white font-medium">Group ID: —</span>
+            </div>
+          </div>
+
+          <div class="p-4">
+            <div class="flex border-b border-gray-200 mb-4">
+              <button id="groupTabDetails" class="px-4 py-2 text-sm font-medium border-b-2 border-blue-600 text-blue-600" data-group-tab="details" type="button">
+                Details
+              </button>
+              <button id="groupTabConnections" class="px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-group-tab="connections" type="button">
+                Connections
+              </button>
+            </div>
+
+            <div id="groupDetailsTabContent">
+              <section>
+                <div class="flex items-center justify-between mb-6">
+                  <h2 class="text-lg font-semibold text-gray-900 mx-2">CAMPAIGN GROUP DETAILS</h2>
+                  <div class="flex items-center gap-2">
+                    <div class="ellipsis-dropdown" id="groupEllipsisDropdown">
+                      <button id="groupEllipsisBtn" class="ellipsis-btn" title="More options" aria-haspopup="true" aria-expanded="false" type="button">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                          <circle cx="5" cy="12" r="2"></circle>
+                          <circle cx="12" cy="12" r="2"></circle>
+                          <circle cx="19" cy="12" r="2"></circle>
+                        </svg>
+                      </button>
+                      <div id="groupEllipsisMenu" class="ellipsis-menu">
+                        <button id="groupEditBtn" class="ellipsis-menu-item" type="button">
+                          <svg viewBox="0 0 24 24" height="16" width="16">
+                            <path fill="currentColor" d="M21.53 4.11l-1.64-1.64a1.57 1.57 0 00-2.22 0L4.74 15.4a2.41 2.41 0 00-.55.83L2 21.58a.32.32 0 00.3.43h.11l5.35-2.18a2.41 2.41 0 00.83-.55l4.14-4.14 8.79-8.79a1.56 1.56 0 00.01-2.24zM5 17l2 2-3.43 1.4zm7-2.59l-4.11 4.14-2.44-2.44L16 5.53 18.47 8zm8.79-8.79l-1.62 1.65-2.44-2.44 1.65-1.66a.59.59 0 01.4-.16.58.58 0 01.4.16l1.65 1.65a.58.58 0 01.16.4.59.59 0 01-.16.4z"></path>
+                          </svg>
+                          Edit
+                        </button>
+                        <button id="groupDeleteBtn" class="ellipsis-menu-item delete-item" type="button">
+                          <svg viewBox="0 0 24 24" height="16" width="16">
+                            <path fill="currentColor" d="M19 6h-3.5l-1-1h-5l-1 1H5v2h14V6zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V9H6v10zM8 11h8v8H8v-8z"></path>
+                          </svg>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                    <button id="groupSaveBtn" class="hidden text-sm px-3 py-1 bg-blue-600 text-white border border-blue-600 rounded-md hover:bg-blue-700" type="button">Save</button>
+                    <button id="groupCancelBtn" class="hidden text-sm px-3 py-1 bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50" type="button">Cancel</button>
+                  </div>
+                </div>
+
+                <div class="overflow-x-auto border border-default rounded-md">
+                  <table class="w-full tbl tbl-row-hover table-fixed">
+                    <thead class="tbl-head">
+                      <tr>
+                        <th class="w-1/3 px-4 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Field</th>
+                        <th class="w-2/3 px-4 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Value</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                      <tr>
+                        <td class="px-4 py-2 text-sm font-medium text-gray-700">Group Name</td>
+                        <td class="px-4 py-2 text-sm text-gray-900">
+                          <span id="groupDetailNameDisplay">—</span>
+                          <input id="groupDetailNameInput" type="text" class="hidden campaign-details-input" placeholder="Enter group name" />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+
+            <div id="groupConnectionsTabContent" class="hidden">
+              <section>
+                <div class="flex items-center justify-between mb-3">
+                  <h2 class="text-lg font-semibold text-gray-900 mx-2">CONNECTIONS</h2>
+                </div>
+
+                <div class="px-2 py-3">
+                  <div class="mb-4">
+                    <div class="flex items-center bg-[var(--tbl-head-bg)] border border-gray-300 rounded-md">
+                      <button id="groupNewConnectionBtn" class="flex items-center h-10 px-3 rounded-md hover:bg-gray-50 transition" title="Add Connection" type="button">
+                        <span class="w-6 h-6 flex items-center justify-center rounded-full bg-white border border-gray-400 mr-2">
+                          <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                          </svg>
+                        </span>
+                        <span class="text-sm font-medium text-gray-700">New Connection</span>
+                      </button>
+
+                      <div class="h-6 border-l border-gray-400 mx-1"></div>
+
+                      <div class="flex items-center px-2 h-10 rounded-md">
+                        <div class="relative">
+                          <button id="groupPlatformTypeChip" class="flex items-center h-8 px-3 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap" title="Platform Type filter" type="button">
+                            <span id="groupPlatformTypeChipLabel">All</span>
+                            <svg class="w-4 h-4 text-gray-500 ml-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M5.23 7.21a.75.75 0 011.06 0L10 10.92l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.27a.75.75 0 010-1.06z"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="h-6 border-l border-gray-400 mx-1"></div>
+
+                      <div class="relative">
+                        <div class="search-container">
+                          <div class="search-wrapper" id="groupConnSearchWrapper" style="height:40px;">
+                            <button id="groupConnSearchToggle" class="search-icon" aria-label="Open search" type="button">
+                              <svg viewBox="0 0 24 24">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                              </svg>
+                            </button>
+                            <input type="text" id="groupConnSearchInput" class="search-input" placeholder="Search connections" autocomplete="off" aria-label="Search connections" />
+                            <button id="groupConnSearchClear" class="clear-button" aria-label="Clear search" type="button">
+                              <svg viewBox="0 0 24 24">
+                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="overflow-x-auto border border-default rounded-md">
+                  <table class="min-w-full table-fixed rounded-md overflow-hidden tbl tbl-row-hover">
+                    <thead class="tbl-head">
+                      <tr>
+                        <th class="px-6 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">Platform</th>
+                        <th class="px-6 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">Platform Type</th>
+                        <th class="px-6 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">Record ID</th>
+                        <th class="px-6 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">Enabled At</th>
+                        <th class="px-6 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200">Disabled At</th>
+                        <th class="px-6 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="groupConnectionsTableBody" class="divide-y"></tbody>
+                  </table>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
+                  <span id="groupConnectionsRecordCount">0 of 0 showing</span>
+                </div>
+              </section>
             </div>
           </div>
         </div>
@@ -644,6 +926,47 @@
     <div class="px-4 py-3 border-t border-gray-200 flex justify-end gap-2">
       <button id="editGroupCancelBtn" class="h-9 px-4 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">Cancel</button>
       <button id="editGroupSaveBtn" class="h-9 px-4 rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" disabled>Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Campaign Group New Connection Modal (Ad Server only) -->
+<div id="groupNewConnectionModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-md relative mx-4 overflow-hidden">
+    <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-semibold text-white">New Connection</h2>
+        <button id="closeGroupNewConnectionModal" class="text-white hover:text-blue-200 transition-colors" aria-label="Close modal" type="button">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="p-6 space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Platform Type</label>
+        <input type="text" value="Ad Server" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-gray-100 text-gray-600" disabled />
+      </div>
+
+      <div>
+        <label for="groupNewConnPlatform" class="block text-sm font-medium text-gray-700 mb-1">
+          Select Ad Server <span class="text-red-500">*</span>
+        </label>
+        <select id="groupNewConnPlatform" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <option value="">-- Select Ad Server --</option>
+          <option value="google-campaign-manager">Google Campaign Manager</option>
+        </select>
+        <p id="groupNewConnDuplicateError" class="mt-1 text-sm text-red-600 hidden" role="alert">
+          This platform is already connected to this campaign group.
+        </p>
+      </div>
+    </div>
+
+    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end space-x-3">
+      <button id="cancelGroupNewConnection" class="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" type="button">Cancel</button>
+      <button id="connectGroupNewConnection" class="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed" disabled type="button">Connect</button>
     </div>
   </div>
 </div>
@@ -946,6 +1269,9 @@
         elements: {},
         searchExpanded: false,
         editingGroupId: null,
+        currentView: 'list',
+        currentGroupId: null,
+        currentGroupTab: 'details',
 
         getCurrentAdvertiserId: function() {
           try {
@@ -966,8 +1292,9 @@
           this.loadFilters();
           this.revealRecentCampaign();
           this.initEventListeners();
+          this.initGroupDetailEvents();
           this.setupDragAndDrop();
-          this.applyFiltersAndRender();
+          this.renderCurrentView();
         },
 
         loadUngroupedState: function() {
@@ -1060,6 +1387,14 @@
               const toggleUngroupedBtn = e.target.closest('[data-action="toggle-ungrouped"]');
               if (toggleUngroupedBtn) {
                 this.toggleUngrouped();
+                return;
+              }
+
+              const openGroupDetailsLink = e.target.closest('[data-action="open-group-details"]');
+              if (openGroupDetailsLink) {
+                e.preventDefault();
+                const gid = openGroupDetailsLink.getAttribute('data-group-id');
+                this.showGroupDetailsView(gid);
                 return;
               }
 
@@ -1318,6 +1653,483 @@ if (this.elements.manageCampaignGroupBtn) {
         loadFilters: function() {
           this.filters.state = localStorage.getItem(PAGE_CONFIG.STORAGE_KEYS.STATE_FILTER) || 'All';
           this.filters.dsp = localStorage.getItem(PAGE_CONFIG.STORAGE_KEYS.DSP_FILTER) || 'All';
+        },
+
+        showGroupDetailsView: function(groupId) {
+          const group = this.groups.find(g => g.id === groupId);
+          if (!group) return;
+
+          this.currentView = 'group-details';
+          this.currentGroupId = groupId;
+          this.currentGroupTab = 'details';
+          this.renderCurrentView();
+        },
+
+        showCampaignListView: function() {
+          this.currentView = 'list';
+          this.currentGroupId = null;
+          this.currentGroupTab = 'details';
+          this.renderCurrentView();
+        },
+
+        switchGroupTab: function(tab) {
+          this.currentGroupTab = tab;
+          this.renderCurrentView();
+        },
+
+        renderCurrentView: function() {
+          const listContainer = document.getElementById('campaignListContainer');
+          const groupDetailContainer = document.getElementById('groupDetailContainer');
+
+          if (!listContainer || !groupDetailContainer) return;
+
+          if (this.currentView === 'list') {
+            listContainer.classList.remove('hidden');
+            groupDetailContainer.classList.add('hidden');
+            this.updateBreadcrumbForList();
+            this.applyFiltersAndRender();
+          } else if (this.currentView === 'group-details') {
+            listContainer.classList.add('hidden');
+            groupDetailContainer.classList.remove('hidden');
+            this.updateBreadcrumbForGroup();
+            this.renderGroupDetailView();
+          }
+        },
+
+        updateBreadcrumbForList: function() {
+          document.getElementById('breadcrumbCampaignsLabel')?.classList.remove('hidden');
+          document.getElementById('breadcrumbCampaignsLink')?.classList.add('hidden');
+          document.getElementById('breadcrumbGroupChevron')?.classList.add('hidden');
+          document.getElementById('breadcrumbGroupName')?.classList.add('hidden');
+        },
+
+        updateBreadcrumbForGroup: function() {
+          const group = this.groups.find(g => g.id === this.currentGroupId);
+          if (!group) return;
+
+          document.getElementById('breadcrumbCampaignsLabel')?.classList.add('hidden');
+          const campaignsLink = document.getElementById('breadcrumbCampaignsLink');
+          campaignsLink?.classList.remove('hidden');
+
+          document.getElementById('breadcrumbGroupChevron')?.classList.remove('hidden');
+          const groupNameSpan = document.getElementById('breadcrumbGroupName');
+          groupNameSpan?.classList.remove('hidden');
+          if (groupNameSpan) groupNameSpan.textContent = group.name;
+        },
+
+        renderGroupDetailView: function() {
+          const group = this.groups.find(g => g.id === this.currentGroupId);
+          if (!group) {
+            this.showCampaignListView();
+            return;
+          }
+
+          const bannerName = document.getElementById('groupDetailBannerName');
+          const bannerId = document.getElementById('groupDetailBannerGroupId');
+          if (bannerName) bannerName.textContent = 'Campaign Group: ' + group.name;
+          if (bannerId) bannerId.textContent = 'Group ID: ' + group.id;
+
+          const detailsTab = document.getElementById('groupTabDetails');
+          const connectionsTab = document.getElementById('groupTabConnections');
+          const detailsContent = document.getElementById('groupDetailsTabContent');
+          const connectionsContent = document.getElementById('groupConnectionsTabContent');
+
+          if (this.currentGroupTab === 'details') {
+            detailsTab?.classList.add('border-blue-600', 'text-blue-600');
+            detailsTab?.classList.remove('border-transparent', 'text-gray-500');
+            connectionsTab?.classList.remove('border-blue-600', 'text-blue-600');
+            connectionsTab?.classList.add('border-transparent', 'text-gray-500');
+            detailsContent?.classList.remove('hidden');
+            connectionsContent?.classList.add('hidden');
+
+            const display = document.getElementById('groupDetailNameDisplay');
+            const nameInput = document.getElementById('groupDetailNameInput');
+            if (display) {
+              display.textContent = group.name || '—';
+              display.classList.remove('hidden');
+            }
+            if (nameInput) {
+              nameInput.value = group.name || '';
+              nameInput.classList.add('hidden');
+            }
+
+            this.exitGroupEditMode();
+          } else {
+            connectionsTab?.classList.add('border-blue-600', 'text-blue-600');
+            connectionsTab?.classList.remove('border-transparent', 'text-gray-500');
+            detailsTab?.classList.remove('border-blue-600', 'text-blue-600');
+            detailsTab?.classList.add('border-transparent', 'text-gray-500');
+            connectionsContent?.classList.remove('hidden');
+            detailsContent?.classList.add('hidden');
+
+            this.renderGroupConnections();
+          }
+        },
+
+        initGroupDetailEvents: function() {
+          document.getElementById('groupTabDetails')?.addEventListener('click', () => this.switchGroupTab('details'));
+          document.getElementById('groupTabConnections')?.addEventListener('click', () => this.switchGroupTab('connections'));
+
+          const breadcrumbCampaignsLink = document.getElementById('breadcrumbCampaignsLink');
+          breadcrumbCampaignsLink?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.showCampaignListView();
+          });
+
+          const ellipsisBtn = document.getElementById('groupEllipsisBtn');
+          const ellipsisMenu = document.getElementById('groupEllipsisMenu');
+          const ellipsisDropdown = document.getElementById('groupEllipsisDropdown');
+
+          ellipsisBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!ellipsisMenu) return;
+            const isOpen = ellipsisMenu.classList.contains('open');
+            ellipsisMenu.classList.toggle('open', !isOpen);
+            ellipsisBtn.setAttribute('aria-expanded', String(!isOpen));
+          });
+
+          document.addEventListener('click', (e) => {
+            if (ellipsisDropdown && !ellipsisDropdown.contains(e.target)) {
+              ellipsisMenu?.classList.remove('open');
+              ellipsisBtn?.setAttribute('aria-expanded', 'false');
+            }
+          });
+
+          document.getElementById('groupEditBtn')?.addEventListener('click', () => {
+            ellipsisMenu?.classList.remove('open');
+            this.enterGroupEditMode();
+          });
+
+          document.getElementById('groupDeleteBtn')?.addEventListener('click', () => {
+            ellipsisMenu?.classList.remove('open');
+            this.deleteGroupFromDetailView();
+          });
+
+          document.getElementById('groupSaveBtn')?.addEventListener('click', () => this.saveGroupDetailName());
+          document.getElementById('groupCancelBtn')?.addEventListener('click', () => this.cancelGroupDetailEdit());
+
+          document.getElementById('groupNewConnectionBtn')?.addEventListener('click', () => this.openGroupConnectionModal());
+          document.getElementById('closeGroupNewConnectionModal')?.addEventListener('click', () => this.closeGroupConnectionModal());
+          document.getElementById('cancelGroupNewConnection')?.addEventListener('click', () => this.closeGroupConnectionModal());
+          document.getElementById('connectGroupNewConnection')?.addEventListener('click', () => this.connectGroupConnection());
+          document.getElementById('groupNewConnPlatform')?.addEventListener('change', () => this.handleGroupPlatformSelectionChange());
+
+          const groupConnModal = document.getElementById('groupNewConnectionModal');
+          groupConnModal?.addEventListener('click', (e) => {
+            if (e.target === groupConnModal) this.closeGroupConnectionModal();
+          });
+
+          const groupConnectionsBody = document.getElementById('groupConnectionsTableBody');
+          groupConnectionsBody?.addEventListener('click', (e) => {
+            const deleteBtn = e.target.closest('[data-action="delete-group-connection"]');
+            if (deleteBtn) {
+              this.deleteGroupConnection(deleteBtn.dataset.platform);
+              return;
+            }
+            const recordIdLink = e.target.closest('[data-action="inline-record-id"]');
+            if (recordIdLink) {
+              e.preventDefault();
+              const td = recordIdLink.closest('td');
+              const platformName = recordIdLink.dataset.platformName;
+              const currentValue = recordIdLink.dataset.currentValue || '';
+              showGroupInlineRecordIdPopover(td, platformName, currentValue);
+            }
+          });
+        },
+
+        enterGroupEditMode: function() {
+          const display = document.getElementById('groupDetailNameDisplay');
+          const input = document.getElementById('groupDetailNameInput');
+          const saveBtn = document.getElementById('groupSaveBtn');
+          const cancelBtn = document.getElementById('groupCancelBtn');
+          const ellipsisDropdown = document.getElementById('groupEllipsisDropdown');
+          if (!display || !input) return;
+
+          input.dataset.original = display.textContent || '';
+          input.value = display.textContent === '—' ? '' : (display.textContent || '');
+
+          display.classList.add('hidden');
+          input.classList.remove('hidden');
+          saveBtn?.classList.remove('hidden');
+          cancelBtn?.classList.remove('hidden');
+          ellipsisDropdown?.classList.add('hidden');
+
+          input.focus();
+          input.select();
+        },
+
+        exitGroupEditMode: function() {
+          const display = document.getElementById('groupDetailNameDisplay');
+          const input = document.getElementById('groupDetailNameInput');
+          const saveBtn = document.getElementById('groupSaveBtn');
+          const cancelBtn = document.getElementById('groupCancelBtn');
+          const ellipsisDropdown = document.getElementById('groupEllipsisDropdown');
+
+          display?.classList.remove('hidden');
+          input?.classList.add('hidden');
+          saveBtn?.classList.add('hidden');
+          cancelBtn?.classList.add('hidden');
+          ellipsisDropdown?.classList.remove('hidden');
+        },
+
+        saveGroupDetailName: function() {
+          const input = document.getElementById('groupDetailNameInput');
+          const newName = (input?.value || '').trim();
+          if (!newName) return;
+
+          const group = this.groups.find(g => g.id === this.currentGroupId);
+          if (!group) return;
+
+          try {
+            audit.recordEdit({
+              campaignId: group.id,
+              entityType: 'campaignGroup',
+              entityId: group.id,
+              before: { name: group.name },
+              after: { name: newName }
+            });
+          } catch (err) {
+            console.warn('Audit edit failed:', err);
+          }
+
+          group.name = newName;
+          if (group.isNewlyCreated) delete group.isNewlyCreated;
+
+          this.saveGroups();
+          this.exitGroupEditMode();
+
+          const nameDisplay = document.getElementById('groupDetailNameDisplay');
+          const bannerName = document.getElementById('groupDetailBannerName');
+          if (nameDisplay) nameDisplay.textContent = newName;
+          if (bannerName) bannerName.textContent = 'Campaign Group: ' + newName;
+          this.updateBreadcrumbForGroup();
+
+          if (typeof showToast === 'function') {
+            showToast('Campaign Group name updated');
+          }
+        },
+
+        cancelGroupDetailEdit: function() {
+          const input = document.getElementById('groupDetailNameInput');
+          const original = input?.dataset.original || '';
+          const display = document.getElementById('groupDetailNameDisplay');
+          if (display) display.textContent = original || '—';
+          this.exitGroupEditMode();
+        },
+
+        deleteGroupFromDetailView: function() {
+          const group = this.groups.find(g => g.id === this.currentGroupId);
+          if (!group) return;
+
+          const campaignCount = group.campaigns?.length || 0;
+          let message = `Are you sure you want to delete the campaign group "${group.name}"?`;
+          if (campaignCount > 0) {
+            message += `\n\nThis group contains ${campaignCount} campaign(s). The campaigns will be moved to the ungrouped campaigns list.`;
+          }
+
+          if (!confirm(message)) return;
+
+          if (group.campaigns && group.campaigns.length > 0) {
+            if (!this.campaigns) this.campaigns = [];
+            this.campaigns.unshift(...group.campaigns);
+          }
+
+          this.groups = this.groups.filter(g => g.id !== this.currentGroupId);
+
+          try {
+            audit.recordDelete({
+              entityType: 'campaignGroup',
+              entityId: this.currentGroupId,
+              data: { name: group.name, campaignCount }
+            });
+          } catch (e) {
+            console.warn('Failed to log group deletion audit:', e);
+          }
+
+          this.saveGroups();
+
+          if (typeof showToast === 'function') {
+            showToast(`Campaign Group "${group.name}" deleted. ${campaignCount} campaign(s) moved to ungrouped list.`);
+          }
+
+          this.showCampaignListView();
+        },
+
+        renderGroupConnections: function() {
+          const group = this.groups.find(g => g.id === this.currentGroupId);
+          if (!group) return;
+
+          const tbody = document.getElementById('groupConnectionsTableBody');
+          if (!tbody) return;
+          tbody.innerHTML = '';
+
+          if (!group.connectors) group.connectors = { adServer: [], status: {}, enabledAt: {} };
+          if (!Array.isArray(group.connectors.adServer)) group.connectors.adServer = [];
+          if (!group.connectors.status) group.connectors.status = {};
+          if (!group.connectors.enabledAt) group.connectors.enabledAt = {};
+
+          const platformConfig = {
+            'google-campaign-manager': {
+              name: 'Google Campaign Manager',
+              type: 'Ad Server',
+              logo: './assets/svgs/GCM.svg'
+            }
+          };
+
+          const connectedPlatforms = [];
+          group.connectors.adServer.forEach(platformValue => {
+            if (platformConfig[platformValue]) {
+              const status = group.connectors.status[platformValue] || 'Connected';
+              connectedPlatforms.push({
+                value: platformValue,
+                name: platformConfig[platformValue].name,
+                type: platformConfig[platformValue].type,
+                logo: platformConfig[platformValue].logo,
+                status: status,
+                enabledAt: status === 'Connected' ? (group.connectors.enabledAt[platformValue] || new Date().toLocaleDateString()) : '—',
+                disabledAt: status === 'Disconnected' ? new Date().toLocaleDateString() : '—'
+              });
+            }
+          });
+
+          if (connectedPlatforms.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-sm text-gray-500 italic text-center">No ad server connections configured for this campaign group</td></tr>';
+            const recordCount = document.getElementById('groupConnectionsRecordCount');
+            if (recordCount) recordCount.textContent = '0 of 0 showing';
+            return;
+          }
+
+          connectedPlatforms.forEach(platform => {
+            const row = document.createElement('tr');
+            row.className = 'border-b border-default hover:bg-gray-50 transition-colors';
+            row.setAttribute('data-platform', platform.value);
+
+            const manualId = group.manualRecordIds?.[platform.name] || '';
+            let recordIdContent = '';
+            if (manualId) {
+              recordIdContent = `<a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline" data-action="inline-record-id" data-platform="${platform.value}" data-platform-name="${platform.name}" data-current-value="${manualId}">${manualId}</a>`;
+            } else {
+              recordIdContent = `<a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline" data-action="inline-record-id" data-platform="${platform.value}" data-platform-name="${platform.name}">Create</a>`;
+            }
+
+            row.innerHTML = `
+              <td class="px-6 py-1 text-sm border-r border-default">
+                <div class="flex items-center gap-3">
+                  <img src="${platform.logo}" alt="${platform.name}" class="w-8 h-8" onerror="this.style.display='none'">
+                  <span class="font-medium text-gray-900">${platform.name}</span>
+                </div>
+              </td>
+              <td class="px-6 py-1 text-sm text-gray-700 border-r border-default">${platform.type}</td>
+              <td class="px-6 py-1 text-sm border-r border-default" style="position:relative;">${recordIdContent}</td>
+              <td class="px-6 py-1 text-sm text-gray-700 border-r border-default">${platform.enabledAt}</td>
+              <td class="px-6 py-1 text-sm text-gray-500 border-r border-default">${platform.disabledAt}</td>
+              <td class="px-6 py-1 text-sm">
+                <button data-action="delete-group-connection" data-platform="${platform.value}" title="Delete" class="p-1 rounded hover:bg-gray-100" type="button" aria-label="Delete">
+                  <svg class="w-4 h-4 text-red-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M6 3a1 1 0 011-1h6a1 1 0 011 1v1h3a1 1 0 110 2h-1v9a2 2 0 01-2 2H6a2 2 0 01-2-2V6H3a1 1 0 110-2h3V3zm2 3a1 1 0 10-2 0v8a1 1 0 102 0V6zm6 0a1 1 0 10-2 0v8a1 1 0 102 0V6z" clip-rule="evenodd"></path>
+                  </svg>
+                </button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+
+          const recordCount = document.getElementById('groupConnectionsRecordCount');
+          if (recordCount) recordCount.textContent = `${connectedPlatforms.length} of ${connectedPlatforms.length} showing`;
+        },
+
+        openGroupConnectionModal: function() {
+          const modal = document.getElementById('groupNewConnectionModal');
+          if (!modal) return;
+
+          const platformSelect = document.getElementById('groupNewConnPlatform');
+          const connectBtn = document.getElementById('connectGroupNewConnection');
+          const dupeError = document.getElementById('groupNewConnDuplicateError');
+
+          if (platformSelect) platformSelect.value = '';
+          if (connectBtn) connectBtn.disabled = true;
+          if (dupeError) dupeError.classList.add('hidden');
+
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        },
+
+        closeGroupConnectionModal: function() {
+          const modal = document.getElementById('groupNewConnectionModal');
+          if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+          }
+        },
+
+        handleGroupPlatformSelectionChange: function() {
+          const platformValue = document.getElementById('groupNewConnPlatform')?.value || '';
+          const connectBtn = document.getElementById('connectGroupNewConnection');
+          const dupeError = document.getElementById('groupNewConnDuplicateError');
+
+          if (!platformValue) {
+            if (connectBtn) connectBtn.disabled = true;
+            if (dupeError) dupeError.classList.add('hidden');
+            return;
+          }
+
+          const group = this.groups.find(g => g.id === this.currentGroupId);
+          const existing = new Set(group?.connectors?.adServer || []);
+          const isDuplicate = existing.has(platformValue);
+
+          if (dupeError) dupeError.classList.toggle('hidden', !isDuplicate);
+          if (connectBtn) connectBtn.disabled = isDuplicate;
+        },
+
+        connectGroupConnection: function() {
+          const platformValue = document.getElementById('groupNewConnPlatform')?.value || '';
+          if (!platformValue) return;
+
+          const group = this.groups.find(g => g.id === this.currentGroupId);
+          if (!group) return;
+
+          if (!group.connectors) group.connectors = { adServer: [], status: {}, enabledAt: {} };
+          if (!Array.isArray(group.connectors.adServer)) group.connectors.adServer = [];
+          if (!group.connectors.status) group.connectors.status = {};
+          if (!group.connectors.enabledAt) group.connectors.enabledAt = {};
+
+          if (group.connectors.adServer.includes(platformValue)) {
+            document.getElementById('groupNewConnDuplicateError')?.classList.remove('hidden');
+            return;
+          }
+
+          group.connectors.adServer.push(platformValue);
+          group.connectors.status[platformValue] = 'Connected';
+          group.connectors.enabledAt[platformValue] = new Date().toLocaleDateString();
+
+          this.saveGroups();
+          this.closeGroupConnectionModal();
+          this.renderGroupConnections();
+
+          if (typeof showToast === 'function') {
+            showToast('Google Campaign Manager connected successfully');
+          }
+        },
+
+        deleteGroupConnection: function(platformValue) {
+          const platformNames = { 'google-campaign-manager': 'Google Campaign Manager' };
+          const platformName = platformNames[platformValue] || platformValue;
+
+          if (!confirm(`Are you sure you want to remove the "${platformName}" connection from this campaign group?`)) return;
+
+          const group = this.groups.find(g => g.id === this.currentGroupId);
+          if (!group || !group.connectors) return;
+
+          group.connectors.adServer = (group.connectors.adServer || []).filter(v => v !== platformValue);
+          if (group.connectors.status) delete group.connectors.status[platformValue];
+          if (group.connectors.enabledAt) delete group.connectors.enabledAt[platformValue];
+
+          this.saveGroups();
+          this.renderGroupConnections();
+
+          if (typeof showToast === 'function') {
+            showToast(`${platformName} connection removed`);
+          }
         },
 
         revealRecentCampaign: function() {
@@ -1913,7 +2725,7 @@ try {
     </button>
   </td>
   <td colspan="5" class="px-3 py-1 text-sm font-semibold bg-gray-100 drop-zone" data-group-id="${r.groupId}">
-    Campaign Group: ${r.name}
+    Campaign Group: <button type="button" data-action="open-group-details" data-group-id="${r.groupId}" class="text-blue-600 hover:underline bg-transparent border-0 p-0 cursor-pointer font-semibold">${r.name}</button>
   </td>
   <td class="px-6 py-1 text-sm bg-gray-100 text-center flex gap-3 justify-center items-center">
     <button data-action="edit-group" data-group-id="${r.groupId}" class="text-blue-600 hover:underline" title="Edit Group Name">Edit</button>
@@ -2014,6 +2826,65 @@ tr.appendChild(tdActions);
 
       app.init();
     });
+  </script>
+
+  <script>
+    function showGroupInlineRecordIdPopover(tdElement, platformName, currentValue) {
+      closeGroupInlineRecordIdPopover();
+      const rect = tdElement.getBoundingClientRect();
+      const popover = document.createElement('div');
+      popover.className = 'inline-record-id-popover';
+      popover.id = 'groupInlineRecordIdPopover';
+      popover.style.left = rect.left + 'px';
+      popover.style.top = (rect.bottom + 4) + 'px';
+      popover.innerHTML = `
+        <input type="text" id="groupInlineRecordIdInput" placeholder="Enter Record ID" value="${currentValue || ''}" autocomplete="off" />
+        <button type="button" class="popover-btn" id="groupInlineRecordIdSave" title="Save">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </button>
+        <button type="button" class="popover-btn" id="groupInlineRecordIdCancel" title="Cancel">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      `;
+      document.body.appendChild(popover);
+      const input = popover.querySelector('#groupInlineRecordIdInput');
+      if (input) { input.focus(); input.select(); }
+      popover.querySelector('#groupInlineRecordIdSave').addEventListener('click', function() {
+        const value = input.value.trim();
+        if (!value) { input.focus(); return; }
+        saveGroupInlineRecordId(platformName, value);
+      });
+      popover.querySelector('#groupInlineRecordIdCancel').addEventListener('click', function() {
+        closeGroupInlineRecordIdPopover();
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); const v = input.value.trim(); if (v) saveGroupInlineRecordId(platformName, v); }
+        else if (e.key === 'Escape') { closeGroupInlineRecordIdPopover(); }
+      });
+      setTimeout(() => { document.addEventListener('click', handleGroupOutsideClickPopover); }, 0);
+    }
+
+    function handleGroupOutsideClickPopover(e) {
+      const popover = document.getElementById('groupInlineRecordIdPopover');
+      if (popover && !popover.contains(e.target)) closeGroupInlineRecordIdPopover();
+    }
+
+    function closeGroupInlineRecordIdPopover() {
+      const popover = document.getElementById('groupInlineRecordIdPopover');
+      if (popover) popover.remove();
+      document.removeEventListener('click', handleGroupOutsideClickPopover);
+    }
+
+    function saveGroupInlineRecordId(platformName, recordIdValue) {
+      if (!app || !app.currentGroupId) return;
+      const group = app.groups.find(g => g.id === app.currentGroupId);
+      if (!group) return;
+      if (!group.manualRecordIds) group.manualRecordIds = {};
+      group.manualRecordIds[platformName] = recordIdValue;
+      try { localStorage.setItem('campaign_tree_groups', JSON.stringify(app.groups)); } catch(err) {}
+      closeGroupInlineRecordIdPopover();
+      app.renderGroupConnections();
+    }
   </script>
 
   <!-- Data binding script for advertiser info -->

@@ -484,7 +484,6 @@
                       <div id="platformTypeMenu" class="hidden absolute mt-2 left-0 bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-56 overflow-auto min-w-max">
                         <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="All">All</button>
                         <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="DSP">DSP</button>
-                        <button class="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap" data-value="Ad Server">Ad Server</button>
                       </div>
                     </div>
                   </div>
@@ -581,12 +580,9 @@
         <!-- Modal Body -->
         <div class="p-6 space-y-5">
           <div>
-            <label for="newConnPlatformType" class="block text-sm font-medium text-gray-700 mb-1">Select Platform Type <span class="text-red-500">*</span></label>
-            <select id="newConnPlatformType" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-              <option value="">-- Select Type --</option>
-              <option value="DSP">DSP</option>
-              <option value="Ad Server">Ad Server</option>
-            </select>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Platform Type</label>
+            <input type="text" value="DSP" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-gray-100 text-gray-600" disabled />
+            <input type="hidden" id="newConnPlatformType" value="DSP" />
           </div>
 
           <div id="newConnPlatformGroup" class="hidden">
@@ -1795,7 +1791,7 @@ function loadCampaignConnections(campaign) {
   tableBody.innerHTML = '';
 
   // Check if campaign has connectors data
-  if (!campaign.connectors || (!campaign.connectors.dsp && !campaign.connectors.adServer)) {
+  if (!campaign.connectors || !campaign.connectors.dsp) {
     // No connectors selected - show empty state
     const emptyRow = document.createElement('tr');
     emptyRow.innerHTML = `
@@ -1829,11 +1825,6 @@ function loadCampaignConnections(campaign) {
       name: 'Simpli.fi',
       type: 'DSP',
       logo: './assets/svgs/Simplifi.svg'
-    },
-    'google-campaign-manager': {
-      name: 'Google Campaign Manager',
-      type: 'Ad Server',
-      logo: './assets/svgs/GCM.svg'
     }
   };
 
@@ -1859,26 +1850,6 @@ function loadCampaignConnections(campaign) {
     });
   }
   
-  // Collect Ad Server platforms
-  if (campaign.connectors.adServer && Array.isArray(campaign.connectors.adServer)) {
-    campaign.connectors.adServer.forEach(adServerValue => {
-      if (platformConfig[adServerValue]) {
-        // Get status from saved status object, default to 'Connected' for backward compatibility
-        const status = campaign.connectors.status && campaign.connectors.status[adServerValue] 
-          ? campaign.connectors.status[adServerValue] 
-          : 'Connected';
-        
-        connectedPlatforms.push({
-          value: adServerValue,
-          ...platformConfig[adServerValue],
-          status: status,
-          enabledAt: status === 'Connected' ? new Date().toLocaleDateString() : '—',
-          disabledAt: status === 'Disconnected' ? new Date().toLocaleDateString() : '—'
-        });
-      }
-    });
-  }
-
   // If no platforms were found, show empty state
   if (connectedPlatforms.length === 0) {
     const emptyRow = document.createElement('tr');
@@ -1911,19 +1882,7 @@ function loadCampaignConnections(campaign) {
     
     if (manualId) {
       recordIdContent = `<a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline" data-action="inline-record-id" data-platform="${platform.value}" data-platform-name="${platform.name}" data-platform-type="${platform.type}" data-current-value="${manualId}">${manualId}</a>`;
-    } else if (platform.status === 'Connected') {
-      // Connected via sync - show appropriate ID
-      if (platform.type === 'DSP') {
-        const deliveryId = campaign.deliveryId || '—';
-        recordIdContent = `<span class="text-sm text-gray-900">${deliveryId}</span>`;
-      } else if (platform.type === 'Ad Server') {
-        const reportingId = campaign.reportingId || '—';
-        recordIdContent = `<span class="text-sm text-gray-900">${reportingId}</span>`;
-      } else {
-        recordIdContent = `<span class="text-sm text-gray-900">—</span>`;
-      }
     } else {
-      // Disconnected — all platforms use inline Record ID popover
       recordIdContent = `<a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline" data-action="inline-record-id" data-platform="${platform.value}" data-platform-name="${platform.name}" data-platform-type="${platform.type}">Create</a>`;
     }
     
@@ -2077,16 +2036,13 @@ const NEW_CONN_PLATFORMS = {
     { value: 'trade-desk', label: 'The Trade Desk', displayName: 'The Trade Desk' },
     { value: 'dv360', label: 'DV360', displayName: 'DV360' },
     { value: 'simplifi', label: 'Simpli.fi', displayName: 'Simpli.fi' }
-  ],
-  'Ad Server': [
-    { value: 'google-campaign-manager', label: 'Google Campaign Manager', displayName: 'Google Campaign Manager' }
   ]
 };
 
 function getPlatformTypeByValue(platformValue) {
-  const allPlatforms = [...NEW_CONN_PLATFORMS.DSP, ...NEW_CONN_PLATFORMS['Ad Server']];
+  const allPlatforms = [...NEW_CONN_PLATFORMS.DSP];
   const matched = allPlatforms.find(p => p.value === platformValue);
-  return matched ? (NEW_CONN_PLATFORMS.DSP.some(p => p.value === platformValue) ? 'DSP' : 'Ad Server') : '';
+  return matched ? 'DSP' : '';
 }
 
 function getCampaignContext() {
@@ -2145,7 +2101,7 @@ function populateNewConnectionPlatforms() {
   const existing = getExistingCampaignConnectorValues(context?.campaign || {});
 
   if (platformLabel) {
-    platformLabel.textContent = typeValue === 'DSP' ? 'Select DSP' : 'Select Ad Server';
+    platformLabel.textContent = 'Select DSP';
   }
 
   const options = NEW_CONN_PLATFORMS[typeValue] || [];
@@ -2217,8 +2173,7 @@ function openNewConnectionModal(options = null) {
   const dupeError = document.getElementById('newConnDuplicateError');
 
   if (typeSelect) {
-    typeSelect.value = '';
-    typeSelect.disabled = false;
+    typeSelect.value = 'DSP';
   }
   if (platformSelect) {
     platformSelect.innerHTML = '<option value="">-- Select Platform --</option>';
@@ -2238,7 +2193,6 @@ function openNewConnectionModal(options = null) {
       }
       handleCampaignPlatformSelectionChange();
       if (options?.lockToPlatform) {
-        typeSelect.disabled = true;
         platformSelect.disabled = true;
       }
     }
@@ -2246,6 +2200,9 @@ function openNewConnectionModal(options = null) {
 
   modal.classList.remove('hidden');
   modal.classList.add('flex');
+
+  // Auto-populate DSP platforms since type is now always DSP
+  populateNewConnectionPlatforms();
 }
 
 function closeNewConnectionModal() {
@@ -2287,27 +2244,17 @@ function connectNewConnection() {
       return;
     }
 
-    if (typeValue === 'DSP') {
-      if (campaign.connectors.dsp.length > 0 && !campaign.connectors.dsp.includes(platformValue)) {
-        window.toast?.error?.('Only one DSP can be connected at a time. Remove the existing DSP first.');
-        return;
-      }
-      campaign.connectors.dsp = [platformValue];
-    } else if (typeValue === 'Ad Server') {
-      campaign.connectors.adServer.push(platformValue);
+    if (campaign.connectors.dsp.length > 0 && !campaign.connectors.dsp.includes(platformValue)) {
+      window.toast?.error?.('Only one DSP can be connected at a time. Remove the existing DSP first.');
+      return;
     }
+    campaign.connectors.dsp = [platformValue];
 
     campaign.connectors.status[platformValue] = 'Connected';
-    if (platformValue === 'trade-desk' && !campaign.deliveryId) {
-      campaign.deliveryId = 'DLV-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-    }
-    if (platformValue === 'google-campaign-manager' && !campaign.reportingId) {
-      campaign.reportingId = 'RPT-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-    }
 
     localStorage.setItem('campaign_tree_groups', JSON.stringify(data));
 
-    const allPlatforms = [...NEW_CONN_PLATFORMS.DSP, ...NEW_CONN_PLATFORMS['Ad Server']];
+    const allPlatforms = [...NEW_CONN_PLATFORMS.DSP];
     const matched = allPlatforms.find(p => p.value === platformValue);
     const displayName = matched ? matched.displayName : platformValue;
     window.toast?.success?.(`${displayName} connected successfully`);
