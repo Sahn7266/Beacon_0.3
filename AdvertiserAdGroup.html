@@ -397,7 +397,7 @@
             </a>
           </li>
           <li>
-            <a href="./AdvertiserCampaigns.html" data-nav-link
+            <a href="./AdvertiserCampaignGroups.html" data-nav-link
                class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
               <img src="./assets/svgs/CampaignsSchedules.svg" alt="Campaigns" class="w-6 h-6 mr-2" />
               <span data-link-label>Campaigns</span>
@@ -2310,7 +2310,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const CREATE_CAMPAIGN_OPTION_VALUE = '__create_campaign__';
 
   function redirectToCampaignCreateFromAdGroup() {
-    window.location.href = './AdvertiserCampaigns.html?openCreateCampaign=1&returnToAdGroup=1';
+    // TODO: Campaign creation now requires campaign group context first.
+    // window.location.href = './AdvertiserCampaigns.html?openCreateCampaign=1&returnToAdGroup=1';
+    window.location.href = './AdvertiserCampaignGroups.html';
   }
 
   function prefillAdGroupFromCampaign(campaignId) {

@@ -82,6 +82,39 @@
       pointer-events: none;
     }
     select[aria-readonly="true"]:focus { border: none !important; outline: none !important; box-shadow: none !important; }
+
+    /* Ellipsis dropdown styles */
+    .ellipsis-dropdown { position: relative; display: inline-block; }
+    .ellipsis-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      border: 1px solid #d1d5db; border-radius: 0.375rem;
+      background-color: white; cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+    .ellipsis-btn:hover { background-color: #f3f4f6; }
+    .ellipsis-menu {
+      position: absolute; right: 0; top: 100%; margin-top: 4px;
+      min-width: 130px; background: white;
+      border: 1px solid #e5e7eb; border-radius: 0.375rem;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+      z-index: 50; opacity: 0; visibility: hidden;
+      transform: translateY(-8px);
+      transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+    }
+    .ellipsis-menu.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .ellipsis-menu-item {
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; padding: 8px 12px;
+      font-size: 14px; text-align: left;
+      border: none; background: none; cursor: pointer;
+      transition: background-color 0.1s ease;
+    }
+    .ellipsis-menu-item:first-child { border-radius: 0.375rem 0.375rem 0 0; }
+    .ellipsis-menu-item:last-child { border-radius: 0 0 0.375rem 0.375rem; }
+    .ellipsis-menu-item:hover { background-color: #f3f4f6; }
+    .ellipsis-menu-item.delete-item { color: #dc2626; }
+    .ellipsis-menu-item.delete-item:hover { background-color: #fef2f2; }
   </style>
 </head>
 
@@ -268,12 +301,26 @@
                   <h2 class="text-lg font-semibold text-gray-700 mx-2">CAMPAIGN OVERVIEW</h2>
                 </div>
                 <div class="flex items-center gap-2">
-                  <button id="editGeneralBtn" class="text-sm px-3 py-1 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                  <svg viewBox="0 0 24 24" height="16" width="16">
-                    <path fill="#454B57" d="M21.53 4.11l-1.64-1.64a1.57 1.57 0 00-2.22 0L4.74 15.4a2.41 2.41 0 00-.55.83L2 21.58a.32.32 0 00.3.43h.11l5.35-2.18a2.41 2.41 0 00.83-.55l4.14-4.14 8.79-8.79a1.56 1.56 0 00.01-2.24zM5 17l2 2-3.43 1.4zm7-2.59l-4.11 4.14-2.44-2.44L16 5.53 18.47 8zm8.79-8.79l-1.62 1.65-2.44-2.44 1.65-1.66a.59.59 0 01.4-.16.58.58 0 01.4.16l1.65 1.65a.58.58 0 01.16.4.59.59 0 01-.16.4z"></path>
-                  </svg>
-                  Edit
-                  </button>
+                  <!-- Ellipsis Dropdown Menu -->
+                  <div class="ellipsis-dropdown">
+                    <button id="ellipsisBtn" class="ellipsis-btn" title="More options" aria-haspopup="true" aria-expanded="false">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="5" cy="12" r="2"/>
+                        <circle cx="12" cy="12" r="2"/>
+                        <circle cx="19" cy="12" r="2"/>
+                      </svg>
+                    </button>
+                    <div id="ellipsisMenu" class="ellipsis-menu">
+                      <button id="editGeneralBtn" class="ellipsis-menu-item">
+                        <svg viewBox="0 0 24 24" height="16" width="16"><path fill="currentColor" d="M21.53 4.11l-1.64-1.64a1.57 1.57 0 00-2.22 0L4.74 15.4a2.41 2.41 0 00-.55.83L2 21.58a.32.32 0 00.3.43h.11l5.35-2.18a2.41 2.41 0 00.83-.55l4.14-4.14 8.79-8.79a1.56 1.56 0 00.01-2.24zM5 17l2 2-3.43 1.4zm7-2.59l-4.11 4.14-2.44-2.44L16 5.53 18.47 8zm8.79-8.79l-1.62 1.65-2.44-2.44 1.65-1.66a.59.59 0 01.4-.16.58.58 0 01.4.16l1.65 1.65a.58.58 0 01.16.4.59.59 0 01-.16.4z"></path></svg>
+                        Edit
+                      </button>
+                      <button id="deleteCampaignBtn" class="ellipsis-menu-item delete-item">
+                        <svg viewBox="0 0 24 24" height="16" width="16"><path fill="currentColor" d="M19 6h-3.5l-1-1h-5l-1 1H5v2h14V6zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V9H6v10zM8 11h8v8H8v-8z"/></svg>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
                   <button id="saveGeneralBtn" class="hidden text-sm px-3 py-1 bg-blue-600 text-white border border-blue-600 rounded-md hover:bg-blue-700">Save</button>
                   <button id="cancelGeneralBtn" class="hidden text-sm px-3 py-1 bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">Cancel</button>
                 </div>
@@ -804,6 +851,9 @@
                         }
 
                         btnEdit?.addEventListener('click', () => {
+                          // Close ellipsis menu when Edit is clicked
+                          document.getElementById('ellipsisMenu')?.classList.remove('open');
+                          document.getElementById('ellipsisBtn')?.setAttribute('aria-expanded', 'false');
                           // Start inline editing for these campaign fields
                           inlineEditing = true;
                           snapshot = currentCampaignValues(); // Only snapshot campaign-linked fields
@@ -997,6 +1047,66 @@
         }
       });
     }
+  </script>
+
+  <!-- Ellipsis menu + Delete campaign -->
+  <script>
+    (function() {
+      const ellipsisBtn = document.getElementById('ellipsisBtn');
+      const ellipsisMenu = document.getElementById('ellipsisMenu');
+      const ellipsisDropdown = document.querySelector('.ellipsis-dropdown');
+      const deleteCampaignBtn = document.getElementById('deleteCampaignBtn');
+
+      ellipsisBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = ellipsisMenu.classList.contains('open');
+        ellipsisMenu.classList.toggle('open', !isOpen);
+        ellipsisBtn.setAttribute('aria-expanded', !isOpen);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (ellipsisDropdown && !ellipsisDropdown.contains(e.target)) {
+          ellipsisMenu?.classList.remove('open');
+          ellipsisBtn?.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      deleteCampaignBtn?.addEventListener('click', () => {
+        ellipsisMenu?.classList.remove('open');
+        const urlParams = new URLSearchParams(window.location.search);
+        const campaignId = urlParams.get('campaignId');
+        if (!campaignId) return;
+
+        const raw = localStorage.getItem('campaign_tree_groups');
+        const data = raw ? JSON.parse(raw) : { campaigns: [], groups: [] };
+        const campaigns = Array.isArray(data) ? [] : (data.campaigns || []);
+        const groups = Array.isArray(data) ? data : (data.groups || []);
+
+        // Find name for confirm dialog
+        let campaignName = campaignId;
+        const topLevel = campaigns.find(c => c.id === campaignId);
+        if (topLevel) campaignName = topLevel.beaconCampaignName || topLevel.name || campaignId;
+        else {
+          for (const g of groups) {
+            const found = (g.campaigns || []).find(c => c.id === campaignId);
+            if (found) { campaignName = found.beaconCampaignName || found.name || campaignId; break; }
+          }
+        }
+
+        if (!confirm(`Are you sure you want to delete "${campaignName}"? This cannot be undone.`)) return;
+
+        // Remove from top-level campaigns
+        const newCampaigns = campaigns.filter(c => c.id !== campaignId);
+        // Remove from groups
+        groups.forEach(g => { g.campaigns = (g.campaigns || []).filter(c => c.id !== campaignId); });
+
+        const updatedData = Array.isArray(data) ? groups : { campaigns: newCampaigns, groups };
+        localStorage.setItem('campaign_tree_groups', JSON.stringify(updatedData));
+
+        if (typeof showToast === 'function') showToast('Campaign deleted.');
+        setTimeout(() => { window.history.back(); }, 800);
+      });
+    })();
   </script>
 
   <!-- Details page data-binding -->
