@@ -46,6 +46,195 @@
       content: " *";
       color: #ef4444;
     }
+
+    /* ==================== Flat entity card redesign ==================== */
+    .entity-sections-wrapper { max-width: 720px; margin: 0 auto; }
+    .entity-sections-wrapper .entity-card { margin-top: 12px; }
+    .entity-sections-wrapper > .entity-card:first-child { margin-top: 0; }
+    #entityDynamicWrapper > .entity-card:first-child { margin-top: 0; }
+    .entity-sections-wrapper .entity-card + .entity-connector,
+    .entity-sections-wrapper .entity-connector + .entity-card { margin-top: 0; }
+
+    .entity-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .entity-card-header {
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .entity-card-header .header-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+    .entity-card-header .header-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .entity-card-header .header-id {
+      font-weight: 400;
+      font-size: 12px;
+      margin-left: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .entity-card-summary {
+      padding: 10px 18px;
+      font-size: 13px;
+      color: #6b7280;
+      border-top: 1px solid #e5e7eb;
+      background: #fff;
+    }
+    .entity-card-body {
+      padding: 18px 20px;
+      background: #fff;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    /* Hide summary when this card's content is expanded */
+    .entity-card:has(> .entity-content.expanded) > .entity-card-summary {
+      display: none;
+    }
+
+    /* Entity-type color variants */
+    .ec-adv > .entity-card-header { background: #E6F1FB; }
+    .ec-adv .header-label { color: #185FA5; }
+    .ec-adv .header-title { color: #042C53; }
+    .ec-adv .header-id   { color: #185FA5; }
+    .ec-adv .note-count  { color: #185FA5; }
+
+    .ec-cg > .entity-card-header { background: #EAF3DE; }
+    .ec-cg .header-label { color: #3B6D11; }
+    .ec-cg .header-title { color: #173404; }
+    .ec-cg .header-id   { color: #3B6D11; }
+    .ec-cg .note-count  { color: #3B6D11; }
+
+    .ec-cam > .entity-card-header { background: #EEEDFE; }
+    .ec-cam .header-label { color: #534AB7; }
+    .ec-cam .header-title { color: #26215C; }
+    .ec-cam .header-id   { color: #534AB7; }
+    .ec-cam .note-count  { color: #534AB7; }
+
+    .ec-ag > .entity-card-header { background: #FAEEDA; }
+    .ec-ag .header-label { color: #854F0B; }
+    .ec-ag .header-title { color: #412402; }
+    .ec-ag .header-id   { color: #854F0B; }
+    .ec-ag .note-count  { color: #854F0B; }
+
+    .ec-notes > .entity-card-header { background: #F3F4F6; }
+    .ec-notes .header-label { color: #4B5563; }
+    .ec-notes .header-title { color: #111827; }
+
+    .note-count {
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .note-count.empty { opacity: 0.55; }
+
+    /* Chevron button inside colored header */
+    .entity-card-header .chevron-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: inherit;
+    }
+    .entity-card-header .chevron-icon { color: inherit; opacity: 0.75; }
+
+    /* Amber note banner inside expanded body */
+    .entity-note-banner {
+      background: #FAEEDA;
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      gap: 10px;
+    }
+    .entity-note-banner + .entity-note-banner { margin-top: -4px; }
+    .entity-note-banner .note-icon { color: #854F0B; flex-shrink: 0; margin-top: 1px; }
+    .entity-note-banner .note-text { font-size: 13px; color: #412402; line-height: 1.5; }
+    .entity-note-banner .note-meta { font-size: 11px; color: #854F0B; margin-top: 6px; }
+
+    /* Vertical connector between parent and first child */
+    .entity-connector {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 22px;
+    }
+    .entity-connector-line {
+      width: 1px;
+      height: 100%;
+      background: #d1d5db;
+    }
+
+    /* Add-note button + inline form */
+    .add-note-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #4b5563;
+      background: transparent;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    .add-note-btn:hover { background: #f9fafb; }
+    .add-note-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .add-note-form textarea {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      resize: vertical;
+      min-height: 60px;
+      font-family: inherit;
+    }
+    .add-note-form .form-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .note-save-btn {
+      font-size: 12px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    .note-cancel-btn {
+      font-size: 12px;
+      background: #fff;
+      color: #4b5563;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -207,10 +396,10 @@
       </nav>
 
       <!-- Main Content -->
-      <main class="flex-1 overflow-y-auto p-6">
-       <div class="app-card rounded-lg shadow-lg overflow-hidden">
+      <main class="flex-1 overflow-y-auto px-6 pt-2 pb-6">
+       <div>
           <!-- Page Header -->
-          <div class="px-6 pt-5 pb-4 border-b border-gray-200">
+          <div class="px-6 pt-3 pb-4 border-b border-gray-200">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-4">
                 <!-- Editable CO Name -->
@@ -236,11 +425,14 @@
                   </svg>
                   <span>Save</span>
                 </button>
-                <button class="flex items-center gap-2 px-4 py-2 text-sm text-white bg-green-600 rounded-md hover:bg-green-700 transition-colors">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                <button id="expandCollapseAllBtn" type="button" onclick="toggleAllEntitySections()" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                  <svg data-expand-icon class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/>
                   </svg>
-                  <span>Sync Changes</span>
+                  <svg data-collapse-icon class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/>
+                  </svg>
+                  <span data-expand-collapse-label>Expand All</span>
                 </button>
                 <button class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -261,31 +453,34 @@
           </div>
 
           <!-- Entity Sections -->
-          <div id="entitySectionsContainer" class="px-6 py-5 space-y-3">
-            <!-- Populated dynamically by JS -->
+          <div id="entitySectionsContainer" class="px-6 py-5">
+            <div class="entity-sections-wrapper">
+              <!-- Dynamic entity cards -->
+              <div id="entityDynamicWrapper"></div>
 
-            <!-- General Notes Section -->
-            <div class="entity-section bg-gray-50 border border-gray-200 border-l-4 border-l-gray-400 border-r-4 border-r-gray-400">
-              <div class="entity-header flex items-center justify-between px-4 py-3" onclick="toggleSection('notesSection')">
-                <div class="flex items-center gap-3">
-                  <svg id="notesChevron" class="chevron-icon w-5 h-5 text-gray-600 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                  </svg>
-                  <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                  </svg>
-                  <h3 class="text-lg font-semibold text-gray-900">General Notes / Cover Letter</h3>
+              <!-- General Notes Section (styled like an entity card, not line-connected) -->
+              <div class="entity-card entity-section ec-notes">
+                <div class="entity-card-header entity-header" onclick="toggleSection('notesSection')">
+                  <div style="flex: 1; min-width: 0;">
+                    <div class="header-label">Change order</div>
+                    <div class="header-title">General Notes / Cover Letter</div>
+                  </div>
+                  <button type="button" class="chevron-btn" onclick="event.stopPropagation(); toggleSection('notesSection')" aria-label="Toggle general notes">
+                    <svg id="notesChevron" class="chevron-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </button>
                 </div>
-              </div>
-              <div id="notesSection" class="entity-content expanded bg-white border-t border-gray-200">
-                <div class="px-6 py-4">
-                  <textarea id="coNotesInput" rows="6"
-                    placeholder="Add any general notes, cover letter content, or special instructions for this change order..."
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"></textarea>
+                <div class="entity-card-summary">Cover letter and special instructions</div>
+                <div id="notesSection" class="entity-content">
+                  <div class="entity-card-body">
+                    <textarea id="coNotesInput" rows="6"
+                      placeholder="Add any general notes, cover letter content, or special instructions for this change order..."
+                      class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"></textarea>
+                  </div>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </main>
@@ -344,6 +539,51 @@ function toggleSection(sectionId) {
   if (section) section.classList.toggle('expanded');
   if (chevron) chevron.classList.toggle('rotated');
 }
+
+// ==================== EXPAND / COLLAPSE ALL ====================
+function _getEntityContents() {
+  const dynWrapper = document.getElementById('entityDynamicWrapper');
+  const list = dynWrapper ? Array.from(dynWrapper.querySelectorAll('.entity-content')) : [];
+  const notes = document.getElementById('notesSection');
+  if (notes) list.push(notes);
+  return list;
+}
+
+function toggleAllEntitySections() {
+  const contents = _getEntityContents();
+  if (!contents.length) return;
+  const anyExpanded = contents.some(el => el.classList.contains('expanded'));
+  const shouldExpand = !anyExpanded;
+  contents.forEach(el => {
+    el.classList.toggle('expanded', shouldExpand);
+    const chevron = document.getElementById(el.id.replace('Section', 'Chevron'));
+    if (chevron) chevron.classList.toggle('rotated', shouldExpand);
+  });
+  updateExpandCollapseAllLabel();
+}
+
+function updateExpandCollapseAllLabel() {
+  const btn = document.getElementById('expandCollapseAllBtn');
+  if (!btn) return;
+  const contents = _getEntityContents();
+  const anyExpanded = contents.some(el => el.classList.contains('expanded'));
+  const label = btn.querySelector('[data-expand-collapse-label]');
+  const expandIcon = btn.querySelector('[data-expand-icon]');
+  const collapseIcon = btn.querySelector('[data-collapse-icon]');
+  if (label) label.textContent = anyExpanded ? 'Collapse All' : 'Expand All';
+  if (expandIcon) expandIcon.classList.toggle('hidden', anyExpanded);
+  if (collapseIcon) collapseIcon.classList.toggle('hidden', !anyExpanded);
+}
+
+// Keep the Expand/Collapse All button label in sync when individual chevrons are clicked.
+document.addEventListener('click', function(e) {
+  const container = document.getElementById('entitySectionsContainer');
+  if (!container) return;
+  if (container.contains(e.target)) {
+    // Defer so toggleSection (fired via inline onclick) runs first.
+    setTimeout(updateExpandCollapseAllLabel, 0);
+  }
+});
 
 // ==================== MANAGE ENTITIES MODAL ====================
 function openManageEntitiesModal() {
@@ -476,28 +716,160 @@ function statusBadge(status) {
   return `<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${colors[s]||'bg-gray-100 text-gray-600'}">${s.charAt(0).toUpperCase()+s.slice(1)}</span>`;
 }
 
+// ==================== PER-ENTITY NOTES ====================
+const ENTITY_NOTES_KEY = 'co_entity_notes_v1';
+
+function getAllEntityNotes() {
+  try { return JSON.parse(localStorage.getItem(ENTITY_NOTES_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function _saveAllEntityNotes(obj) {
+  try { localStorage.setItem(ENTITY_NOTES_KEY, JSON.stringify(obj)); } catch(e) {}
+}
+function getEntityNotes(coId, entityId) {
+  if (!coId || !entityId) return [];
+  const all = getAllEntityNotes();
+  return Array.isArray(all[coId + ':' + entityId]) ? all[coId + ':' + entityId] : [];
+}
+function addEntityNote(coId, entityId, text, author) {
+  if (!coId || !entityId || !text || !text.trim()) return;
+  const all = getAllEntityNotes();
+  const key = coId + ':' + entityId;
+  if (!Array.isArray(all[key])) all[key] = [];
+  all[key].push({
+    text: text.trim(),
+    author: author || 'You',
+    timestamp: new Date().toISOString()
+  });
+  _saveAllEntityNotes(all);
+}
+function formatRelativeTime(isoString) {
+  if (!isoString) return '';
+  try {
+    const then = new Date(isoString).getTime();
+    const diffSec = Math.floor((Date.now() - then) / 1000);
+    if (diffSec < 60) return 'just now';
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) return diffMin + ' min ago';
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr < 24) return diffHr + ' hour' + (diffHr === 1 ? '' : 's') + ' ago';
+    const diffDay = Math.floor(diffHr / 24);
+    if (diffDay < 30) return diffDay + ' day' + (diffDay === 1 ? '' : 's') + ' ago';
+    return new Date(isoString).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  } catch(e) { return ''; }
+}
+
+function buildNoteBanner(note) {
+  return `
+    <div class="entity-note-banner">
+      <svg class="note-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+      </svg>
+      <div style="flex: 1;">
+        <div class="note-text">${escHtml(note.text)}</div>
+        <div class="note-meta">${escHtml(note.author || 'You')} · ${escHtml(formatRelativeTime(note.timestamp))}</div>
+      </div>
+    </div>`;
+}
+
+function buildNotesBanners(coId, entityId) {
+  const notes = getEntityNotes(coId, entityId);
+  if (!notes.length) return '';
+  return `<div data-notes-banners-for="${escHtml(entityId)}">${notes.map(buildNoteBanner).join('')}</div>`;
+}
+
+function buildAddNoteSection(coId, entityId) {
+  const safeKey = String(entityId).replace(/[^a-zA-Z0-9_-]/g, '_');
+  const formId = 'noteForm_' + safeKey;
+  const wrapId = 'noteAddWrap_' + safeKey;
+  return `
+    <div data-add-note-for="${escHtml(entityId)}" class="mt-4">
+      <div id="${formId}" class="hidden"></div>
+      <div id="${wrapId}" class="flex justify-end">
+        <button type="button" class="add-note-btn" onclick="showAddNoteForm('${escHtml(entityId)}','${formId}','${wrapId}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add note
+        </button>
+      </div>
+    </div>`;
+}
+
+function showAddNoteForm(entityId, formId, wrapId) {
+  const form = document.getElementById(formId);
+  const wrap = document.getElementById(wrapId);
+  if (!form) return;
+  if (wrap) wrap.style.display = 'none';
+  form.classList.remove('hidden');
+  form.innerHTML = `
+    <div class="add-note-form">
+      <textarea data-note-input placeholder="e.g., Use the Display – Persona template when setting up this ad group..."></textarea>
+      <div class="form-actions">
+        <button type="button" class="note-cancel-btn" onclick="cancelAddNote('${escHtml(entityId)}','${formId}','${wrapId}')">Cancel</button>
+        <button type="button" class="note-save-btn" onclick="saveNewNote('${escHtml(entityId)}','${formId}','${wrapId}')">Save note</button>
+      </div>
+    </div>`;
+  const ta = form.querySelector('[data-note-input]');
+  if (ta) ta.focus();
+}
+
+function cancelAddNote(entityId, formId, wrapId) {
+  const form = document.getElementById(formId);
+  const wrap = document.getElementById(wrapId);
+  if (!form) return;
+  form.classList.add('hidden');
+  form.innerHTML = '';
+  if (wrap) wrap.style.display = '';
+}
+
+function saveNewNote(entityId, formId, wrapId) {
+  const form = document.getElementById(formId);
+  if (!form) return;
+  const ta = form.querySelector('[data-note-input]');
+  const text = ta ? ta.value : '';
+  if (!text || !text.trim()) return;
+  const coId = new URLSearchParams(window.location.search).get('coId');
+  if (!coId) return;
+  const co = typeof getChangeOrder === 'function' ? getChangeOrder(coId) : null;
+  const author = (co && co.owner) ? co.owner : 'You';
+  addEntityNote(coId, entityId, text, author);
+  if (co) renderEntitySections(co);
+}
+
 // ==================== ENTITY CARD BUILDER ====================
 function buildAdGroupCard(ag, idx) {
   const sId = `agDyn${idx}Section`;
   const cId = `agDyn${idx}Chevron`;
   const fields = ag.fields || {};
   const safeAgId = escHtml(ag.id || '');
+  const coId = new URLSearchParams(window.location.search).get('coId') || '';
+  const noteCount = getEntityNotes(coId, ag.id).length;
+  const noteCountHtml = noteCount > 0
+    ? `<span class="note-count">
+         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+         ${noteCount} note${noteCount === 1 ? '' : 's'}
+       </span>`
+    : `<span class="note-count empty">No notes</span>`;
+
   return `
-    <div class="entity-section bg-white border border-gray-200 border-l-4 border-l-amber-500 border-r-4 border-r-amber-500">
-      <div class="entity-header flex items-center justify-between px-5 py-2 hover:bg-gray-50 transition-colors" onclick="toggleSection('${sId}')">
-        <div class="flex items-center gap-3">
-          <svg id="${cId}" class="chevron-icon w-4 h-4 text-gray-400 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="entity-card entity-section ec-ag">
+      <div class="entity-card-header entity-header" onclick="toggleSection('${sId}')">
+        <div style="flex: 1; min-width: 0;">
+          <div class="header-label">Ad group</div>
+          <div class="header-title">${escHtml(ag.name || ag.id)}<span class="header-id">${ag.id ? escHtml(ag.id) : ''}</span></div>
+        </div>
+        ${noteCountHtml}
+        <button type="button" class="chevron-btn" onclick="event.stopPropagation(); toggleSection('${sId}')" aria-label="Toggle ad group">
+          <svg id="${cId}" class="chevron-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
           </svg>
-          <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider bg-amber-500 text-white">AG</span>
-          <span class="text-sm font-semibold text-gray-900">${escHtml(ag.name || ag.id)}</span>
-          <span class="text-xs text-gray-500 font-mono">${ag.id ? '(' + escHtml(ag.id) + ')' : ''}</span>
-        </div>
+        </button>
       </div>
-      <div id="${sId}" class="entity-content expanded bg-white border-t border-gray-200">
-        <div class="px-6 py-4">
+      <div class="entity-card-summary">Ad group details</div>
+      <div id="${sId}" class="entity-content">
+        <div class="entity-card-body">
+          ${buildNotesBanners(coId, ag.id)}
           <div data-ag-conn-id="${safeAgId}"></div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3 mt-3">
             <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">MV Classification</label>
               <input type="text" value="${escHtml(fields.mvClassification||'')}" placeholder="Programmatic Display" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
             <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Tactic / Content Category</label>
@@ -515,65 +887,83 @@ function buildAdGroupCard(ag, idx) {
             <div class="md:col-span-2"><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">UTM Code</label>
               <input type="text" value="${escHtml(fields.utmCode||'')}" placeholder="utm_source=beacon&amp;utm_medium=display&amp;utm_campaign=..." class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
           </div>
+          ${buildAddNoteSection(coId, ag.id)}
         </div>
       </div>
     </div>`;
 }
 
-function buildCampaignCard(cam, agList, camIdx) {
+function buildCampaignCard(cam, agCount, camIdx) {
   const sId = `camDyn${camIdx}Section`;
   const cId = `camDyn${camIdx}Chevron`;
-  const agCount = agList.length;
-  const agHtml = agList.map((ag, i) => buildAdGroupCard(ag, camIdx + '_' + i)).join('');
   const safeCamId = escHtml(cam.id || '');
+  const coId = new URLSearchParams(window.location.search).get('coId') || '';
+  const noteCount = getEntityNotes(coId, cam.id).length;
+  const noteCountHtml = noteCount > 0
+    ? `<span class="note-count">
+         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+         ${noteCount} note${noteCount === 1 ? '' : 's'}
+       </span>`
+    : `<span class="note-count empty">No notes</span>`;
+
   return `
-    <div class="entity-section bg-white border border-gray-200 border-l-4 border-l-indigo-500 border-r-4 border-r-indigo-500">
-      <div class="entity-header flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors" onclick="toggleSection('${sId}')">
-        <div class="flex items-center gap-3">
-          <svg id="${cId}" class="chevron-icon w-5 h-5 text-gray-400 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="entity-card entity-section ec-cam">
+      <div class="entity-card-header entity-header" onclick="toggleSection('${sId}')">
+        <div style="flex: 1; min-width: 0;">
+          <div class="header-label">Campaign</div>
+          <div class="header-title">${escHtml(cam.name || cam.id)}<span class="header-id">${cam.id ? escHtml(cam.id) : ''}</span></div>
+        </div>
+        ${noteCountHtml}
+        <button type="button" class="chevron-btn" onclick="event.stopPropagation(); toggleSection('${sId}')" aria-label="Toggle campaign">
+          <svg id="${cId}" class="chevron-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
           </svg>
-          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider bg-indigo-500 text-white">CAM</span>
-          <h3 class="text-base font-semibold text-gray-900">${escHtml(cam.name || cam.id)}</h3>
-          <span class="text-xs text-gray-500 font-mono">${cam.id ? '(' + escHtml(cam.id) + ')' : ''}</span>
-        </div>
-        <span class="text-xs text-gray-400">${agCount} Ad Group${agCount !== 1 ? 's' : ''}</span>
+        </button>
       </div>
-      <div id="${sId}" class="entity-content expanded bg-white border-t border-gray-200">
-        <div class="px-6 py-4">
+      <div class="entity-card-summary">${agCount} Ad Group${agCount === 1 ? '' : 's'}</div>
+      <div id="${sId}" class="entity-content">
+        <div class="entity-card-body">
+          ${buildNotesBanners(coId, cam.id)}
           <div data-cam-conn-id="${safeCamId}"></div>
-          ${agCount > 0 ? `<div class="space-y-2 mt-2 ml-4 pl-4 border-l border-gray-200 campaign-adgroups-wrapper">${agHtml}</div>` : '<p class="text-sm text-gray-400 italic">No ad groups selected.</p>'}
+          ${buildAddNoteSection(coId, cam.id)}
         </div>
       </div>
     </div>`;
 }
 
-function buildCampaignGroupCard(grpInfo, cams, allAdGroups, grpIdx) {
+function buildCampaignGroupCard(grpInfo, camCount, grpIdx) {
   const sId = `cgDyn${grpIdx}Section`;
   const cId = `cgDyn${grpIdx}Chevron`;
-  const camCount = cams.length;
   const safeCgId = escHtml(grpInfo.id || '');
-  const camHtml = cams.map((cam, i) => {
-    const camAGs = allAdGroups.filter(ag => ag.campaignId === cam.id);
-    return buildCampaignCard(cam, camAGs, `cg${grpIdx}_${i}`);
-  }).join('');
+  const coId = new URLSearchParams(window.location.search).get('coId') || '';
+  const noteCount = getEntityNotes(coId, grpInfo.id).length;
+  const noteCountHtml = noteCount > 0
+    ? `<span class="note-count">
+         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+         ${noteCount} note${noteCount === 1 ? '' : 's'}
+       </span>`
+    : `<span class="note-count empty">No notes</span>`;
+
   return `
-    <div class="entity-section bg-white border border-gray-200 border-l-4 border-l-green-600 border-r-4 border-r-green-600">
-      <div class="entity-header flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors" onclick="toggleSection('${sId}')">
-        <div class="flex items-center gap-3">
-          <svg id="${cId}" class="chevron-icon w-5 h-5 text-gray-400 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="entity-card entity-section ec-cg">
+      <div class="entity-card-header entity-header" onclick="toggleSection('${sId}')">
+        <div style="flex: 1; min-width: 0;">
+          <div class="header-label">Campaign group</div>
+          <div class="header-title">${escHtml(grpInfo.name || grpInfo.id)}<span class="header-id">${grpInfo.id ? escHtml(grpInfo.id) : ''}</span></div>
+        </div>
+        ${noteCountHtml}
+        <button type="button" class="chevron-btn" onclick="event.stopPropagation(); toggleSection('${sId}')" aria-label="Toggle campaign group">
+          <svg id="${cId}" class="chevron-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
           </svg>
-          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider bg-green-600 text-white">CG</span>
-          <h3 class="text-base font-semibold text-gray-900">${escHtml(grpInfo.name)}</h3>
-          <span class="text-xs text-gray-500 font-mono">${grpInfo.id ? '(' + escHtml(grpInfo.id) + ')' : ''}</span>
-        </div>
-        <span class="text-xs text-gray-400">${camCount} Campaign${camCount !== 1 ? 's' : ''}</span>
+        </button>
       </div>
-      <div id="${sId}" class="entity-content expanded bg-white border-t border-gray-200">
-        <div class="px-6 py-4 space-y-3">
+      <div class="entity-card-summary">${camCount} Campaign${camCount === 1 ? '' : 's'}</div>
+      <div id="${sId}" class="entity-content">
+        <div class="entity-card-body">
+          ${buildNotesBanners(coId, grpInfo.id)}
           <div data-cg-conn-id="${safeCgId}"></div>
-          ${camHtml}
+          ${buildAddNoteSection(coId, grpInfo.id)}
         </div>
       </div>
     </div>`;
@@ -582,64 +972,19 @@ function buildCampaignGroupCard(grpInfo, cams, allAdGroups, grpIdx) {
 // ==================== RENDER ENTITY SECTIONS FROM CO ====================
 function renderEntitySections(co) {
   const container = document.getElementById('entitySectionsContainer');
-  if (!container) return;
+  const dynWrapper = document.getElementById('entityDynamicWrapper');
+  if (!container || !dynWrapper) return;
 
-  // Get the general notes section (last permanent card)
-  const notesSection = container.querySelector('.entity-section.bg-gray-50');
-
-  // Remove all dynamic entity cards (everything except the notes section)
-  Array.from(container.children).forEach(child => {
-    if (!child.classList.contains('bg-gray-50')) container.removeChild(child);
-  });
+  // Clear only the dynamic wrapper (General Notes section stays untouched)
+  dynWrapper.innerHTML = '';
 
   const entities = co.entities || [];
-  const advEntity  = entities.find(e => e.type === 'advertiser');
-  const campaigns  = entities.filter(e => e.type === 'campaign');
-  const adgroups   = entities.filter(e => e.type === 'adgroup');
+  const advEntity = entities.find(e => e.type === 'advertiser');
+  const campaigns = entities.filter(e => e.type === 'campaign');
+  const adgroups  = entities.filter(e => e.type === 'adgroup');
 
-  const fragment = document.createDocumentFragment();
+  const coId = co.id || '';
 
-  // --- Advertiser Card ---
-  if (advEntity) {
-    const advDiv = document.createElement('div');
-    advDiv.className = 'entity-section bg-white border border-gray-200 border-l-4 border-l-blue-600 border-r-4 border-r-blue-600';
-    advDiv.innerHTML = `
-      <div class="entity-header flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors" onclick="toggleSection('advDynSection')">
-        <div class="flex items-center gap-3">
-          <svg id="advDynChevron" class="chevron-icon w-5 h-5 text-gray-400 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-          </svg>
-          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider bg-blue-600 text-white">ADV</span>
-          <h3 class="text-base font-semibold text-gray-900">${escHtml(advEntity.name)}</h3>
-          <span class="text-xs text-gray-500 font-mono">${advEntity.id ? '(' + escHtml(advEntity.id) + ')' : ''}</span>
-        </div>
-        <span class="text-xs text-gray-400">Advertiser-level fields</span>
-      </div>
-      <div id="advDynSection" class="entity-content expanded bg-white border-t border-gray-200">
-        <div class="px-6 py-4">
-          <div data-adv-connections-container></div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Account #</label>
-              <input id="advAccountInput" type="text" value="${escHtml(advEntity.fields && advEntity.fields.accountNumber || '')}" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
-            </div>
-          </div>
-        </div>
-      </div>`;
-    fragment.appendChild(advDiv);
-
-    // Render advertiser connections
-    const advConn = advDiv.querySelector('[data-adv-connections-container]');
-    try {
-      const advRaw = localStorage.getItem('adv_selected_data') || localStorage.getItem('selectedAdvertiser');
-      const advData = advRaw ? JSON.parse(advRaw) : {};
-      renderConnectionsTable(advConn, advData, 'advertiser');
-      const acctInput = advDiv.querySelector('#advAccountInput');
-      if (acctInput && !acctInput.value) acctInput.value = advData.account || advData.accountNumber || '';
-    } catch(e) {}
-  }
-
-  // --- Campaign Group + Campaign + Ad Group Cards ---
   // Build camId → group lookup from localStorage
   let camGroupMap = {};
   try {
@@ -651,8 +996,8 @@ function renderEntitySections(co) {
     }
   } catch(e) {}
 
-  // Separate campaigns into those with a CG parent and ungrouped ones
-  const groupedCams = {}; // groupId → { info: { id, name }, cams: [] }
+  // Separate campaigns into grouped vs ungrouped
+  const groupedCams = {};
   const ungroupedCams = [];
   campaigns.forEach(cam => {
     const grp = camGroupMap[cam.id];
@@ -663,27 +1008,105 @@ function renderEntitySections(co) {
       ungroupedCams.push(cam);
     }
   });
+  const groupedCamEntries = Object.values(groupedCams);
 
-  // Render CG wrapper cards (each containing their campaign cards)
-  Object.values(groupedCams).forEach((grpData, grpIdx) => {
-    const cgEl = document.createElement('div');
-    cgEl.innerHTML = buildCampaignGroupCard(grpData.info, grpData.cams, adgroups, grpIdx);
-    fragment.appendChild(cgEl.firstElementChild);
+  const fragment = document.createDocumentFragment();
+
+  function appendHtml(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html.trim();
+    if (tmp.firstElementChild) fragment.appendChild(tmp.firstElementChild);
+  }
+  function appendConnector() {
+    const c = document.createElement('div');
+    c.className = 'entity-connector';
+    c.innerHTML = '<div class="entity-connector-line"></div>';
+    fragment.appendChild(c);
+  }
+
+  // --- Advertiser card (blue) ---
+  if (advEntity) {
+    const totalCgCount = groupedCamEntries.length;
+    const totalCamCount = campaigns.length;
+    const advNoteCount = getEntityNotes(coId, advEntity.id).length;
+    const advNoteHtml = advNoteCount > 0
+      ? `<span class="note-count">
+           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+           ${advNoteCount} note${advNoteCount === 1 ? '' : 's'}
+         </span>`
+      : `<span class="note-count empty">No notes</span>`;
+    const advSafeId = escHtml(advEntity.id || '');
+
+    appendHtml(`
+      <div class="entity-card entity-section ec-adv">
+        <div class="entity-card-header entity-header" onclick="toggleSection('advDynSection')">
+          <div style="flex: 1; min-width: 0;">
+            <div class="header-label">Advertiser</div>
+            <div class="header-title">${escHtml(advEntity.name || advEntity.id)}<span class="header-id">${advEntity.id ? escHtml(advEntity.id) : ''}</span></div>
+          </div>
+          ${advNoteHtml}
+          <button type="button" class="chevron-btn" onclick="event.stopPropagation(); toggleSection('advDynSection')" aria-label="Toggle advertiser">
+            <svg id="advDynChevron" class="chevron-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+        </div>
+        <div class="entity-card-summary">${totalCgCount} Campaign Group${totalCgCount === 1 ? '' : 's'} · ${totalCamCount} Campaign${totalCamCount === 1 ? '' : 's'}</div>
+        <div id="advDynSection" class="entity-content">
+          <div class="entity-card-body">
+            ${buildNotesBanners(coId, advEntity.id)}
+            <div data-adv-connections-container></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Account #</label>
+                <input id="advAccountInput" type="text" value="${escHtml(advEntity.fields && advEntity.fields.accountNumber || '')}" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+              </div>
+            </div>
+            ${buildAddNoteSection(coId, advEntity.id)}
+          </div>
+        </div>
+      </div>`);
+  }
+
+  // --- Grouped CGs, each followed by its CAMs and their AGs (FLAT) ---
+  groupedCamEntries.forEach((grp, grpIdx) => {
+    // Connector ADV → first CG
+    if (grpIdx === 0 && advEntity) appendConnector();
+
+    appendHtml(buildCampaignGroupCard(grp.info, grp.cams.length, grpIdx));
+
+    grp.cams.forEach((cam, camIdx) => {
+      // Connector CG → first CAM
+      if (camIdx === 0) appendConnector();
+
+      const camAgs = adgroups.filter(ag => ag.campaignId === cam.id);
+      appendHtml(buildCampaignCard(cam, camAgs.length, `cg${grpIdx}_${camIdx}`));
+
+      camAgs.forEach((ag, agIdx) => {
+        // Connector CAM → first AG
+        if (agIdx === 0) appendConnector();
+        appendHtml(buildAdGroupCard(ag, `cg${grpIdx}_${camIdx}_${agIdx}`));
+      });
+    });
   });
 
-  // Render ungrouped campaign cards directly
+  // --- Ungrouped CAMs (children of ADV directly) ---
   ungroupedCams.forEach((cam, camIdx) => {
-    const camAdGroups = adgroups.filter(ag => ag.campaignId === cam.id);
-    const camEl = document.createElement('div');
-    camEl.innerHTML = buildCampaignCard(cam, camAdGroups, 'ug' + camIdx);
-    fragment.appendChild(camEl.firstElementChild);
+    // Connector ADV → first ungrouped CAM, only when no CGs were rendered (otherwise not adjacent to ADV)
+    if (camIdx === 0 && groupedCamEntries.length === 0 && advEntity) appendConnector();
+
+    const camAgs = adgroups.filter(ag => ag.campaignId === cam.id);
+    appendHtml(buildCampaignCard(cam, camAgs.length, 'ug' + camIdx));
+
+    camAgs.forEach((ag, agIdx) => {
+      if (agIdx === 0) appendConnector();
+      appendHtml(buildAdGroupCard(ag, 'ug' + camIdx + '_' + agIdx));
+    });
   });
 
-  // Insert before the notes section
-  container.insertBefore(fragment, notesSection);
+  dynWrapper.appendChild(fragment);
 
-  // Populate connections for CAM and AG cards after DOM insertion
-  // Build lookup maps from localStorage
+  // --- Populate connection tables (unchanged data flow) ---
   let camDataMap = {};
   let agDataMap = {};
   try {
@@ -696,9 +1119,21 @@ function renderEntitySections(co) {
     JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]').forEach(ag => { if (ag.id) agDataMap[ag.id] = ag; });
   } catch(e) {}
 
-  container.querySelectorAll('[data-cg-conn-id]').forEach(el => {
+  // Advertiser connections
+  const advConn = dynWrapper.querySelector('[data-adv-connections-container]');
+  if (advConn) {
+    try {
+      const advRaw = localStorage.getItem('adv_selected_data') || localStorage.getItem('selectedAdvertiser');
+      const advData = advRaw ? JSON.parse(advRaw) : {};
+      renderConnectionsTable(advConn, advData, 'advertiser');
+      const acctInput = dynWrapper.querySelector('#advAccountInput');
+      if (acctInput && !acctInput.value) acctInput.value = advData.account || advData.accountNumber || '';
+    } catch(e) {}
+  }
+
+  // CG connections
+  dynWrapper.querySelectorAll('[data-cg-conn-id]').forEach(el => {
     const cgId = el.getAttribute('data-cg-conn-id');
-    // Find the group object from the tree
     let cgData = null;
     try {
       const tree = JSON.parse(localStorage.getItem('campaign_tree_groups') || '{}');
@@ -706,20 +1141,30 @@ function renderEntitySections(co) {
     } catch(e) {}
     if (cgData) renderConnectionsTable(el, cgData, 'campaigngroup');
   });
-  container.querySelectorAll('[data-cam-conn-id]').forEach(el => {
+
+  // CAM connections
+  dynWrapper.querySelectorAll('[data-cam-conn-id]').forEach(el => {
     const camData = camDataMap[el.getAttribute('data-cam-conn-id')];
     if (camData) renderConnectionsTable(el, camData, 'campaign');
   });
-  container.querySelectorAll('[data-ag-conn-id]').forEach(el => {
+
+  // AG connections
+  dynWrapper.querySelectorAll('[data-ag-conn-id]').forEach(el => {
     const agData = agDataMap[el.getAttribute('data-ag-conn-id')];
     if (agData) renderConnectionsTable(el, agData, 'adgroup');
   });
 
-  // Render breadcrumb
+  // Breadcrumb (unchanged)
   const advRaw = localStorage.getItem('adv_selected_data') || localStorage.getItem('selectedAdvertiser');
   if (advRaw) {
-    try { document.getElementById('breadcrumbAdvertiser').textContent = JSON.parse(advRaw).name || '\u2014'; } catch(e) {}
+    try {
+      const advBc = document.getElementById('breadcrumbAdvertiser');
+      if (advBc) advBc.textContent = JSON.parse(advRaw).name || '\u2014';
+    } catch(e) {}
   }
+
+  // Sync the Expand/Collapse All button label with current state.
+  updateExpandCollapseAllLabel();
 }
 
 // ==================== SAVE CO ====================
