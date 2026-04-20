@@ -1728,6 +1728,17 @@ function getAllCampaignsFromTree(data) {
   return [...topCampaigns, ...groupCampaigns];
 }
 
+function findCampaignGroupForCampaign(campaign) {
+  if (!campaign) return null;
+  try {
+    const tree = getCampaignTreeData();
+    if (!Array.isArray(tree.groups)) return null;
+    return tree.groups.find(g =>
+      Array.isArray(g.campaigns) && g.campaigns.some(c => String(c.id || '') === String(campaign.id || ''))
+    ) || null;
+  } catch(e) { return null; }
+}
+
 function findCampaignForAdGroup(adGroup) {
   const treeData = getCampaignTreeData();
   const campaigns = getAllCampaignsFromTree(treeData);
@@ -1781,14 +1792,38 @@ function getAdGroupSyncPrerequisiteErrors(adGroup, connectorValue) {
 
   const errors = [];
   const campaign = findCampaignForAdGroup(adGroup);
+  const campaignGroup = findCampaignGroupForCampaign(campaign);
   const advertiser = findAdvertiserForAdGroup(adGroup, campaign);
 
-  if (!campaign) {
-    errors.push('Parent Campaign not found.');
-  } else if (!entityHasConnectorValue(campaign, connectorValue)) {
-    errors.push(`Campaign missing ${details.name} connection.`);
-  } else if (!isEntityConnectorSynced(campaign, connectorValue, details.name)) {
-    errors.push(`Campaign missing ${details.name} Record ID.`);
+  const isAdServer = NEW_CONN_PLATFORMS['Ad Server'].some(p => p.value === connectorValue);
+
+  if (isAdServer) {
+    // Ad server connections are assigned at the Campaign Group level
+    if (campaignGroup) {
+      if (!entityHasConnectorValue(campaignGroup, connectorValue)) {
+        errors.push(`Campaign Group missing ${details.name} connection.`);
+      } else if (!isEntityConnectorSynced(campaignGroup, connectorValue, details.name)) {
+        errors.push(`Campaign Group missing ${details.name} Record ID.`);
+      }
+    } else if (campaign) {
+      // No group: fall back to checking campaign
+      if (!entityHasConnectorValue(campaign, connectorValue)) {
+        errors.push(`Campaign missing ${details.name} connection.`);
+      } else if (!isEntityConnectorSynced(campaign, connectorValue, details.name)) {
+        errors.push(`Campaign missing ${details.name} Record ID.`);
+      }
+    } else {
+      errors.push('Parent Campaign not found.');
+    }
+  } else {
+    // DSP connections are checked at campaign level
+    if (!campaign) {
+      errors.push('Parent Campaign not found.');
+    } else if (!entityHasConnectorValue(campaign, connectorValue)) {
+      errors.push(`Campaign missing ${details.name} connection.`);
+    } else if (!isEntityConnectorSynced(campaign, connectorValue, details.name)) {
+      errors.push(`Campaign missing ${details.name} Record ID.`);
+    }
   }
 
   if (!advertiser) {
@@ -2290,13 +2325,18 @@ function getAdGroupContext() {
   if (!adGroup) return null;
 
   const campaign = findCampaignForAdGroup(adGroup);
-  return { adGroups, adGroup, campaign };
+  const campaignGroup = findCampaignGroupForCampaign(campaign);
+  return { adGroups, adGroup, campaign, campaignGroup };
 }
 
 function getAllowedAdGroupConnectorValues(context) {
   return new Set([
     ...extractConnectorValues(context?.campaign?.connectors?.dsp),
-    ...extractConnectorValues(context?.campaign?.connectors?.adServer)
+    // Ad Server is assigned at Campaign Group level; fall back to campaign if no group
+    ...extractConnectorValues(
+      context?.campaignGroup?.connectors?.adServer ||
+      context?.campaign?.connectors?.adServer
+    )
   ]);
 }
 

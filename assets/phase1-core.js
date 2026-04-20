@@ -39,7 +39,6 @@
 
   function applyCoreNavFilter() {
     const blockedHrefs = [
-      'ChangeOrder',
       'AdvertiserSalesOrder',
       'CAD.html',
       'CADv1.html',
@@ -54,20 +53,6 @@
       }
     });
 
-    document.querySelectorAll('#newChangeOrderBtn, #addToCOBtn, [id*="ChangeOrder"], [onclick*="openCOPickerModal"]').forEach(function (node) {
-      if (node && node.tagName === 'A') {
-        hideNode(node);
-      } else if (node) {
-        node.remove();
-      }
-    });
-
-    document.querySelectorAll('button').forEach(function (button) {
-      const text = (button.textContent || '').trim().toLowerCase();
-      if (text.indexOf('change order') !== -1) {
-        button.remove();
-      }
-    });
   }
 
   function cloneNodeWithoutListeners(node) {

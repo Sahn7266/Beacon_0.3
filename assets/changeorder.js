@@ -341,22 +341,28 @@ function buildEntityTreeHTML() {
   const advName = (adv && adv.name) ? adv.name : 'Unknown Advertiser';
   const advId = adv ? adv.id : null;
 
-  // 2. Get all campaigns for this advertiser (filter by advertiserId)
-  let campaigns = [];
+  // 2. Get campaigns organized by group
+  let ungroupedCampaigns = [];
+  let campaignGroups = []; // [{ id, name, campaigns: [] }]
+  let allFlatCampaigns = [];
+
   try {
     const tree = JSON.parse(localStorage.getItem('campaign_tree_groups') || '{}');
-    let allCampaigns = [];
-    if (tree.campaigns) allCampaigns = allCampaigns.concat(tree.campaigns);
+    // Top-level campaigns (not assigned to any group)
+    if (tree.campaigns) {
+      const filtered = tree.campaigns.filter(c => !advId || String(c.advertiserId) === String(advId));
+      ungroupedCampaigns = filtered;
+      allFlatCampaigns = allFlatCampaigns.concat(filtered);
+    }
+    // Campaigns inside campaign groups
     if (tree.groups) {
       tree.groups.forEach(g => {
-        if (g.campaigns) allCampaigns = allCampaigns.concat(g.campaigns);
+        const filtered = (g.campaigns || []).filter(c => !advId || String(c.advertiserId) === String(advId));
+        if (filtered.length > 0) {
+          campaignGroups.push({ id: g.id, name: g.name || g.id, campaigns: filtered });
+          allFlatCampaigns = allFlatCampaigns.concat(filtered);
+        }
       });
-    }
-    // Filter campaigns to only those belonging to the current advertiser
-    if (advId) {
-      campaigns = allCampaigns.filter(c => String(c.advertiserId) === String(advId));
-    } else {
-      campaigns = allCampaigns;
     }
   } catch (e) {}
 
@@ -364,7 +370,7 @@ function buildEntityTreeHTML() {
   let adgroupsByCampaign = {};
   try {
     const allAdgroups = JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]');
-    const campaignIds = new Set(campaigns.map(c => c.id));
+    const campaignIds = new Set(allFlatCampaigns.map(c => c.id));
     allAdgroups.forEach(ag => {
       const camId = ag.campaign || ag.campaignId;
       if (camId && campaignIds.has(camId)) {
@@ -374,28 +380,16 @@ function buildEntityTreeHTML() {
     });
   } catch (e) {}
 
-  // 4. Build the HTML tree
-  let html = '<ul class="space-y-1">';
-
-  // Advertiser row (always checked, disabled)
-  html += `
-    <li class="flex items-center gap-2 px-2 py-1.5 rounded-md opacity-60">
-      <input type="checkbox" checked disabled class="w-4 h-4 accent-blue-600">
-      <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-blue-100 text-blue-900">ADV</span>
-      <span class="text-sm font-semibold text-gray-800">${escapeHtml(advName)}</span>
-      <span class="text-[10px] text-gray-400 ml-1">(always included)</span>
-    </li>`;
-
-  // Campaign rows with nested ad groups
-  campaigns.forEach((cam, idx) => {
-    const camChildrenId = 'entityTree-cam' + idx + '-children';
+  // Helper: render a single campaign row with nested AG checkboxes
+  const renderCamRow = (cam, globalIdx) => {
+    const camChildrenId = 'entityTree-cam' + globalIdx + '-children';
     const camName = cam.beaconCampaignName || cam.name || cam.id || 'Unnamed Campaign';
     const childAGs = adgroupsByCampaign[cam.id] || [];
     const safeCamId = escapeAttr(cam.id);
     const safeChildrenId = escapeAttr(camChildrenId);
     const safeCamName = escapeHtml(camName);
 
-    html += `
+    let row = `
     <li class="ml-5">
       <div class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50">
         <input type="checkbox" checked class="w-4 h-4 accent-blue-600 entity-tree-cam-check"
@@ -406,12 +400,12 @@ function buildEntityTreeHTML() {
       <div id="${safeChildrenId}" class="ml-8 space-y-0.5">`;
 
     if (childAGs.length === 0) {
-      html += `<div class="px-2 py-1 text-xs text-gray-400 italic">No ad groups</div>`;
+      row += `<div class="px-2 py-1 text-xs text-gray-400 italic">No ad groups</div>`;
     } else {
       childAGs.forEach(ag => {
         const agName = ag.name || ag.id || 'Unnamed Ad Group';
         const safeAgId = escapeAttr(ag.id);
-        html += `
+        row += `
         <div class="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-50">
           <input type="checkbox" checked class="w-4 h-4 accent-blue-600 entity-tree-ag-check" data-ag-id="${safeAgId}" data-cam-id="${safeCamId}">
           <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-800">AG</span>
@@ -419,12 +413,51 @@ function buildEntityTreeHTML() {
         </div>`;
       });
     }
+    row += `</div></li>`;
+    return row;
+  };
 
-    html += `</div></li>`;
+  // 4. Build the HTML tree
+  let html = '<ul class="space-y-1">';
+  let globalCamIdx = 0;
+
+  // Advertiser row (always checked, disabled)
+  html += `
+    <li class="flex items-center gap-2 px-2 py-1.5 rounded-md opacity-60">
+      <input type="checkbox" checked disabled class="w-4 h-4 accent-blue-600">
+      <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-blue-100 text-blue-900">ADV</span>
+      <span class="text-sm font-semibold text-gray-800">${escapeHtml(advName)}</span>
+      <span class="text-[10px] text-gray-400 ml-1">(always included)</span>
+    </li>`;
+
+  // Ungrouped campaigns (from tree.campaigns top-level)
+  ungroupedCampaigns.forEach(cam => {
+    html += renderCamRow(cam, globalCamIdx++);
+  });
+
+  // Campaign Groups with their campaigns nested underneath
+  campaignGroups.forEach((grp, cgIdx) => {
+    const cgChildrenId = 'entityTree-cg' + cgIdx + '-children';
+    const safeCgId = escapeAttr(grp.id);
+    const safeCgChildrenId = escapeAttr(cgChildrenId);
+    html += `
+    <li class="ml-2 mt-2">
+      <div class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50">
+        <input type="checkbox" checked class="w-4 h-4 accent-green-600 entity-tree-cg-check"
+               data-cg-id="${safeCgId}" data-children="${safeCgChildrenId}">
+        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-green-100 text-green-800">CG</span>
+        <span class="text-sm font-semibold text-gray-700">${escapeHtml(grp.name)}</span>
+        <span class="text-xs text-gray-400 font-mono">${grp.id ? '(' + escapeAttr(grp.id) + ')' : ''}</span>
+      </div>
+      <ul id="${safeCgChildrenId}" class="mt-0.5">`;
+    grp.campaigns.forEach(cam => {
+      html += renderCamRow(cam, globalCamIdx++);
+    });
+    html += `</ul></li>`;
   });
 
   // Handle case: no campaigns at all
-  if (campaigns.length === 0) {
+  if (ungroupedCampaigns.length === 0 && campaignGroups.length === 0) {
     html += `<li class="ml-5 px-2 py-3 text-sm text-gray-400 italic">No campaigns found for this advertiser.</li>`;
   }
 
@@ -479,6 +512,18 @@ function openEntitySelectModal() {
   modal.classList.remove('hidden');
   modal.classList.add('flex');
 
+  // Wire up CG checkbox toggles (check/uncheck all child CAMs+AGs)
+  document.querySelectorAll('.entity-tree-cg-check').forEach(cb => {
+    cb.addEventListener('change', function() {
+      const childrenId = this.getAttribute('data-children');
+      if (childrenId) {
+        document.querySelectorAll('#' + childrenId + ' input[type="checkbox"]').forEach(c => {
+          c.checked = this.checked;
+        });
+      }
+    });
+  });
+
   // Wire up campaign checkbox toggles
   document.querySelectorAll('.entity-tree-cam-check').forEach(cb => {
     cb.addEventListener('change', function() {
@@ -513,8 +558,13 @@ function confirmEntityTreeSelection() {
   console.log('confirmEntityTreeSelection called');
   console.log('window._pendingNewCO:', window._pendingNewCO);
   
+  const selectedCampaignGroups = [];
   const selectedCampaigns = [];
   const selectedAdGroups = [];
+
+  document.querySelectorAll('.entity-tree-cg-check:checked').forEach(cb => {
+    selectedCampaignGroups.push(cb.getAttribute('data-cg-id'));
+  });
 
   document.querySelectorAll('.entity-tree-cam-check:checked').forEach(cb => {
     selectedCampaigns.push(cb.getAttribute('data-cam-id'));
@@ -527,11 +577,13 @@ function confirmEntityTreeSelection() {
     });
   });
 
+  console.log('Selected campaign groups:', selectedCampaignGroups);
   console.log('Selected campaigns:', selectedCampaigns);
   console.log('Selected ad groups:', selectedAdGroups);
 
   // Store selections in localStorage for ChangeOrderDetail.html to pick up
   localStorage.setItem('co_selected_entities', JSON.stringify({
+    campaignGroups: selectedCampaignGroups,
     campaigns: selectedCampaigns,
     adgroups: selectedAdGroups
   }));
@@ -559,17 +611,19 @@ function proceedWithCOCreation() {
   }
   
   // Get selected entities from localStorage
-  let selectedEntities = { campaigns: [], adgroups: [] };
+  let selectedEntities = { campaignGroups: [], campaigns: [], adgroups: [] };
   try {
     const raw = localStorage.getItem('co_selected_entities');
     if (raw) selectedEntities = JSON.parse(raw);
+    if (!selectedEntities.campaignGroups) selectedEntities.campaignGroups = [];
   } catch (e) {
     console.error('Error parsing selected entities:', e);
   }
   
   console.log('Selected entities:', selectedEntities);
   
-  // Get campaign and ad group data for names
+  // Get campaign group, campaign, and ad group data for names
+  let campaignGroupMap = {};
   let campaignMap = {};
   let adgroupMap = {};
   
@@ -577,7 +631,10 @@ function proceedWithCOCreation() {
     const tree = JSON.parse(localStorage.getItem('campaign_tree_groups') || '{}');
     let allCams = [];
     if (tree.campaigns) allCams = allCams.concat(tree.campaigns);
-    if (tree.groups) tree.groups.forEach(g => { if (g.campaigns) allCams = allCams.concat(g.campaigns); });
+    if (tree.groups) tree.groups.forEach(g => {
+      campaignGroupMap[g.id] = g;
+      if (g.campaigns) allCams = allCams.concat(g.campaigns);
+    });
     allCams.forEach(c => campaignMap[c.id] = c);
   } catch (e) {
     console.error('Error loading campaigns:', e);
@@ -590,6 +647,17 @@ function proceedWithCOCreation() {
     console.error('Error loading ad groups:', e);
   }
   
+  // Add selected campaign groups as entities
+  (selectedEntities.campaignGroups || []).forEach(cgId => {
+    const cg = campaignGroupMap[cgId];
+    newCO.entities.push({
+      type: 'campaigngroup',
+      id: cgId,
+      name: cg ? (cg.name || cgId) : cgId,
+      fields: {}
+    });
+  });
+
   // Add selected campaigns as entities
   selectedEntities.campaigns.forEach(camId => {
     const cam = campaignMap[camId];
@@ -625,10 +693,10 @@ function proceedWithCOCreation() {
   // Show success toast if available
   coShowToast('Change order created', 'success');
   
-  console.log('Redirecting to:', `./ChangeOrderDetail.html?coId=${encodeURIComponent(newCO.id)}`);
+  console.log('Redirecting to:', `./ChangeOrderDetails.html?coId=${encodeURIComponent(newCO.id)}`);
   
   // Navigate to the new change order
-  window.location.href = `./ChangeOrderDetail.html?coId=${encodeURIComponent(newCO.id)}`;
+  window.location.href = `./ChangeOrderDetails.html?coId=${encodeURIComponent(newCO.id)}`;
 }
 
 /**

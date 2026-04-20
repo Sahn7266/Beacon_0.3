@@ -413,7 +413,7 @@
         tr.className = 'hover:bg-gray-50';
         tr.innerHTML = `
           <td class="px-4 py-1 whitespace-nowrap text-sm border-r border-default">
-            <a href="./ChangeOrderDetail.html?coId=${encodedId}" class="text-blue-600 hover:underline">${safeId}</a>
+            <a href="./ChangeOrderDetails.html?coId=${encodedId}" class="text-blue-600 hover:underline">${safeId}</a>
           </td>
           <td class="px-4 py-1 whitespace-nowrap text-sm font-medium border-r border-default">${safeName}</td>
           <td class="px-4 py-1 whitespace-nowrap text-sm border-r border-default">${statusBadge(co.status)}</td>
@@ -423,7 +423,7 @@
           <td class="px-4 py-1 whitespace-nowrap text-sm text-right border-r border-default">${camCount}</td>
           <td class="px-4 py-1 whitespace-nowrap text-sm text-right border-r border-default">${agCount}</td>
           <td class="px-4 py-1 whitespace-nowrap text-sm">
-            <a href="./ChangeOrderDetail.html?coId=${encodedId}" class="text-blue-600 hover:underline mr-2">View</a>
+            <a href="./ChangeOrderDetails.html?coId=${encodedId}" class="text-blue-600 hover:underline mr-2">View</a>
             <button type="button" class="text-blue-600 hover:underline cursor-pointer mr-2" data-action="export" data-co-id="${encodedId}">Export</button>
             ${canDelete ? `<button type="button" class="text-red-600 hover:underline cursor-pointer" data-action="delete" data-co-id="${encodedId}">Delete</button>` : ''}
           </td>

@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="./assets/theme.css">
   <link rel="stylesheet" href="./assets/loading.css">
   <script src="./assets/loading.js" defer></script>
+  <script src="./assets/changeorder.js" defer></script>
   <style>
     body { font-family: 'apple-system', 'Segoe UI', 'Roboto', 'Inter', sans-serif; }
     
@@ -135,7 +136,7 @@
         <svg class="w-4 h-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
         </svg>
-        <span class="font-semibold text-gray-900">CO-A8X2K1</span>
+        <span id="breadcrumbCoId" class="font-semibold text-gray-900">—</span>
       </nav>
     </div>
 
@@ -213,23 +214,23 @@
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-4">
                 <!-- Editable CO Name -->
-                <input type="text" value="Q2 Strategy A" 
+                <input id="coNameInput" type="text" value=""
                   class="text-2xl font-semibold text-gray-900 border-b-2 border-transparent hover:border-blue-300 focus:border-blue-500 focus:outline-none bg-transparent px-1 transition-colors"
                   placeholder="Change Order Name">
                 <!-- Status Badge -->
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">Draft</span>
+                <span id="coStatusBadge" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">Draft</span>
               </div>
               
               <!-- Action Buttons -->
               <div class="flex items-center gap-2">
                 <button class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-                  onclick="document.getElementById('entitySelectModal').classList.remove('hidden')">
+                  onclick="openManageEntitiesModal()">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                   </svg>
                   <span>Manage Entities</span>
                 </button>
-                <button class="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                <button onclick="saveCO()" class="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                   </svg>
@@ -252,257 +253,19 @@
             
             <!-- CO Metadata -->
             <div class="flex items-center gap-6 mt-3 text-sm text-gray-500">
-              <span><strong>ID:</strong> CO-A8X2K1</span>
-              <span><strong>Created:</strong> Feb 20, 2026</span>
-              <span><strong>Modified:</strong> Feb 23, 2026</span>
-              <span><strong>Owner:</strong> Matt Hunter</span>
+              <span><strong>ID:</strong> <span id="coIdDisplay">—</span></span>
+              <span><strong>Created:</strong> <span id="coCreatedDisplay">—</span></span>
+              <span><strong>Modified:</strong> <span id="coModifiedDisplay">—</span></span>
+              <span><strong>Owner:</strong> <span id="coOwnerDisplay">—</span></span>
             </div>
           </div>
 
           <!-- Entity Sections -->
-          <div class="px-6 py-5 space-y-4">
-            
-            <!-- Advertiser Section (Blue background) -->
-            <div class="entity-section bg-blue-50 border border-blue-200">
-              <div class="entity-header flex items-center justify-between px-4 py-3" onclick="toggleSection('advSection')">
-                <div class="flex items-center gap-3">
-                  <svg id="advChevron" class="chevron-icon w-5 h-5 text-blue-600 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                  </svg>
-                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide bg-blue-100 text-blue-900">ADV</span>
-                  <h3 class="text-lg font-semibold text-blue-900">Goldmine Software Solutions</h3>
-                </div>
-                <span class="text-sm text-blue-600">Advertiser-level fields</span>
-              </div>
-              
-              <div id="advSection" class="entity-content expanded bg-white border-t border-blue-200">
-                <div class="px-6 py-4">
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-1 required-indicator">Advertiser Name</label>
-                      <input type="text" value="Goldmine Software Solutions" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-1">Account #</label>
-                      <input type="text" value="123456" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-1">Website</label>
-                      <input type="text" value="https://goldminesoftware.com" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-1">Industry</label>
-                      <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option selected>Technology</option>
-                        <option>Healthcare</option>
-                        <option>Finance</option>
-                        <option>Retail</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Campaign 1 Section (Purple background) -->
-            <div class="entity-section bg-purple-50 border border-purple-200">
-              <div class="entity-header flex items-center justify-between px-4 py-3" onclick="toggleSection('cam1Section')">
-                <div class="flex items-center gap-3">
-                  <svg id="cam1Chevron" class="chevron-icon w-5 h-5 text-purple-600 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                  </svg>
-                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide bg-purple-100 text-purple-800">CAM</span>
-                  <h3 class="text-lg font-semibold text-purple-900">Tuscaloosa AL - Prog. Display</h3>
-                </div>
-                <span class="text-sm text-purple-600">3 Ad Groups</span>
-              </div>
-              
-              <div id="cam1Section" class="entity-content expanded bg-white border-t border-purple-200">
-                <div class="px-6 py-4">
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-1 required-indicator">Campaign Name</label>
-                      <input type="text" value="Tuscaloosa AL - Prog. Display" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                      <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1 required-indicator">Start Date</label>
-                        <input type="date" value="2026-03-01" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                      </div>
-                      <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1 required-indicator">End Date</label>
-                        <input type="date" value="2026-03-31" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                      </div>
-                    </div>
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-1 required-indicator">Budget</label>
-                      <div class="relative">
-                        <span class="absolute left-3 top-2.5 text-gray-500">$</span>
-                        <input type="number" value="25000" class="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                      </div>
-                    </div>
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-1">Pacing</label>
-                      <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                        <option selected>Even</option>
-                        <option>ASAP</option>
-                        <option>Custom</option>
-                      </select>
-                    </div>
-                  </div>
-                  
-                  <!-- Nested Ad Groups -->
-                  <div class="space-y-3 pl-4 border-l-4 border-purple-200">
-                    <!-- Ad Group 1 -->
-                    <div class="entity-section bg-orange-50 border border-orange-200">
-                      <div class="entity-header flex items-center justify-between px-4 py-2" onclick="toggleSection('ag1Section')">
-                        <div class="flex items-center gap-3">
-                          <svg id="ag1Chevron" class="chevron-icon w-4 h-4 text-orange-600 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                          </svg>
-                          <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-800">AG</span>
-                          <span class="text-sm font-medium text-orange-900">Local Consumers_Persona</span>
-                        </div>
-                      </div>
-                      <div id="ag1Section" class="entity-content expanded bg-white border-t border-orange-200">
-                        <div class="px-6 py-4">
-                          <!-- Read-only metadata row -->
-                          <div class="flex flex-wrap gap-x-8 gap-y-1 text-xs text-gray-600 mb-4">
-                            <span><span class="font-medium text-gray-500">ID:</span> AG-1EGU6Z</span>
-                            <span><span class="font-medium text-gray-500">Classification:</span> Programmatic Display</span>
-                            <span><span class="font-medium text-gray-500">Tactic:</span> Persona</span>
-                          </div>
-                          
-                          <!-- Editable form fields -->
-                          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3">
-                            <div>
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Start Date <span class="text-red-500 font-bold">*</span></label>
-                              <input type="date" value="2026-03-01" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none border-l-[3px] border-l-red-500">
-                            </div>
-                            <div>
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">End Date <span class="text-red-500 font-bold">*</span></label>
-                              <input type="date" value="2027-02-28" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none border-l-[3px] border-l-red-500">
-                            </div>
-                            <div>
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Impressions <span class="text-red-500 font-bold">*</span></label>
-                              <input type="text" value="500,000" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none border-l-[3px] border-l-red-500">
-                            </div>
-                            <div>
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Monthly Impressions</label>
-                              <input type="text" placeholder="Optional" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                            </div>
-                            <div class="md:col-span-2">
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Additional Notes / Instructions</label>
-                              <textarea placeholder="Targeting instructions, day parting, special requests..." rows="3"
-                                class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none resize-y">Target local consumers within 60mi of Tuscaloosa. Focus on event/entertainment interests. Day parting: 8am-noon weekdays.</textarea>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <!-- Ad Group 2 -->
-                    <div class="entity-section bg-orange-50 border border-orange-200">
-                      <div class="entity-header flex items-center justify-between px-4 py-2" onclick="toggleSection('ag2Section')">
-                        <div class="flex items-center gap-3">
-                          <svg id="ag2Chevron" class="chevron-icon w-4 h-4 text-orange-600 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                          </svg>
-                          <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-800">AG</span>
-                          <span class="text-sm font-medium text-orange-900">Local Site Visitors_Retargeting</span>
-                        </div>
-                      </div>
-                      <div id="ag2Section" class="entity-content expanded bg-white border-t border-orange-200">
-                        <div class="px-6 py-4">
-                          <!-- Read-only metadata row -->
-                          <div class="flex flex-wrap gap-x-8 gap-y-1 text-xs text-gray-600 mb-4">
-                            <span><span class="font-medium text-gray-500">ID:</span> AG-2RFT9K</span>
-                            <span><span class="font-medium text-gray-500">Classification:</span> Programmatic Display</span>
-                            <span><span class="font-medium text-gray-500">Tactic:</span> Retargeting</span>
-                          </div>
-                          
-                          <!-- Editable form fields -->
-                          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3">
-                            <div>
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Start Date <span class="text-red-500 font-bold">*</span></label>
-                              <input type="date" value="2026-03-01" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none border-l-[3px] border-l-red-500">
-                            </div>
-                            <div>
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">End Date <span class="text-red-500 font-bold">*</span></label>
-                              <input type="date" value="2027-02-28" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none border-l-[3px] border-l-red-500">
-                            </div>
-                            <div>
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Impressions <span class="text-red-500 font-bold">*</span></label>
-                              <input type="text" value="100,000" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none border-l-[3px] border-l-red-500">
-                            </div>
-                            <div>
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Monthly Impressions</label>
-                              <input type="text" placeholder="Optional" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                            </div>
-                            <div class="md:col-span-2">
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Additional Notes / Instructions</label>
-                              <textarea placeholder="Targeting instructions, day parting, special requests..." rows="3"
-                                class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none resize-y"></textarea>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <!-- Ad Group 3 -->
-                    <div class="entity-section bg-orange-50 border border-orange-200">
-                      <div class="entity-header flex items-center justify-between px-4 py-2" onclick="toggleSection('ag3Section')">
-                        <div class="flex items-center gap-3">
-                          <svg id="ag3Chevron" class="chevron-icon w-4 h-4 text-orange-600 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                          </svg>
-                          <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-800">AG</span>
-                          <span class="text-sm font-medium text-orange-900">Local Consumers_Location Targeting</span>
-                        </div>
-                      </div>
-                      <div id="ag3Section" class="entity-content expanded bg-white border-t border-orange-200">
-                        <div class="px-6 py-4">
-                          <!-- Read-only metadata row -->
-                          <div class="flex flex-wrap gap-x-8 gap-y-1 text-xs text-gray-600 mb-4">
-                            <span><span class="font-medium text-gray-500">ID:</span> AG-3KLP4W</span>
-                            <span><span class="font-medium text-gray-500">Classification:</span> Programmatic Display</span>
-                            <span><span class="font-medium text-gray-500">Tactic:</span> Location Targeting</span>
-                          </div>
-                          
-                          <!-- Editable form fields -->
-                          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3">
-                            <div>
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Start Date <span class="text-red-500 font-bold">*</span></label>
-                              <input type="date" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none border-l-[3px] border-l-red-500">
-                            </div>
-                            <div>
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">End Date <span class="text-red-500 font-bold">*</span></label>
-                              <input type="date" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none border-l-[3px] border-l-red-500">
-                            </div>
-                            <div>
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Impressions <span class="text-red-500 font-bold">*</span></label>
-                              <input type="text" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none border-l-[3px] border-l-red-500">
-                            </div>
-                            <div>
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Monthly Impressions</label>
-                              <input type="text" placeholder="Optional" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                            </div>
-                            <div class="md:col-span-2">
-                              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Additional Notes / Instructions</label>
-                              <textarea placeholder="Targeting instructions, day parting, special requests..." rows="3"
-                                class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none resize-y"></textarea>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
+          <div id="entitySectionsContainer" class="px-6 py-5 space-y-3">
+            <!-- Populated dynamically by JS -->
+
             <!-- General Notes Section -->
-            <div class="entity-section bg-gray-50 border border-gray-200">
+            <div class="entity-section bg-gray-50 border border-gray-200 border-l-4 border-l-gray-400 border-r-4 border-r-gray-400">
               <div class="entity-header flex items-center justify-between px-4 py-3" onclick="toggleSection('notesSection')">
                 <div class="flex items-center gap-3">
                   <svg id="notesChevron" class="chevron-icon w-5 h-5 text-gray-600 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -514,166 +277,527 @@
                   <h3 class="text-lg font-semibold text-gray-900">General Notes / Cover Letter</h3>
                 </div>
               </div>
-              
               <div id="notesSection" class="entity-content expanded bg-white border-t border-gray-200">
                 <div class="px-6 py-4">
-                  <textarea rows="6" placeholder="Add any general notes, cover letter content, or special instructions for this change order..." 
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none">This Change Order includes Q2 budget adjustments for the Tuscaloosa AL market campaigns.
-
-Key changes:
-- Increased budget allocation for persona targeting
-- Added location targeting ad group
-- Adjusted bid caps based on Q1 performance data
-
-Please review and approve by Feb 28, 2026.</textarea>
+                  <textarea id="coNotesInput" rows="6"
+                    placeholder="Add any general notes, cover letter content, or special instructions for this change order..."
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"></textarea>
                 </div>
               </div>
             </div>
-            
+
           </div>
         </div>
       </main>
     </div>
   </div>
 
-<!-- Entity Selection Modal -->
-<div id="entitySelectModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-  <div class="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 overflow-hidden">
-    
-    <!-- Modal Header -->
-    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-      <h2 class="text-lg font-semibold text-gray-900">Manage Entities</h2>
-      <button class="text-gray-400 hover:text-gray-600 transition-colors"
-        onclick="document.getElementById('entitySelectModal').classList.add('hidden')" aria-label="Close">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
-    </div>
-    
-    <!-- Modal Body -->
-    <div class="px-6 py-4 max-h-[60vh] overflow-y-auto">
-      <p class="text-sm text-gray-500 mb-4">Select which Campaigns and Ad Groups to include in this Change Order.</p>
-      
-      <!-- Entity Tree -->
-      <ul class="space-y-1">
-        <!-- Advertiser (locked/always included) -->
-        <li class="flex items-center gap-2 px-2 py-1.5 rounded-md opacity-60">
-          <input type="checkbox" checked disabled class="w-4 h-4 accent-blue-600">
-          <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-blue-100 text-blue-900">ADV</span>
-          <span class="text-sm font-semibold text-gray-800">Goldmine Software Solutions</span>
-          <span class="text-[10px] text-gray-400 ml-1">always included</span>
-        </li>
-        
-        <!-- Campaign 1 with Ad Groups -->
-        <li class="ml-5">
-          <div class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50">
-            <input type="checkbox" checked class="w-4 h-4 accent-blue-600 entity-cam-check" data-children="modal-cam1-children">
-            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-purple-100 text-purple-800">CAM</span>
-            <span class="text-sm text-gray-800">Tuscaloosa AL - Prog. Display</span>
-          </div>
-          <div id="modal-cam1-children" class="ml-8 space-y-0.5">
-            <div class="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-50">
-              <input type="checkbox" checked class="w-4 h-4 accent-blue-600">
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-800">AG</span>
-              <span class="text-xs text-gray-600">Local Consumers_Persona</span>
-            </div>
-            <div class="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-50">
-              <input type="checkbox" checked class="w-4 h-4 accent-blue-600">
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-800">AG</span>
-              <span class="text-xs text-gray-600">Local Site Visitors_Retargeting</span>
-            </div>
-            <div class="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-50">
-              <input type="checkbox" checked class="w-4 h-4 accent-blue-600">
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-800">AG</span>
-              <span class="text-xs text-gray-600">Local Consumers_Location Targeting</span>
-            </div>
-          </div>
-        </li>
-        
-        <!-- Campaign 2 with Ad Groups -->
-        <li class="ml-5">
-          <div class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50">
-            <input type="checkbox" class="w-4 h-4 accent-blue-600 entity-cam-check" data-children="modal-cam2-children">
-            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-purple-100 text-purple-800">CAM</span>
-            <span class="text-sm text-gray-800">Tuscaloosa AL - Prog. Video</span>
-          </div>
-          <div id="modal-cam2-children" class="ml-8 space-y-0.5">
-            <div class="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-50">
-              <input type="checkbox" class="w-4 h-4 accent-blue-600">
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-800">AG</span>
-              <span class="text-xs text-gray-600">Video_Persona</span>
-            </div>
-            <div class="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-50">
-              <input type="checkbox" class="w-4 h-4 accent-blue-600">
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-800">AG</span>
-              <span class="text-xs text-gray-600">Video_Retargeting</span>
-            </div>
-          </div>
-        </li>
-        
-        <!-- Campaign 3 (no ad groups) -->
-        <li class="ml-5">
-          <div class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50">
-            <input type="checkbox" class="w-4 h-4 accent-blue-600 entity-cam-check" data-children="modal-cam3-children">
-            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-purple-100 text-purple-800">CAM</span>
-            <span class="text-sm text-gray-800">Tuscaloosa AL - Audio</span>
-          </div>
-          <div id="modal-cam3-children" class="ml-8">
-            <div class="px-2 py-1 text-xs text-gray-400 italic">No ad groups</div>
-          </div>
-        </li>
-      </ul>
-    </div>
-    
-    <!-- Modal Footer -->
-    <div class="flex justify-end gap-2 px-6 py-3 bg-gray-50 border-t border-gray-200">
-      <button class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-        onclick="document.getElementById('entitySelectModal').classList.add('hidden')">Cancel</button>
-      <button class="px-4 py-2 text-sm text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700"
-        onclick="document.getElementById('entitySelectModal').classList.add('hidden');">Update Entities</button>
-    </div>
-  </div>
-</div>
-
 <script>
-// Toggle collapsible sections
+// ==================== CONNECTIONS TABLE RENDERER ====================
+function renderConnectionsTable(container, entity, entityType) {
+  if (!container) return;
+  const rows = [];
+  const connectors = entity && entity.connectors ? entity.connectors : null;
+  const platformLabelMap = {
+    'trade-desk': 'The Trade Desk',
+    'dv360': 'DV360',
+    'simplifi': 'Simpli.fi',
+    'google-campaign-manager': 'Google Campaign Manager'
+  };
+  if (connectors) {
+    if (Array.isArray(connectors.dsp)) {
+      connectors.dsp.forEach(key => rows.push({ name: platformLabelMap[key] || key, reportingId: entity.deliveryId || '', type: 'DSP' }));
+    }
+    if (Array.isArray(connectors.adServer)) {
+      connectors.adServer.forEach(key => rows.push({ name: platformLabelMap[key] || key, reportingId: entity.reportingId || '', type: 'Ad Server' }));
+    }
+  }
+  container.innerHTML = `
+    <div class="mb-5">
+      <h4 class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Connections</h4>
+      <div class="overflow-x-auto border border-gray-200 rounded-md">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+          <thead class="bg-gray-50"><tr>
+            <th class="px-4 py-1.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Connection</th>
+            <th class="px-4 py-1.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Reporting ID</th>
+            <th class="px-4 py-1.5 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider w-28">Create/Edit</th>
+          </tr></thead>
+          <tbody class="divide-y divide-gray-200 bg-white">
+            ${rows.map(r => {
+              const hasId = r.reportingId && String(r.reportingId).trim() !== '';
+              return `<tr>
+                <td class="px-4 py-1.5 text-gray-900">${r.name}</td>
+                <td class="px-4 py-1.5 text-gray-700">${hasId ? r.reportingId : '\u2014'}</td>
+                <td class="px-4 py-1.5 text-center"><input type="checkbox" class="w-4 h-4 accent-blue-600 cursor-pointer" ${hasId ? '' : 'checked'}></td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+// ==================== SECTION TOGGLE ====================
 function toggleSection(sectionId) {
   const section = document.getElementById(sectionId);
-  const chevronId = sectionId.replace('Section', 'Chevron');
-  const chevron = document.getElementById(chevronId);
-  
-  if (section) {
-    section.classList.toggle('expanded');
-  }
-  if (chevron) {
-    chevron.classList.toggle('rotated');
+  const chevron = document.getElementById(sectionId.replace('Section', 'Chevron'));
+  if (section) section.classList.toggle('expanded');
+  if (chevron) chevron.classList.toggle('rotated');
+}
+
+// ==================== MANAGE ENTITIES MODAL ====================
+function openManageEntitiesModal() {
+  // Reuse changeorder.js entity select modal with current CO context
+  const coId = new URLSearchParams(window.location.search).get('coId');
+  if (!coId) return;
+  const co = typeof getChangeOrder === 'function' ? getChangeOrder(coId) : null;
+  if (!co) return;
+
+  // Store the CO as the "pending" one so confirmEntityTreeSelection can update it
+  window._pendingUpdateCO = co;
+
+  // Open the entity select modal from changeorder.js
+  if (typeof openEntitySelectModal === 'function') {
+    // Override confirm button to UPDATE instead of create
+    ensureEntitySelectModal();
+    const container = document.getElementById('entityTreeContainer');
+    container.innerHTML = typeof buildEntityTreeHTML === 'function' ? buildEntityTreeHTML() : '';
+    // Reflect current CO entity state — uncheck items not currently in the CO
+    const coEntityIds = new Set((co.entities || []).map(e => e.id));
+    // Set CAM/AG state first
+    document.querySelectorAll('.entity-tree-cam-check').forEach(cb => {
+      cb.checked = coEntityIds.has(cb.getAttribute('data-cam-id'));
+    });
+    document.querySelectorAll('.entity-tree-ag-check').forEach(cb => {
+      cb.checked = coEntityIds.has(cb.getAttribute('data-ag-id'));
+    });
+    // Set CG state: checked if the CG entity is in the CO, OR if any child CAM is checked
+    document.querySelectorAll('.entity-tree-cg-check').forEach(cb => {
+      if (coEntityIds.has(cb.getAttribute('data-cg-id'))) {
+        cb.checked = true;
+        return;
+      }
+      const childrenId = cb.getAttribute('data-children');
+      if (childrenId) {
+        const childCams = document.querySelectorAll('#' + childrenId + ' .entity-tree-cam-check');
+        cb.checked = childCams.length > 0 && Array.from(childCams).some(c => c.checked);
+      } else {
+        cb.checked = false;
+      }
+    });
+    const modal = document.getElementById('entitySelectModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    const confirmBtn = document.getElementById('entityTreeConfirmBtn');
+    if (confirmBtn) {
+      confirmBtn.textContent = 'Update Entities';
+      confirmBtn.onclick = function() { applyEntityUpdate(co); };
+    }
+
+    // Wire CG toggles
+    document.querySelectorAll('.entity-tree-cg-check').forEach(cb => {
+      cb.addEventListener('change', function() {
+        const childrenId = this.getAttribute('data-children');
+        if (childrenId) {
+          document.querySelectorAll('#' + childrenId + ' input[type="checkbox"]').forEach(c => c.checked = this.checked);
+        }
+      });
+    });
+
+    // Wire cam toggles
+    document.querySelectorAll('.entity-tree-cam-check').forEach(cb => {
+      cb.addEventListener('change', function() {
+        const childrenId = this.getAttribute('data-children');
+        if (childrenId) {
+          document.querySelectorAll('#' + childrenId + ' input[type="checkbox"]').forEach(c => c.checked = this.checked);
+        }
+      });
+    });
   }
 }
 
-// Campaign checkbox toggles all child AG checkboxes
-document.querySelectorAll('.entity-cam-check').forEach(cb => {
-  cb.addEventListener('change', function() {
-    const childrenId = this.getAttribute('data-children');
-    if (childrenId) {
-      document.querySelectorAll('#' + childrenId + ' input[type="checkbox"]').forEach(c => c.checked = this.checked);
+function applyEntityUpdate(co) {
+  const selectedCampaignGroups = [];
+  const selectedCampaigns = [];
+  const selectedAdGroups = [];
+  document.querySelectorAll('.entity-tree-cg-check:checked').forEach(cb => selectedCampaignGroups.push(cb.getAttribute('data-cg-id')));
+  document.querySelectorAll('.entity-tree-cam-check:checked').forEach(cb => selectedCampaigns.push(cb.getAttribute('data-cam-id')));
+  document.querySelectorAll('.entity-tree-ag-check:checked').forEach(cb => selectedAdGroups.push({ id: cb.getAttribute('data-ag-id'), campaignId: cb.getAttribute('data-cam-id') }));
+
+  // Rebuild entities: keep advertiser, rebuild everything else
+  const advEntity = (co.entities || []).find(e => e.type === 'advertiser');
+  co.entities = advEntity ? [advEntity] : [];
+
+  let campaignGroupMap = {};
+  let campaignMap = {};
+  let adgroupMap = {};
+  try {
+    const tree = JSON.parse(localStorage.getItem('campaign_tree_groups') || '{}');
+    let allCams = [];
+    if (tree.campaigns) allCams = allCams.concat(tree.campaigns);
+    if (tree.groups) tree.groups.forEach(g => {
+      campaignGroupMap[g.id] = g;
+      if (g.campaigns) allCams = allCams.concat(g.campaigns);
+    });
+    allCams.forEach(c => campaignMap[c.id] = c);
+  } catch(e) {}
+  try { JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]').forEach(ag => adgroupMap[ag.id] = ag); } catch(e) {}
+
+  selectedCampaignGroups.forEach(cgId => {
+    const cg = campaignGroupMap[cgId];
+    co.entities.push({ type: 'campaigngroup', id: cgId, name: cg ? (cg.name || cgId) : cgId, fields: {} });
+  });
+  selectedCampaigns.forEach(camId => {
+    const cam = campaignMap[camId];
+    co.entities.push({ type: 'campaign', id: camId, name: cam ? (cam.beaconCampaignName || cam.name) : camId, fields: {} });
+  });
+  selectedAdGroups.forEach(agInfo => {
+    const ag = adgroupMap[agInfo.id];
+    co.entities.push({ type: 'adgroup', id: agInfo.id, name: ag ? ag.name : agInfo.id, campaignId: agInfo.campaignId, fields: {} });
+  });
+
+  if (typeof saveChangeOrder === 'function') saveChangeOrder(co);
+  if (typeof closeEntitySelectModal === 'function') closeEntitySelectModal();
+  renderEntitySections(co);
+}
+
+// ==================== HELPERS ====================
+function escHtml(v) {
+  return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function fmtDate(d) {
+  if (!d) return '\u2014';
+  try { return new Date(d).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}); } catch { return d; }
+}
+function statusBadge(status) {
+  const s = (status||'draft').toLowerCase();
+  const colors = { draft:'bg-yellow-100 text-yellow-800', synced:'bg-blue-100 text-blue-800', active:'bg-green-100 text-green-800', cancelled:'bg-gray-100 text-gray-500' };
+  return `<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${colors[s]||'bg-gray-100 text-gray-600'}">${s.charAt(0).toUpperCase()+s.slice(1)}</span>`;
+}
+
+// ==================== ENTITY CARD BUILDER ====================
+function buildAdGroupCard(ag, idx) {
+  const sId = `agDyn${idx}Section`;
+  const cId = `agDyn${idx}Chevron`;
+  const fields = ag.fields || {};
+  const safeAgId = escHtml(ag.id || '');
+  return `
+    <div class="entity-section bg-white border border-gray-200 border-l-4 border-l-amber-500 border-r-4 border-r-amber-500">
+      <div class="entity-header flex items-center justify-between px-5 py-2 hover:bg-gray-50 transition-colors" onclick="toggleSection('${sId}')">
+        <div class="flex items-center gap-3">
+          <svg id="${cId}" class="chevron-icon w-4 h-4 text-gray-400 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider bg-amber-500 text-white">AG</span>
+          <span class="text-sm font-semibold text-gray-900">${escHtml(ag.name || ag.id)}</span>
+          <span class="text-xs text-gray-500 font-mono">${ag.id ? '(' + escHtml(ag.id) + ')' : ''}</span>
+        </div>
+      </div>
+      <div id="${sId}" class="entity-content expanded bg-white border-t border-gray-200">
+        <div class="px-6 py-4">
+          <div data-ag-conn-id="${safeAgId}"></div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3">
+            <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">MV Classification</label>
+              <input type="text" value="${escHtml(fields.mvClassification||'')}" placeholder="Programmatic Display" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
+            <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Tactic / Content Category</label>
+              <input type="text" value="${escHtml(fields.tactic||'')}" placeholder="Persona" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
+            <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Geo Target</label>
+              <input type="text" value="${escHtml(fields.geoTarget||'')}" placeholder="e.g. Dallas, TX (50mi)" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
+            <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Start Date <span class="text-red-500 font-bold">*</span></label>
+              <input type="date" value="${escHtml(fields.startDate||'')}" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
+            <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">End Date <span class="text-red-500 font-bold">*</span></label>
+              <input type="date" value="${escHtml(fields.endDate||'')}" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
+            <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Impressions <span class="text-red-500 font-bold">*</span></label>
+              <input type="text" value="${escHtml(fields.impressions||'')}" placeholder="500,000" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
+            <div class="md:col-span-2"><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Landing Page</label>
+              <input type="url" value="${escHtml(fields.landingPage||'')}" placeholder="https://example.com/landing" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
+            <div class="md:col-span-2"><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">UTM Code</label>
+              <input type="text" value="${escHtml(fields.utmCode||'')}" placeholder="utm_source=beacon&amp;utm_medium=display&amp;utm_campaign=..." class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function buildCampaignCard(cam, agList, camIdx) {
+  const sId = `camDyn${camIdx}Section`;
+  const cId = `camDyn${camIdx}Chevron`;
+  const agCount = agList.length;
+  const agHtml = agList.map((ag, i) => buildAdGroupCard(ag, camIdx + '_' + i)).join('');
+  const safeCamId = escHtml(cam.id || '');
+  return `
+    <div class="entity-section bg-white border border-gray-200 border-l-4 border-l-indigo-500 border-r-4 border-r-indigo-500">
+      <div class="entity-header flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors" onclick="toggleSection('${sId}')">
+        <div class="flex items-center gap-3">
+          <svg id="${cId}" class="chevron-icon w-5 h-5 text-gray-400 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider bg-indigo-500 text-white">CAM</span>
+          <h3 class="text-base font-semibold text-gray-900">${escHtml(cam.name || cam.id)}</h3>
+          <span class="text-xs text-gray-500 font-mono">${cam.id ? '(' + escHtml(cam.id) + ')' : ''}</span>
+        </div>
+        <span class="text-xs text-gray-400">${agCount} Ad Group${agCount !== 1 ? 's' : ''}</span>
+      </div>
+      <div id="${sId}" class="entity-content expanded bg-white border-t border-gray-200">
+        <div class="px-6 py-4">
+          <div data-cam-conn-id="${safeCamId}"></div>
+          ${agCount > 0 ? `<div class="space-y-2 mt-2 ml-4 pl-4 border-l border-gray-200 campaign-adgroups-wrapper">${agHtml}</div>` : '<p class="text-sm text-gray-400 italic">No ad groups selected.</p>'}
+        </div>
+      </div>
+    </div>`;
+}
+
+function buildCampaignGroupCard(grpInfo, cams, allAdGroups, grpIdx) {
+  const sId = `cgDyn${grpIdx}Section`;
+  const cId = `cgDyn${grpIdx}Chevron`;
+  const camCount = cams.length;
+  const safeCgId = escHtml(grpInfo.id || '');
+  const camHtml = cams.map((cam, i) => {
+    const camAGs = allAdGroups.filter(ag => ag.campaignId === cam.id);
+    return buildCampaignCard(cam, camAGs, `cg${grpIdx}_${i}`);
+  }).join('');
+  return `
+    <div class="entity-section bg-white border border-gray-200 border-l-4 border-l-green-600 border-r-4 border-r-green-600">
+      <div class="entity-header flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors" onclick="toggleSection('${sId}')">
+        <div class="flex items-center gap-3">
+          <svg id="${cId}" class="chevron-icon w-5 h-5 text-gray-400 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider bg-green-600 text-white">CG</span>
+          <h3 class="text-base font-semibold text-gray-900">${escHtml(grpInfo.name)}</h3>
+          <span class="text-xs text-gray-500 font-mono">${grpInfo.id ? '(' + escHtml(grpInfo.id) + ')' : ''}</span>
+        </div>
+        <span class="text-xs text-gray-400">${camCount} Campaign${camCount !== 1 ? 's' : ''}</span>
+      </div>
+      <div id="${sId}" class="entity-content expanded bg-white border-t border-gray-200">
+        <div class="px-6 py-4 space-y-3">
+          <div data-cg-conn-id="${safeCgId}"></div>
+          ${camHtml}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ==================== RENDER ENTITY SECTIONS FROM CO ====================
+function renderEntitySections(co) {
+  const container = document.getElementById('entitySectionsContainer');
+  if (!container) return;
+
+  // Get the general notes section (last permanent card)
+  const notesSection = container.querySelector('.entity-section.bg-gray-50');
+
+  // Remove all dynamic entity cards (everything except the notes section)
+  Array.from(container.children).forEach(child => {
+    if (!child.classList.contains('bg-gray-50')) container.removeChild(child);
+  });
+
+  const entities = co.entities || [];
+  const advEntity  = entities.find(e => e.type === 'advertiser');
+  const campaigns  = entities.filter(e => e.type === 'campaign');
+  const adgroups   = entities.filter(e => e.type === 'adgroup');
+
+  const fragment = document.createDocumentFragment();
+
+  // --- Advertiser Card ---
+  if (advEntity) {
+    const advDiv = document.createElement('div');
+    advDiv.className = 'entity-section bg-white border border-gray-200 border-l-4 border-l-blue-600 border-r-4 border-r-blue-600';
+    advDiv.innerHTML = `
+      <div class="entity-header flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors" onclick="toggleSection('advDynSection')">
+        <div class="flex items-center gap-3">
+          <svg id="advDynChevron" class="chevron-icon w-5 h-5 text-gray-400 rotated" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider bg-blue-600 text-white">ADV</span>
+          <h3 class="text-base font-semibold text-gray-900">${escHtml(advEntity.name)}</h3>
+          <span class="text-xs text-gray-500 font-mono">${advEntity.id ? '(' + escHtml(advEntity.id) + ')' : ''}</span>
+        </div>
+        <span class="text-xs text-gray-400">Advertiser-level fields</span>
+      </div>
+      <div id="advDynSection" class="entity-content expanded bg-white border-t border-gray-200">
+        <div class="px-6 py-4">
+          <div data-adv-connections-container></div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Account #</label>
+              <input id="advAccountInput" type="text" value="${escHtml(advEntity.fields && advEntity.fields.accountNumber || '')}" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+            </div>
+          </div>
+        </div>
+      </div>`;
+    fragment.appendChild(advDiv);
+
+    // Render advertiser connections
+    const advConn = advDiv.querySelector('[data-adv-connections-container]');
+    try {
+      const advRaw = localStorage.getItem('adv_selected_data') || localStorage.getItem('selectedAdvertiser');
+      const advData = advRaw ? JSON.parse(advRaw) : {};
+      renderConnectionsTable(advConn, advData, 'advertiser');
+      const acctInput = advDiv.querySelector('#advAccountInput');
+      if (acctInput && !acctInput.value) acctInput.value = advData.account || advData.accountNumber || '';
+    } catch(e) {}
+  }
+
+  // --- Campaign Group + Campaign + Ad Group Cards ---
+  // Build camId → group lookup from localStorage
+  let camGroupMap = {};
+  try {
+    const tree = JSON.parse(localStorage.getItem('campaign_tree_groups') || '{}');
+    if (tree.groups) {
+      tree.groups.forEach(g => {
+        (g.campaigns || []).forEach(c => { camGroupMap[c.id] = { id: g.id, name: g.name || g.id }; });
+      });
+    }
+  } catch(e) {}
+
+  // Separate campaigns into those with a CG parent and ungrouped ones
+  const groupedCams = {}; // groupId → { info: { id, name }, cams: [] }
+  const ungroupedCams = [];
+  campaigns.forEach(cam => {
+    const grp = camGroupMap[cam.id];
+    if (grp) {
+      if (!groupedCams[grp.id]) groupedCams[grp.id] = { info: grp, cams: [] };
+      groupedCams[grp.id].cams.push(cam);
+    } else {
+      ungroupedCams.push(cam);
     }
   });
-});
 
-// Load advertiser data from localStorage
-document.addEventListener('DOMContentLoaded', function() {
-  const advertiserJson =
-    localStorage.getItem('adv_selected_data') ||
-    localStorage.getItem('selectedAdvertiser');
-  if (advertiserJson) {
+  // Render CG wrapper cards (each containing their campaign cards)
+  Object.values(groupedCams).forEach((grpData, grpIdx) => {
+    const cgEl = document.createElement('div');
+    cgEl.innerHTML = buildCampaignGroupCard(grpData.info, grpData.cams, adgroups, grpIdx);
+    fragment.appendChild(cgEl.firstElementChild);
+  });
+
+  // Render ungrouped campaign cards directly
+  ungroupedCams.forEach((cam, camIdx) => {
+    const camAdGroups = adgroups.filter(ag => ag.campaignId === cam.id);
+    const camEl = document.createElement('div');
+    camEl.innerHTML = buildCampaignCard(cam, camAdGroups, 'ug' + camIdx);
+    fragment.appendChild(camEl.firstElementChild);
+  });
+
+  // Insert before the notes section
+  container.insertBefore(fragment, notesSection);
+
+  // Populate connections for CAM and AG cards after DOM insertion
+  // Build lookup maps from localStorage
+  let camDataMap = {};
+  let agDataMap = {};
+  try {
+    const tree = JSON.parse(localStorage.getItem('campaign_tree_groups') || '{}');
+    let allCams = Array.isArray(tree.campaigns) ? [...tree.campaigns] : [];
+    if (Array.isArray(tree.groups)) tree.groups.forEach(g => { if (g.campaigns) allCams = allCams.concat(g.campaigns); });
+    allCams.forEach(c => { if (c.id) camDataMap[c.id] = c; });
+  } catch(e) {}
+  try {
+    JSON.parse(localStorage.getItem('adgroups_data_v1') || '[]').forEach(ag => { if (ag.id) agDataMap[ag.id] = ag; });
+  } catch(e) {}
+
+  container.querySelectorAll('[data-cg-conn-id]').forEach(el => {
+    const cgId = el.getAttribute('data-cg-conn-id');
+    // Find the group object from the tree
+    let cgData = null;
     try {
-      const advertiser = JSON.parse(advertiserJson);
-      document.getElementById('breadcrumbAdvertiser').textContent = advertiser.name || '—';
-    } catch (e) {
-      console.error('Error parsing advertiser data:', e);
-    }
+      const tree = JSON.parse(localStorage.getItem('campaign_tree_groups') || '{}');
+      if (Array.isArray(tree.groups)) cgData = tree.groups.find(g => g.id === cgId) || null;
+    } catch(e) {}
+    if (cgData) renderConnectionsTable(el, cgData, 'campaigngroup');
+  });
+  container.querySelectorAll('[data-cam-conn-id]').forEach(el => {
+    const camData = camDataMap[el.getAttribute('data-cam-conn-id')];
+    if (camData) renderConnectionsTable(el, camData, 'campaign');
+  });
+  container.querySelectorAll('[data-ag-conn-id]').forEach(el => {
+    const agData = agDataMap[el.getAttribute('data-ag-conn-id')];
+    if (agData) renderConnectionsTable(el, agData, 'adgroup');
+  });
+
+  // Render breadcrumb
+  const advRaw = localStorage.getItem('adv_selected_data') || localStorage.getItem('selectedAdvertiser');
+  if (advRaw) {
+    try { document.getElementById('breadcrumbAdvertiser').textContent = JSON.parse(advRaw).name || '\u2014'; } catch(e) {}
   }
+}
+
+// ==================== SAVE CO ====================
+function saveCO() {
+  const coId = new URLSearchParams(window.location.search).get('coId');
+  if (!coId || typeof getChangeOrder !== 'function') return;
+  const co = getChangeOrder(coId);
+  if (!co) return;
+
+  const nameInput = document.getElementById('coNameInput');
+  if (nameInput) co.name = nameInput.value.trim() || co.name;
+
+  const notesInput = document.getElementById('coNotesInput');
+  if (notesInput) co.notes = notesInput.value;
+
+  if (typeof saveChangeOrder === 'function') {
+    saveChangeOrder(co);
+    if (typeof coShowToast === 'function') coShowToast('Change order saved', 'success');
+    else alert('Saved!');
+  }
+}
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', function() {
+  const params = new URLSearchParams(window.location.search);
+  const coId = params.get('coId');
+
+  if (!coId) {
+    document.getElementById('entitySectionsContainer').innerHTML = '<div class="p-8 text-center text-gray-500">No change order specified.</div>';
+    return;
+  }
+
+  function init() {
+    if (typeof getChangeOrder !== 'function') {
+      // changeorder.js not loaded yet, retry
+      setTimeout(init, 50);
+      return;
+    }
+    const co = getChangeOrder(coId);
+    if (!co) {
+      document.getElementById('entitySectionsContainer').innerHTML =
+        `<div class="p-8 text-center text-gray-500">Change order <strong>${escHtml(coId)}</strong> not found.</div>`;
+      return;
+    }
+
+    // Populate header
+    const nameInput = document.getElementById('coNameInput');
+    if (nameInput) nameInput.value = co.name || '';
+
+    const statusBadgeEl = document.getElementById('coStatusBadge');
+    if (statusBadgeEl) {
+      const s = (co.status || 'draft').toLowerCase();
+      const colors = { draft:'bg-yellow-100 text-yellow-800', synced:'bg-blue-100 text-blue-800', active:'bg-green-100 text-green-800', cancelled:'bg-gray-100 text-gray-500' };
+      statusBadgeEl.className = `inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${colors[s]||'bg-gray-100 text-gray-600'}`;
+      statusBadgeEl.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    const idEl = document.getElementById('coIdDisplay');
+    if (idEl) idEl.textContent = co.id || '\u2014';
+    const createdEl = document.getElementById('coCreatedDisplay');
+    if (createdEl) createdEl.textContent = fmtDate(co.createdDate);
+    const modEl = document.getElementById('coModifiedDisplay');
+    if (modEl) modEl.textContent = fmtDate(co.modifiedDate);
+    const ownerEl = document.getElementById('coOwnerDisplay');
+    if (ownerEl) ownerEl.textContent = co.owner || '\u2014';
+
+    const breadcrumbCoId = document.getElementById('breadcrumbCoId');
+    if (breadcrumbCoId) breadcrumbCoId.textContent = co.id || '\u2014';
+
+    // Populate notes
+    const notesInput = document.getElementById('coNotesInput');
+    if (notesInput) notesInput.value = co.notes || '';
+
+    // Build entity cards
+    renderEntitySections(co);
+  }
+
+  init();
 });
 </script>
 

@@ -439,66 +439,11 @@
                   </tr>
                 </thead>
                 <tbody id="changeOrderTableBody" class="divide-y">
-                  <!-- Row 1: Draft -->
-                  <tr class="hover:bg-blue-50 cursor-pointer">
-                    <td class="px-3 py-2 text-center">
-                      <input type="checkbox" class="w-4 h-4 accent-blue-600 cursor-pointer row-select-checkbox" data-co-id="CO-A8X2K1">
-                    </td>
-                    <td class="px-6 py-2 text-sm"><a href="./ChangeOrderDetails.html" class="text-blue-600 hover:text-blue-800 hover:underline">CO-A8X2K1</a></td>
-                    <td class="px-6 py-2 text-sm text-gray-900">Q2 Strategy A</td>
-                    <td class="px-6 py-2"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Draft</span></td>
-                    <td class="px-6 py-2 text-sm text-gray-600">Feb 23, 2026</td>
-                    <td class="px-6 py-2 text-sm text-gray-600">Feb 20, 2026</td>
-                    <td class="px-6 py-2 text-sm text-gray-600">Matt Hunter</td>
-                    <td class="px-6 py-2 text-sm text-gray-600 text-center">1</td>
-                    <td class="px-6 py-2 text-sm text-gray-600 text-center">3</td>
-                    <td class="px-6 py-2 text-sm">
-                      <a href="./ChangeOrderDetails.html" class="text-blue-600 hover:text-blue-800 mr-2">View</a>
-                      <span class="text-blue-600 hover:text-blue-800 cursor-pointer mr-2">Export</span>
-                      <span class="text-red-600 hover:text-red-800 cursor-pointer">Delete</span>
-                    </td>
-                  </tr>
-                  <!-- Row 2: Draft -->
-                  <tr class="hover:bg-blue-50 cursor-pointer">
-                    <td class="px-3 py-2 text-center">
-                      <input type="checkbox" class="w-4 h-4 accent-blue-600 cursor-pointer row-select-checkbox" data-co-id="CO-B3Y7M2">
-                    </td>
-                    <td class="px-6 py-2 text-sm"><a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">CO-B3Y7M2</a></td>
-                    <td class="px-6 py-2 text-sm text-gray-900">Q2 Strategy B</td>
-                    <td class="px-6 py-2"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Draft</span></td>
-                    <td class="px-6 py-2 text-sm text-gray-600">Feb 22, 2026</td>
-                    <td class="px-6 py-2 text-sm text-gray-600">Feb 20, 2026</td>
-                    <td class="px-6 py-2 text-sm text-gray-600">Matt Hunter</td>
-                    <td class="px-6 py-2 text-sm text-gray-600 text-center">2</td>
-                    <td class="px-6 py-2 text-sm text-gray-600 text-center">5</td>
-                    <td class="px-6 py-2 text-sm">
-                      <span class="text-blue-600 hover:text-blue-800 cursor-pointer mr-2">View</span>
-                      <span class="text-blue-600 hover:text-blue-800 cursor-pointer mr-2">Export</span>
-                      <span class="text-red-600 hover:text-red-800 cursor-pointer">Delete</span>
-                    </td>
-                  </tr>
-                  <!-- Row 3: Synced -->
-                  <tr class="hover:bg-blue-50 cursor-pointer">
-                    <td class="px-3 py-2 text-center">
-                      <input type="checkbox" class="w-4 h-4 accent-blue-600 cursor-pointer row-select-checkbox" data-co-id="CO-C1Z4N8">
-                    </td>
-                    <td class="px-6 py-2 text-sm"><a href="#" class="text-blue-600 hover:text-blue-800 hover:underline">CO-C1Z4N8</a></td>
-                    <td class="px-6 py-2 text-sm text-gray-900">Initial Setup</td>
-                    <td class="px-6 py-2"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Synced</span></td>
-                    <td class="px-6 py-2 text-sm text-gray-600">Feb 12, 2026</td>
-                    <td class="px-6 py-2 text-sm text-gray-600">Feb 10, 2026</td>
-                    <td class="px-6 py-2 text-sm text-gray-600">David DeHerrera</td>
-                    <td class="px-6 py-2 text-sm text-gray-600 text-center">1</td>
-                    <td class="px-6 py-2 text-sm text-gray-600 text-center">2</td>
-                    <td class="px-6 py-2 text-sm">
-                      <span class="text-blue-600 hover:text-blue-800 cursor-pointer mr-2">View</span>
-                      <span class="text-blue-600 hover:text-blue-800 cursor-pointer">Export</span>
-                    </td>
-                  </tr>
+                  <!-- Populated dynamically by JS -->
                 </tbody>
               </table>
             </div>
-            <div class="px-6 py-2 text-sm text-gray-500">3 change orders showing (1 cancelled hidden)</div>
+            <div id="coCountFooter" class="px-6 py-2 text-sm text-gray-500"></div>
           </div>
         </div>
       </main>
@@ -541,11 +486,156 @@ document.addEventListener('DOMContentLoaded', function() {
       document.querySelectorAll('[data-bind="adv.deliveryId"]').forEach(el => el.textContent = advertiser.deliveryId || '—');
       document.querySelectorAll('[data-bind="adv.reportingId"]').forEach(el => el.textContent = advertiser.reportingId || '—');
       document.getElementById('breadcrumbAdvertiser').textContent = advertiser.name || '—';
-      document.querySelector('[data-sidebar-header]').textContent = advertiser.name || 'Advertiser';
+      // sidebar header intentionally stays as "Advertiser" (set in HTML)
     } catch (e) {
       console.error('Error parsing advertiser data:', e);
     }
   }
+
+  // ---- Dynamic table rendering ----
+  const advId = (function() {
+    try {
+      const raw = localStorage.getItem('adv_selected_data') || localStorage.getItem('selectedAdvertiser');
+      if (raw) { const a = JSON.parse(raw); return String(a.id || ''); }
+    } catch(e) {}
+    return '';
+  })();
+
+  let activeStatusFilter = 'DraftSynced';
+  let activeSearch = '';
+
+  function escHtml(v) {
+    return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function fmtDate(d) {
+    if (!d) return '—';
+    try { return new Date(d).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}); } catch { return d; }
+  }
+  function statusBadge(status) {
+    const s = (status || 'draft').toLowerCase();
+    const colors = { draft: 'bg-yellow-100 text-yellow-800', synced: 'bg-blue-100 text-blue-800', active: 'bg-green-100 text-green-800', cancelled: 'bg-gray-100 text-gray-500' };
+    const cls = colors[s] || 'bg-gray-100 text-gray-600';
+    return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${cls}">${escHtml(s.charAt(0).toUpperCase()+s.slice(1))}</span>`;
+  }
+  function countEntities(entities, type) {
+    if (!Array.isArray(entities)) return 0;
+    return entities.filter(e => e.type === type).length;
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('changeOrderTableBody');
+    const footer = document.getElementById('coCountFooter');
+    if (!tbody) return;
+
+    const allCOs = (typeof getChangeOrders === 'function' ? getChangeOrders() : []).filter(co => {
+      if (!advId) return true;
+      return String(co.advertiserId || '') === advId;
+    });
+
+    let filtered = allCOs;
+    if (activeStatusFilter === 'DraftSynced') {
+      filtered = filtered.filter(co => ['draft','synced'].includes((co.status||'draft').toLowerCase()));
+    } else if (activeStatusFilter !== 'All') {
+      filtered = filtered.filter(co => (co.status||'draft').toLowerCase() === activeStatusFilter.toLowerCase());
+    }
+    if (activeSearch) {
+      const q = activeSearch.toLowerCase();
+      filtered = filtered.filter(co =>
+        (co.id||'').toLowerCase().includes(q) ||
+        (co.name||'').toLowerCase().includes(q) ||
+        (co.owner||'').toLowerCase().includes(q)
+      );
+    }
+    filtered.sort((a,b) => new Date(b.modifiedDate||0) - new Date(a.modifiedDate||0));
+
+    const hidden = allCOs.length - filtered.length;
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="10" class="px-6 py-8 text-center text-gray-500">No change orders found</td></tr>';
+      if (footer) footer.textContent = allCOs.length === 0 ? 'No change orders yet' : `0 showing (${hidden} hidden by filter)`;
+      return;
+    }
+
+    tbody.innerHTML = '';
+    filtered.forEach(co => {
+      const camCount = countEntities(co.entities, 'campaign');
+      const agCount  = countEntities(co.entities, 'adgroup');
+      const canDelete = (co.status||'draft').toLowerCase() !== 'synced';
+      const encodedId = encodeURIComponent(co.id||'');
+      const safeId = escHtml(co.id||'—');
+      const safeName = escHtml(co.name||'—');
+      const safeOwner = escHtml(co.owner||'—');
+
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-blue-50 cursor-pointer';
+      tr.innerHTML = `
+        <td class="px-3 py-2 text-center">
+          <input type="checkbox" class="w-4 h-4 accent-blue-600 cursor-pointer row-select-checkbox" data-co-id="${escHtml(co.id||'')}">
+        </td>
+        <td class="px-6 py-2 text-sm"><a href="./ChangeOrderDetails.html?coId=${encodedId}" class="text-blue-600 hover:text-blue-800 hover:underline">${safeId}</a></td>
+        <td class="px-6 py-2 text-sm text-gray-900">${safeName}</td>
+        <td class="px-6 py-2">${statusBadge(co.status)}</td>
+        <td class="px-6 py-2 text-sm text-gray-600">${fmtDate(co.modifiedDate)}</td>
+        <td class="px-6 py-2 text-sm text-gray-600">${fmtDate(co.createdDate)}</td>
+        <td class="px-6 py-2 text-sm text-gray-600">${safeOwner}</td>
+        <td class="px-6 py-2 text-sm text-gray-600 text-center">${camCount}</td>
+        <td class="px-6 py-2 text-sm text-gray-600 text-center">${agCount}</td>
+        <td class="px-6 py-2 text-sm">
+          <a href="./ChangeOrderDetails.html?coId=${encodedId}" class="text-blue-600 hover:text-blue-800 mr-2">View</a>
+          <button type="button" class="text-blue-600 hover:underline cursor-pointer mr-2" data-action="export" data-co-id="${encodedId}">Export</button>
+          ${canDelete ? `<button type="button" class="text-red-600 hover:underline cursor-pointer" data-action="delete" data-co-id="${encodedId}">Delete</button>` : ''}
+        </td>`;
+      tbody.appendChild(tr);
+
+      tr.querySelector('[data-action="export"]')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = decodeURIComponent(e.currentTarget.dataset.coId||'');
+        const coObj = typeof getChangeOrder === 'function' ? getChangeOrder(id) : null;
+        if (!coObj) return;
+        const blob = new Blob([JSON.stringify(coObj, null, 2)], {type:'application/json'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `${coObj.id}_${(coObj.name||'export').replace(/\s+/g,'_')}.json`;
+        a.click(); URL.revokeObjectURL(a.href);
+      });
+      tr.querySelector('[data-action="delete"]')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = decodeURIComponent(e.currentTarget.dataset.coId||'');
+        if (confirm('Delete this change order? This cannot be undone.')) {
+          if (typeof deleteChangeOrder === 'function') deleteChangeOrder(id);
+          renderTable();
+        }
+      });
+    });
+
+    if (footer) footer.textContent = `${filtered.length} change order${filtered.length!==1?'s':''} showing` + (hidden>0?` (${hidden} hidden)`:'');
+
+    // Sync select-all state
+    updateSelectAllState();
+  }
+
+  // Status filter menu item clicks
+  document.querySelectorAll('#statusMenu button[data-value]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeStatusFilter = btn.getAttribute('data-value');
+      document.querySelector('#statusChip span').textContent = btn.textContent.trim();
+      document.getElementById('statusMenu').classList.add('hidden');
+      renderTable();
+    });
+  });
+
+  // Search input
+  document.getElementById('searchInput').addEventListener('input', function() {
+    activeSearch = this.value.trim();
+    renderTable();
+  });
+
+  // Re-render on storage changes (e.g. after creating a new CO)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'change_orders_data') renderTable();
+  });
+
+  // Initial render
+  renderTable();
 });
 </script>
 
