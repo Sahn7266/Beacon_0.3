@@ -173,13 +173,14 @@
     .entity-connector {
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: 22px;
+      align-items: stretch;
+      height: 24px;
     }
     .entity-connector-line {
-      width: 1px;
+      width: 3px;
       height: 100%;
-      background: #d1d5db;
+      background: #6b7280;
+      border-radius: 1.5px;
     }
 
     /* Add-note button + inline form */
@@ -363,17 +364,23 @@
             </a>
           </li>
           <li>
-            <a href="./WFAdvertiserConnections.html" data-nav-link
-               class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
-              <img src="./assets/svgs/Blueprint.svg" alt="Connections" class="w-6 h-6 mr-2" />
-              <span data-link-label>Connections</span>
-            </a>
-          </li>
-          <li>
             <a href="./AdvertiserCampaigns.html" data-nav-link
                class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
               <img src="./assets/svgs/CampaignsSchedules.svg" alt="Campaigns" class="w-6 h-6 mr-2" />
               <span data-link-label>Campaigns</span>
+            </a>
+          </li>
+          <li>
+            <a href="./AdvertiserAdGroup.html" data-nav-link class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
+              <img src="./assets/svgs/AdGroups.svg" class="w-6 h-6 mr-2" alt="">
+              <span data-link-label>Ad Groups</span>
+            </a>
+          </li>
+          <li>
+            <a href="./WFAdvertiserConnections.html" data-nav-link
+               class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
+              <img src="./assets/svgs/Blueprint.svg" alt="Connections" class="w-6 h-6 mr-2" />
+              <span data-link-label>Connections</span>
             </a>
           </li>
           <li>
@@ -383,12 +390,6 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
               </svg>
               <span data-link-label>Change Orders</span>
-            </a>
-          </li>
-          <li>
-            <a href="./AdvertiserAdGroup.html" data-nav-link class="flex items-center px-1 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md">
-              <img src="./assets/svgs/AdGroups.svg" class="w-6 h-6 mr-2" alt="">
-              <span data-link-label>Ad Groups</span>
             </a>
           </li>
          
@@ -876,12 +877,12 @@ function buildAdGroupCard(ag, idx) {
               <input type="text" value="${escHtml(fields.tactic||'')}" placeholder="Persona" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
             <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Geo Target</label>
               <input type="text" value="${escHtml(fields.geoTarget||'')}" placeholder="e.g. Dallas, TX (50mi)" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
+            <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Impressions <span class="text-red-500 font-bold">*</span></label>
+              <input type="text" value="${escHtml(fields.impressions||'')}" placeholder="500,000" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
             <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Start Date <span class="text-red-500 font-bold">*</span></label>
               <input type="date" value="${escHtml(fields.startDate||'')}" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
             <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">End Date <span class="text-red-500 font-bold">*</span></label>
               <input type="date" value="${escHtml(fields.endDate||'')}" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
-            <div><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Impressions <span class="text-red-500 font-bold">*</span></label>
-              <input type="text" value="${escHtml(fields.impressions||'')}" placeholder="500,000" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
             <div class="md:col-span-2"><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Landing Page</label>
               <input type="url" value="${escHtml(fields.landingPage||'')}" placeholder="https://example.com/landing" class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"></div>
             <div class="md:col-span-2"><label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">UTM Code</label>
